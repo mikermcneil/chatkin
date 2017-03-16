@@ -11,30 +11,35 @@
 
 module.exports.bootstrap = function(cb) {
 
-  var XMAX = 360;
-  var YMAX = 170;
+  sails.config.custom = sails.config.custom || {};
+  sails.config.custom.numZonesPerDegreeSquare = sails.config.custom.numZonesPerDegreeSquare || 1;
+  sails.config.custom.numZonesPerDegreeSquare = Math.floor(sails.config.custom.numZonesPerDegreeSquare);
 
+  var xMax = Math.floor(360 * sails.config.custom.numZonesPerDegreeSquare);
+  var yMax = Math.floor(170 * sails.config.custom.numZonesPerDegreeSquare);
   // - - - - - - - - - - - - - - - - - - - -
-  //     0                  360
-  //      __________________
-  //   0 |..                |
-  //     |..                |
-  //     |   etc            |
-  //     |                  |
-  //     |                  |
-  // 170 |__________________|
+  //     0                  xMAX
+  //       __________________
+  //   0  |..                |
+  //      |..                |
+  //      |   etc            |
+  //      |                  |
+  //      |                  |
+  // yMax |__________________|
+  //
+  //
+  // > See `controllers/arrive.js` for more info.
   // - - - - - - - - - - - - - - - - - - - -
-
 
 
   Zone.count().exec(function(err, numZones) {
     if (err) { return cb(err); }
 
-    if (numZones > XMAX*YMAX) {
+    if (numZones > xMax*yMax) {
       return cb(new Error('Consistency violation: More zones than expected!'));
     }
 
-    if (numZones === XMAX*YMAX) {
+    if (numZones === xMax*yMax) {
       sails.log('Using existing zones and users.');
       return cb();
     }
@@ -50,16 +55,16 @@ module.exports.bootstrap = function(cb) {
       if (err) { return cb(err); }
 
       // Build a representation of all 61,200 zones.
-      sails.log('Building %d zones...', XMAX*YMAX);
+      sails.log('Building %d zones...', xMax*yMax);
       var zones = [];
-      for (var x=0; x<XMAX; x++) {
-        for (var y=0; y<YMAX; y++) {
+      for (var x=0; x<xMax; x++) {
+        for (var y=0; y<yMax; y++) {
           zones.push({ x: x, y: y });
         }
       }
 
       // Save new zones to the database.
-      sails.log('Persisting %d zones...', XMAX*YMAX);
+      sails.log('Persisting %d zones...', xMax*yMax);
       Zone.createEach(zones).exec(function(err) {
         if (err) { return cb(err); }
         return cb();

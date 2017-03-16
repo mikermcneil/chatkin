@@ -25,8 +25,8 @@ module.exports = {
     // - - - - - - - - - - - - - - - - - - - -
     // (85, -180) // top left corner of map
     // (-85, 180) // bottom right corner of map
-    var x = Math.round((inputs.long + 180) / 360); // Zone every 1° longitude
-    var y = Math.round((inputs.lat*(-1) + 85) / 170); // Zone every 1° latitude
+    var xDegrees = inputs.long + 180;
+    var yDegrees = (inputs.lat*(-1)) + 85;
 
     // Visualization:
     // - - - - - - - - - - - - - - - - - - - -
@@ -38,6 +38,21 @@ module.exports = {
     //     |                  |
     //     |                  |
     // 170 |__________________|
+
+    // Without specifiying `numZonesPerDegreeSquare`, it defaults
+    // to one -- meaning we would get one zone for every 1° longitude,
+    // 1° latitude square (61,200 zones in total.)
+    // But the `numZonesPerDegreeSquare` setting allows us to further
+    // divide up these zones into even more, smaller sub-zones.
+    //
+    // > To get neighborhoods/street-granular zones, you might
+    // > use a `numZonesPerDegreeSquare` of 1000.  For less granular
+    // > zones, you could use a lower number.
+    // >
+    // > For a more precise sense of scale, see the table here:
+    // > https://en.wikipedia.org/wiki/Decimal_degrees#Precision
+    var x = Math.floor(xDegrees * sails.config.custom.numZonesPerDegreeSquare);
+    var y = Math.floor(yDegrees * sails.config.custom.numZonesPerDegreeSquare);
 
     User.findOne({ username: inputs.username }).exec(function(err, thisUser){
       if (err) { return exits.error(err); }
@@ -56,6 +71,8 @@ module.exports = {
         .set({ currentZone: zone.id })
         .exec(function (err) {
           if (err) { return exits.error(err); }
+
+          sails.log('@'+inputs.username+' arrived in zone with coordinates: ( %d, %d )', x, y);
 
           // Subscribe to socket (RPS) notifications about this zone.
           Zone.subscribe(env.req, [zone.id]);
