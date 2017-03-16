@@ -21,8 +21,8 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/mikermcneil/inabottle.git"
+    "url": "git://github.com/sailshq/inabottle.git"
   },
   "author": "mikermcneil",
-  "license": ""
+  "license": "MIT"
 }

@@ -35,26 +35,36 @@ module.exports.bootstrap = function(cb) {
     }
 
     if (numZones === XMAX*YMAX) {
-      sails.log('Using existing zones.');
+      sails.log('Using existing zones and users.');
       return cb();
     }
 
-    // Build a representation of all 61,200 zones.
-    sails.log('Building %d zones...', XMAX*YMAX);
-    var zones = [];
-    for (var x=0; x<XMAX; x++) {
-      for (var y=0; y<YMAX; y++) {
-        zones.push({ x: x, y: y });
-      }
-    }
-
-    // Save new zones to the database.
-    sails.log('Persisting %d zones...', XMAX*YMAX);
-    Zone.createEach(zones).exec(function(err) {
+    // Create a few users.
+    User.createEach([
+      { username: 'rachaelshaw' },
+      { username: 'irlnathan' },
+      { username: 'particlebanana' },
+      { username: 'sgress454' },
+      { username: 'mikermcneil' }
+    ]).exec(function(err) {
       if (err) { return cb(err); }
-      return cb();
-    });
 
+      // Build a representation of all 61,200 zones.
+      sails.log('Building %d zones...', XMAX*YMAX);
+      var zones = [];
+      for (var x=0; x<XMAX; x++) {
+        for (var y=0; y<YMAX; y++) {
+          zones.push({ x: x, y: y });
+        }
+      }
+
+      // Save new zones to the database.
+      sails.log('Persisting %d zones...', XMAX*YMAX);
+      Zone.createEach(zones).exec(function(err) {
+        if (err) { return cb(err); }
+        return cb();
+      });
+    });
   });
 
 };
