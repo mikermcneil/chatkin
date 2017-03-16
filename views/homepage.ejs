@@ -1,16 +1,30 @@
 <h1>Check out the JS console in your browser</h1>
 
+<p>Visit http://localhost:1337?usernameHere to fetch location and arrive in your current zone.</p>
+
+<h5>For example:</h5>
+<ul>
+  <li><a href="http://localhost:1337?rachaelshaw">http://localhost:1337?rachaelshaw</a></li>
+  <li><a href="http://localhost:1337?irlnathan">http://localhost:1337?irlnathan</a></li>
+  <li><a href="http://localhost:1337?particlebanana">http://localhost:1337?particlebanana</a></li>
+  <li><a href="http://localhost:1337?sgress454">http://localhost:1337?sgress454</a></li>
+  <li><a href="http://localhost:1337?mikermcneil">http://localhost:1337?mikermcneil</a></li>
+</ul>
 
 <script>
 
-// TODO: wait to do all this until page is loaded
-
 // Come up with a username
-var username = 'mikermcneil';
+var username = window.location.search.replace(/^?/, '');
+
+// If no username was specified, stop here.
+if (!username) {
+  throw new Error('No username specified.  Try again w/ a username to continue.')
+}
 
 // Get location from browser
 console.log('getting location from browser...');
 navigator.geolocation.getCurrentPosition(function gotLocation(geo){
+  console.log('• got it!', geo);
 
   // Communicate w/ server
   console.log('communicating with server...');
@@ -27,11 +41,16 @@ navigator.geolocation.getCurrentPosition(function gotLocation(geo){
 
     console.log('It worked!  Now arrived in zone.');
 
+    io.socket.on('zone', function(msg){
+      console.log('* * Received zone notification from server with message:', msg);
+    });
+
   });
 }, function failedToGetLocation(err) {
   console.error('Could not load location.  (Please refresh the page and try again.)');
   console.error('Error details:');
   console.error(err);
 })
+
 
 </script>

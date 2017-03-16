@@ -19,7 +19,7 @@ module.exports = {
   },
 
 
-  fn: function (inputs, exits) {
+  fn: function (inputs, exits, env) {
 
     // latitude, longitude
     // - - - - - - - - - - - - - - - - - - - -
@@ -44,7 +44,7 @@ module.exports = {
       if (!thisUser) { return exits.userNotFound(); }
 
       if (thisUser.currentZone) {
-        Zone.unsubscribe(req, thisUser.currentZone);
+        Zone.unsubscribe(env.req, [thisUser.currentZone]);
       }
 
       Zone.findOne({ x: x, y: y }).exec(function(err, zone) {
@@ -58,14 +58,14 @@ module.exports = {
           if (err) { return exits.error(err); }
 
           // Subscribe to socket (RPS) notifications about this zone.
-          Zone.subscribe(req, zone.id);
+          Zone.subscribe(env.req, [zone.id]);
 
           // Publish this user's arrival to the new zone.
-          Zone.publish(thisUser.currentZone, {
+          Zone.publish([zone.id], {
             verb: 'userArrived',
             username: inputs.username,
             remark: thisUser.remark
-          }, req);
+          }, env.req);
 
           return exits.success();
         });
