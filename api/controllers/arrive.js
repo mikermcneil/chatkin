@@ -25,8 +25,8 @@ module.exports = {
     // - - - - - - - - - - - - - - - - - - - -
     // (85, -180) // top left corner of map
     // (-85, 180) // bottom right corner of map
-    var x = (inputs.long + 180) / 360; // Zone every 1° longitude
-    var y = (inputs.lat*(-1) + 85) / 170; // Zone every 1° latitude
+    var x = Math.round((inputs.long + 180) / 360); // Zone every 1° longitude
+    var y = Math.round((inputs.lat*(-1) + 85) / 170); // Zone every 1° latitude
 
     // Visualization:
     // - - - - - - - - - - - - - - - - - - - -
