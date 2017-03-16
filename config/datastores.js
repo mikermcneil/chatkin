@@ -15,42 +15,12 @@
 
 module.exports.datastores = {
 
-
-  /***************************************************************************
-  *                                                                          *
-  * Your app's default datastore.                                            *
-  *                                                                          *
-  * Sails apps read and write to local disk by default, using a built-in     *
-  * database adapter called `sails-disk`.  This feature is purely for        *
-  * convenience during development; since `sails-disk` is not designed for   *
-  * use in a production environment.                                         *
-  *                                                                          *
-  * To use a different db _in development_, follow the directions below.     *
-  * Otherwise, just leave the default datastore as-is, with no `adapter`.    *
-  *                                                                          *
-  * (For production configuration, see `config/env/production.js`.)          *
-  *                                                                          *
-  ***************************************************************************/
-
   default: {
-
-    /***************************************************************************
-    *                                                                          *
-    * Want to use a different database during development?                     *
-    *                                                                          *
-    * 1. Choose an adapter:                                                    *
-    *    http://sailsjs.com/plugins/databases                                  *
-    *                                                                          *
-    * 2. Install it as a dependency of your Sails app.                         *
-    *    (For example:  npm install sails-mysql --save)                        *
-    *                                                                          *
-    * 3. Then pass it in, along with a connection URL.                         *
-    *    (See http://sailsjs.com/config/datastores for help.)                  *
-    *                                                                          *
-    ***************************************************************************/
-    // adapter: require('sails-mysql'),
-    // url: 'mysql://user:password@host:port/database',
-
+    adapter: 'sails-disk',// OK
+    //adapter: 'sails-mysql',// OK
+    //adapter: 'sails-postgresql',// OK
+    // adapter: 'sails-mongo',// OK
+    url: 'localhost/inabottle',
   },
 
 

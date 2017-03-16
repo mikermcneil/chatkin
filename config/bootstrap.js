@@ -65,6 +65,12 @@ module.exports.bootstrap = function(cb) {
 
       // Save new zones to the database.
       sails.log('Persisting %d zones...', xMax*yMax);
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+      // Note: PostgreSQL only allows up to ~15,000 records to be created in a single createEach.
+      // > If you need to work around that, file an issue in `pg`, import the initial data manually,
+      // > or write up a workaround that splits this up into separate queries instead of one.
+      // > (For help, visit https://sailsjs.com/support)
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
       Zone.createEach(zones).exec(function(err) {
         if (err) { return cb(err); }
         return cb();
