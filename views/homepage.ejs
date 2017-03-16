@@ -14,7 +14,7 @@
 <script>
 
 // Come up with a username
-var username = window.location.search.replace(/^?/, '');
+var username = window.location.search.replace(/^\?/, '');
 
 // If no username was specified, stop here.
 if (!username) {
@@ -40,6 +40,11 @@ navigator.geolocation.getCurrentPosition(function gotLocation(geo){
     }//-•
 
     console.log('It worked!  Now arrived in zone.');
+    console.log('You can change your remark by running the following code:');
+    console.log('```');
+    console.log('io.socket.put(\'/user/yourUsername/remark\',{remark: \'hi\'},console.log.bind(console))');
+    console.log('```');
+
 
     io.socket.on('zone', function(msg){
       console.log('* * Received zone notification from server with message:', msg);
