@@ -3,7 +3,7 @@ var username = window.location.search.replace(/^\?/, '');
 
 // If no username was specified, stop here.
 if (!username) {
-  throw new Error('No username specified.  Try again w/ a username to continue.');
+  console.error('No username specified.  Try again w/ a username to continue.');
 }
 
 // Otherwise, create our Vue instance
@@ -15,6 +15,8 @@ var homepage = new Vue({
     activity: [],
     username: username,
     message: '',
+    syncingLocation: true,
+    communicatingWithServer: false
   },
 
   // After everything is rendered...
@@ -23,21 +25,21 @@ var homepage = new Vue({
     if (!navigator.geolocation){
       throw new Error('Geolocation is not supported by your browser.');
     }
-    var $mainContent = document.getElementById('main-content');
     console.log('getting location from browser...');
-    $mainContent.innerHTML = '<p>Getting location from browser...</p>';
     navigator.geolocation.getCurrentPosition(function gotLocation(geoPosition){
       console.log('• got it!', geoPosition);
+      // Done syncing location.
+      homepage.syncingLocation = false;
+      homepage.communicatingWithServer = true;
 
       // Display map
       var $map = document.getElementById('map');
       var mapImg = new Image();
-      mapImg.src = 'https://maps.googleapis.com/maps/api/staticmap?center=' + geoPosition.coords.latitude + ',' + geoPosition.coords.longitude + '&zoom=13&size=300x300&sensor=false';
+      mapImg.src = 'https://maps.googleapis.com/maps/api/staticmap?center=' + geoPosition.coords.latitude + ',' + geoPosition.coords.longitude + '&zoom=13&size=200x200&sensor=false';
       $map.appendChild(mapImg);
 
       // Communicate w/ server
       console.log('communicating with server...');
-      $mainContent.innerHTML = '<p>Communicating with server...</p>';
       io.socket.put('/user/'+this.username+'/zone', {
         lat: geoPosition.coords.latitude,
         long: geoPosition.coords.longitude
@@ -49,7 +51,7 @@ var homepage = new Vue({
           return;
         }//-•
 
-        $mainContent.innerHTML = '<p>Welcome, '+this.username+'!</p>';
+        homepage.communicatingWithServer = false;
         console.log('It worked!  Now arrived in zone.');
         console.log('You can change your remark by running the following code:');
         console.log('```');

@@ -1,45 +1,55 @@
 <div id="homepage">
-  <h1>Check out the JS console in your browser</h1>
-
-  <div id="main-content">
-    <p>Visit http://localhost:1337?usernameHere to fetch location and arrive in your current zone.</p>
-
-    <h5>For example:</h5>
-    <ul>
-      <li><a href="http://localhost:1337?rachaelshaw">http://localhost:1337?rachaelshaw</a></li>
-      <li><a href="http://localhost:1337?irlnathan">http://localhost:1337?irlnathan</a></li>
-      <li><a href="http://localhost:1337?particlebanana">http://localhost:1337?particlebanana</a></li>
-      <li><a href="http://localhost:1337?sgress454">http://localhost:1337?sgress454</a></li>
-      <li><a href="http://localhost:1337?mikermcneil">http://localhost:1337?mikermcneil</a></li>
-    </ul>
-  </div>
-
-  <div id="map"></div>
-
-  <div id="activity">
-    <ul class="activity-log">
-      <template v-for="notification in activity">
-        <li>
-          <% /* if the activity is an entrance */ %>
-          <template v-if="notification.verb === 'userArrived'">
-            <p><strong>{{notification.username}}</strong> has entered the room.</p>
-            <p v-if="notification.remark !== ''"><strong>{{notification.username}} says:</strong> {{notification.remark}}</p>
-          </template>
-          <% /* if the activity is a remark from someone else */%>
-          <template v-if="notification.verb === 'userRemarked'">
-            <p><strong>{{notification.username}} says:</strong> {{notification.remark}}</p>
-          </template>
-          <% /* if the activity is YOUR remark */%>
-          <template v-if="notification.verb === 'updatedMyRemark'">
-            <p><strong>You say:</strong> {{notification.remark}}</p>
-          </template>
-        </li>
-      </template>
-    </ul>
-  </div>
-
-  <div v-if="username" class="form">
-    <textarea v-model="message" placeholder="Update your message here.">{{ message }}</textarea>
-    <button v-on:click="updateRemark()">Update</button>
+  <div class="container">
+    <div id="main-content">
+        <div v-if="username === ''" class="window panel panel-default">
+          <div class="panel-heading">Visit http://localhost:1337?usernameHere to fetch location and arrive in your current zone.</div>
+          <div class="location-info panel-body">
+            <h5>For example:</h5>
+            <ul>
+              <li><a href="http://localhost:1337?rachaelshaw">http://localhost:1337?rachaelshaw</a></li>
+              <li><a href="http://localhost:1337?irlnathan">http://localhost:1337?irlnathan</a></li>
+              <li><a href="http://localhost:1337?particlebanana">http://localhost:1337?particlebanana</a></li>
+              <li><a href="http://localhost:1337?sgress454">http://localhost:1337?sgress454</a></li>
+              <li><a href="http://localhost:1337?mikermcneil">http://localhost:1337?mikermcneil</a></li>
+            </ul>
+            <div id="map" class="pull-right"><span>?</span></div>
+          </div>
+        </div>
+        <div v-else class="window panel panel-default">
+          <div v-if="syncingLocation" class="panel-heading">Getting location from browser...</div>
+          <div v-else-if="communicatingWithServer" class="panel-heading">Communicating with server...</div>
+          <div v-else-if="username !== ''" class="panel-heading">Welcome, {{username}}!</div>
+          <div v-else class="panel-heading">There was an error communicating with the server. Please refresh the page and try again.</div>
+          <div class="location-info panel-body">
+            <div id="activity" v-if="username !== ''">
+              <template v-for="notification in activity">
+                <% /* if the activity is an entrance */ %>
+                <template v-if="notification.verb === 'userArrived'">
+                  <p><strong>{{notification.username}}</strong> has arrived.</p>
+                  <p v-if="notification.remark !== ''"><strong>{{notification.username}} says:</strong> {{notification.remark}}</p>
+                </template>
+                <% /* if the activity is a remark from someone else */%>
+                <template v-if="notification.verb === 'userRemarked'">
+                  <p><strong>{{notification.username}} says:</strong> {{notification.remark}}</p>
+                </template>
+                <% /* if the activity is YOUR remark */%>
+                <template v-if="notification.verb === 'updatedMyRemark'">
+                  <p><strong>You say:</strong> {{notification.remark}}</p>
+                </template>
+              </template>
+            </div>
+            <div id="map" class="pull-right"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="username !== ''" class="form">
+      <div class="well">
+        <div class="container">
+          <textarea v-model="message" class="form-control" placeholder="Update your message here.">{{ message }}</textarea>
+          <button v-on:click="updateRemark()" class="btn btn-lg btn-primary btn-block">Update</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
