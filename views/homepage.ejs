@@ -25,12 +25,21 @@
             <p><strong>{{notification.username}}</strong> has entered the room.</p>
             <p v-if="notification.remark !== ''"><strong>{{notification.username}} says:</strong> {{notification.remark}}</p>
           </template>
-          <% /* if the activity is a remark */%>
+          <% /* if the activity is a remark from someone else */%>
           <template v-if="notification.verb === 'userRemarked'">
             <p><strong>{{notification.username}} says:</strong> {{notification.remark}}</p>
+          </template>
+          <% /* if the activity is YOUR remark */%>
+          <template v-if="notification.verb === 'updatedMyRemark'">
+            <p><strong>You say:</strong> {{notification.remark}}</p>
           </template>
         </li>
       </template>
     </ul>
+  </div>
+
+  <div v-if="username" class="form">
+    <textarea v-model="message" placeholder="Update your message here.">{{ message }}</textarea>
+    <button v-on:click="updateRemark()">Update</button>
   </div>
 </div>

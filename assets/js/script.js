@@ -9,11 +9,15 @@ if (!username) {
 // Otherwise, create our Vue instance
 var homepage = new Vue({
   el: '#homepage',
+
+  // Initialize our data
   data: {
     activity: [],
-    username: username
+    username: username,
+    message: '',
   },
 
+  // After everything is rendered...
   mounted: function() {
     // Get location from browser
     if (!navigator.geolocation){
@@ -65,6 +69,29 @@ var homepage = new Vue({
       console.error('Error details:');
       console.error(err);
     });
+  },
+
+  methods: {
+    updateRemark: function() {
+      if(homepage.message !== '') {
+        io.socket.put('/user/'+homepage.username+'/remark', {
+          remark: homepage.message
+        }, function(data, jwr) {
+          if (jwr.error) {
+            console.error('Server responded with an error.  (Please refresh the page and try again.)');
+            console.error('Error details:');
+            console.error(jwr.error);
+            return;
+          }//-•
+
+          homepage.activity.push({
+            verb: 'updatedMyRemark',
+            username: homepage.username,
+            remark: homepage.message
+          });
+        });
+      }
+    },
   }
 });
 
