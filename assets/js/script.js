@@ -51,6 +51,8 @@ var homepage = new Vue({
           return;
         }//-•
 
+        console.log('There are '+data+' other people here.');
+
         homepage.communicatingWithServer = false;
         console.log('It worked!  Now arrived in zone.');
         console.log('You can change your remark by running the following code:');

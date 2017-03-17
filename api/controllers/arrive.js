@@ -15,6 +15,7 @@ module.exports = {
 
 
   exits: {
+    success: { description: 'It worked.', outputFriendlyName: 'Num other people here', outputExample: 3 },
     userNotFound: { description: 'No such user.', statusCode: 400 }
   },
 
@@ -84,7 +85,11 @@ module.exports = {
             remark: thisUser.remark
           }, env.req);
 
-          return exits.success();
+          // See how many other people are here already.
+          User.count({ currentZone: zone.id, id: { '!=': thisUser.id } }).exec(function (err, numOtherUsers){
+            if (err) { return exits.error(err); }
+            return exits.success(numOtherUsers);
+          });
         });
       });
     });

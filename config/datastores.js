@@ -16,11 +16,10 @@
 module.exports.datastores = {
 
   default: {
-    adapter: 'sails-disk',// OK
     //adapter: 'sails-mysql',// OK
     //adapter: 'sails-postgresql',// OK
     // adapter: 'sails-mongo',// OK
-    url: 'localhost/inabottle',
+    // url: 'localhost/inabottle',
   },
 
 
