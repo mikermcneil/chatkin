@@ -104,7 +104,13 @@ var homepage = new Vue({
           });
         });
       }
-    },//</methods>
-  }
+    },//</updateRemark>
+  }//</methods>
+});
+
+
+// When the activity is updated...
+homepage.$watch('activity', function() {
+  // TODO: maybe autoscroll the message window.
 });
 
