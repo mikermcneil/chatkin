@@ -12,6 +12,7 @@ module.exports.routes = {
 
 
   '/': { view: 'homepage' },
+  '/login': { view: 'login' },
   'PUT /user/:username/zone': { action: 'arrive' },
   'PUT /user/:username/remark': { action: 'make-remark' },
 
