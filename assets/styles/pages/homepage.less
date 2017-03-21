@@ -1,33 +1,45 @@
-html, body {
-  height: 100%;
-  min-height: 100%;
-}
-body {
-  position: relative;
-  padding-bottom: 200px;
-}
+// z-index variables
+@z-messages: 50;
+@z-form: 100;
 
+// height/width variables
+@form-height: 200px;
+
+// homepage styles
 #homepage {
-  max-height: 100%;
-  padding-top: 75px;
-  overflow: auto;
-  .location-info {
-    padding-right: 240px;
-    min-height: 240px;
-    position: relative;
-    #map {
-      position: absolute;
-      right: 20px;
-      top: 20px;
-      width: 200px;
-      height: 200px;
-      background-color: lighten(#ebebeb, 5%);
+  #main-content {
+    position: fixed;
+    z-index: @z-messages;
+    height: 100%;
+    width: 100%;
+    padding-top: 75px;
+    padding-bottom: @form-height + 25;
+    .container {
+      height: 100%;
+      .window {
+        height: 100%;
+        overflow: auto;
+        .location-info {
+          padding-right: 240px;
+          min-height: 240px;
+          position: relative;
+          #map {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            width: 200px;
+            height: 200px;
+            background-color: lighten(#ebebeb, 5%);
+          }
+        }
+      }
     }
   }
   .form {
-    height: 200px;
-    width: 100%;
     position: fixed;
+    z-index: @z-form;
+    height: @form-height;
+    width: 100%;
     bottom: 0px;
     left: 0px;
     .well {

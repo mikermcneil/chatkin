@@ -11,7 +11,8 @@ var homepage = new Vue({
     username: username,
     message: '',
     syncingLocation: true,
-    communicatingWithServer: false
+    communicatingWithServer: false,
+    errorFetchingLocation: false
   },
 
 
@@ -73,7 +74,8 @@ var homepage = new Vue({
 
       });
     }, function failedToGetLocation(err) {
-      $mainContent.innerHTML = '<p>Failed to get location (see JS console for details)</p>';
+      homepage.syncingLocation = false;
+      homepage.errorFetchingLocation = true;
       console.error('Could not load location.  (Please refresh the page and try again.)');
       console.error('Error details:');
       console.error(err);
