@@ -1,16 +1,11 @@
 // Come up with a username
 var username = window.location.search.replace(/^\?/, '');
 
-// If no username was specified, stop here.
-if (!username) {
-  console.error('No username specified.  Try again w/ a username to continue.');
-}
-
-// Otherwise, create our Vue instance
+// Set up the Vue instance for our homepage
 var homepage = new Vue({
   el: '#homepage',
 
-  // Initialize our data
+  // Initialize data
   data: {
     activity: [],
     username: username,
@@ -19,12 +14,18 @@ var homepage = new Vue({
     communicatingWithServer: false
   },
 
-  // After everything is rendered...
+
   mounted: function() {
     // Get location from browser
     if (!navigator.geolocation){
       throw new Error('Geolocation is not supported by your browser.');
     }
+    // If no username was specified, stop here.
+    if(!username) {
+      console.error('No username specified.  Try again w/ a username to continue.');
+      return;
+    }
+    // Otherwise, we have a username, so attempt to fetch the location.
     console.log('getting location from browser...');
     navigator.geolocation.getCurrentPosition(function gotLocation(geoPosition){
       console.log('• got it!', geoPosition);
@@ -73,7 +74,8 @@ var homepage = new Vue({
       console.error('Error details:');
       console.error(err);
     });
-  },
+  },//</mounted>
+
 
   methods: {
     updateRemark: function() {
@@ -95,7 +97,7 @@ var homepage = new Vue({
           });
         });
       }
-    },
+    },//</methods>
   }
 });
 

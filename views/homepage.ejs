@@ -1,6 +1,7 @@
 <div id="homepage">
   <div class="container">
     <div id="main-content">
+        <% /* if no username specified */ %>
         <div v-if="username === ''" class="window panel panel-default">
           <div class="panel-heading">Visit http://localhost:1337?usernameHere to fetch location and arrive in your current zone.</div>
           <div class="location-info panel-body">
@@ -12,9 +13,10 @@
               <li><a href="http://localhost:1337?sgress454">http://localhost:1337?sgress454</a></li>
               <li><a href="http://localhost:1337?mikermcneil">http://localhost:1337?mikermcneil</a></li>
             </ul>
-            <div id="map" class="pull-right"><span>?</span></div>
+            <div id="map" class="pull-right"></div>
           </div>
         </div>
+        <% /* if username _is_ specified */ %>
         <div v-else class="window panel panel-default">
           <div v-if="syncingLocation" class="panel-heading">Getting location from browser...</div>
           <div v-else-if="communicatingWithServer" class="panel-heading">Communicating with server...</div>
