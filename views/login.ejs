@@ -2,7 +2,7 @@
   <div class="container">
     <div class="jumbotron">
       <h1>in a bottle</h1>
-      <div class="form">
+      <form class="form" v-on:submit.prevent="submitLoginForm">
         <div class="form-group">
           <label for="login_username">Username</label>
           <input class="form-control input-lg" id="login_username" type="text">
@@ -15,7 +15,7 @@
           <span v-if="isSyncing">Logging in...</span>
           <span v-else>Login</span>
         </button>
-      </div>
+      </form>
     </div>
   </div>
 </div>

@@ -11,8 +11,9 @@
 module.exports.routes = {
 
 
-  '/': { view: 'homepage' },
-  '/login': { view: 'login' },
+  'GET /': { view: 'homepage' },
+  'GET /login': { view: 'login' },
+  'PUT /login': { action: 'login' },
   'PUT /user/:username/zone': { action: 'arrive' },
   'PUT /user/:username/remark': { action: 'make-remark' },
 

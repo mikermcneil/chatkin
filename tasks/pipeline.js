@@ -69,9 +69,6 @@
    // (e.g. Lodash, jQuery, React, bootstrap.js, Ember, Angular, etc.)
    'dependencies/**/*.js',
 
-   // Load the page scripts first, then the top level stuff after that.
-   'js/page-scripts/**/*.js',
-
    // All of the rest of your custom client-side js files will be injected here,
    // in no particular order.  To customize the ordering, add additional items
    // here, _above_ this one.
