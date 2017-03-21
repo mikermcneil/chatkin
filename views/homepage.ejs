@@ -17,10 +17,10 @@
           </div>
         </div>
         <% /* if username _is_ specified */ %>
-        <div v-else class="window panel panel-default">
+        <div v-else class="window panel panel-default" id="message-window">
           <div v-if="syncingLocation" class="panel-heading">Getting location from browser...</div>
-          <div v-else-if="communicatingWithServer" class="panel-heading">Communicating with server...</div>
           <div v-else-if="errorFetchingLocation" class="panel-heading">Error fetching location.</div>
+          <div v-else-if="communicatingWithServer" class="panel-heading">Communicating with server...</div>
           <div v-else-if="username !== ''" class="panel-heading">Welcome, {{username}}!</div>
           <div v-else class="panel-heading">There was an error communicating with the server. Please refresh the page and try again.</div>
           <div class="location-info panel-body">

@@ -26,6 +26,8 @@ var homepage = new Vue({
       console.error('No username specified.  Try again w/ a username to continue.');
       return;
     }
+
+
     // Otherwise, we have a username, so attempt to fetch the location.
     console.log('getting location from browser...');
     navigator.geolocation.getCurrentPosition(function gotLocation(geoPosition){
@@ -42,7 +44,7 @@ var homepage = new Vue({
 
       // Communicate w/ server
       console.log('communicating with server...');
-      io.socket.put('/user/'+this.username+'/zone', {
+      io.socket.put('/user/'+ username +'/zone', {
         lat: geoPosition.coords.latitude,
         long: geoPosition.coords.longitude
       }, function(data, jwr){
@@ -59,14 +61,16 @@ var homepage = new Vue({
         console.log('It worked!  Now arrived in zone.');
         console.log('You can change your remark by running the following code:');
         console.log('```');
-        console.log('io.socket.put(\'/user/'+this.username+'/remark\',{remark: \'hi\'},console.log.bind(console))');
+        console.log('io.socket.put(\'/user/'+ username +'/remark\',{remark: \'hi\'},console.log.bind(console))');
         console.log('```');
 
         // When the socket connects
+        var messageWindow = document.getElementById('message-window');
         io.socket.on('zone', function(msg){
           console.log('* * Received zone notification from server with message:', msg);
-          console.log('activity:', homepage.activity);
           homepage.activity.push(msg);
+          // Autoscroll.
+          messageWindow.scrollTop = messageWindow.scrollHeight;
         });
 
         // TODO:
