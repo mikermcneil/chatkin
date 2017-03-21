@@ -61,11 +61,15 @@ var homepage = new Vue({
         console.log('io.socket.put(\'/user/'+this.username+'/remark\',{remark: \'hi\'},console.log.bind(console))');
         console.log('```');
 
+        // When the socket connects
         io.socket.on('zone', function(msg){
           console.log('* * Received zone notification from server with message:', msg);
           console.log('activity:', homepage.activity);
           homepage.activity.push(msg);
         });
+
+        // TODO:
+        // Add another message for when someone leaves a zone.
 
       });
     }, function failedToGetLocation(err) {
