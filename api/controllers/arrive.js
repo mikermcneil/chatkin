@@ -86,10 +86,9 @@ module.exports = {
           }, env.req);
 
           // See how many other people are here already.
-          User.count({ currentZone: zone.id, id: { '!=': thisUser.id } }).exec(function (err, numOtherUsers){
+          User.count({ currentZone: zone.id }).exec(function (err, numUsersHere){
             if (err) { return exits.error(err); }
-            // return exits.success(numOtherUsers);
-            return exits.success();
+            return exits.success(numUsersHere - 1);
           });
         });
       });

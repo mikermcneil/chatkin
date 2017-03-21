@@ -60,13 +60,19 @@ module.exports.sockets = {
   *                                                                          *
   ***************************************************************************/
 
-  // afterDisconnect: function(session, socket, done) {
-  //
-  //   // By default: do nothing.
-  //   // (but always trigger the callback)
-  //   return done();
-  //
-  // },
+  afterDisconnect: function(session, socket, done) {
+
+    // console.log('afterDisconnect');
+    // console.log('session:',session);
+
+    // TODO:
+    // Remove this user from the zone.
+
+    // By default: do nothing.
+    // (but always trigger the callback)
+    return done();
+
+  },
 
 
   /***************************************************************************

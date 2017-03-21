@@ -41,8 +41,16 @@ module.exports.bootstrap = function(cb) {
 
     if (numZones === xMax*yMax) {
       sails.log('Using existing zones and users.');
-      return cb();
-    }
+
+      // Since the users must already exist, clear their zones just in case the server crashed.
+      User.update({ currentZone: {'!=':null} })
+      .set({ currentZone: null })
+      .exec(function(err) {
+        if(err) { return cbb(err); }
+        return cb();
+      });//_∏_
+      return;
+    }//-•
 
     // Create a few users.
     User.createEach([
