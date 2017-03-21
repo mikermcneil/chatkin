@@ -65,12 +65,9 @@ var homepage = new Vue({
         console.log('```');
 
         // When the socket connects
-        var messageWindow = document.getElementById('message-window');
         io.socket.on('zone', function(msg){
           console.log('* * Received zone notification from server with message:', msg);
           homepage.activity.push(msg);
-          // Autoscroll.
-          messageWindow.scrollTop = messageWindow.scrollHeight;
         });
 
         // TODO:
