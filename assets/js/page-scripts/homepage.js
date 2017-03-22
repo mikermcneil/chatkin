@@ -46,6 +46,9 @@
       // Otherwise, we have a username, so attempt to fetch the location.
       // console.log('getting location from browser...');
       navigator.geolocation.getCurrentPosition(function gotLocation(geoPosition){
+
+        console.log('GEO:',geoPosition);
+
         // console.log('• got it!', geoPosition);
         // Done syncing location.
         vm.syncingLocation = false;

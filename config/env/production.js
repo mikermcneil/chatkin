@@ -335,16 +335,16 @@ module.exports = {
   ***************************************************************************/
   custom: {
 
-    // mailgunApiKey: 'key-prod_fake_bd32301385130a0bafe030c',
-    // stripeSecret: 'sk_prod__fake_Nfgh82401348jaDa3lkZ0d9Hm',
+    twitterConsumerKey: 'key-prod_fake_bd32301385130a0bafe030c',
+    twitterConsumerSecret: 'sk_prod__fake_Nfgh82401348jaDa3lkZ0d9Hm',
     //--------------------------------------------------------------------------
     // /\   OR, to avoid checking them in to version control, you might opt to
     // ||   set sensitive credentials like these using environment variables.
     //
     // For example:
     // ```
-    // sails_custom__mailgunApiKey=key-prod_fake_bd32301385130a0bafe030c
-    // sails_custom__stripeSecret=sk_prod__fake_Nfgh82401348jaDa3lkZ0d9Hm
+    // twitterConsumerKey=key-prod_fake_bd32301385130a0bafe030c
+    // twitterConsumerSecret=sk_prod__fake_Nfgh82401348jaDa3lkZ0d9Hm
     // ```
     //--------------------------------------------------------------------------
 
