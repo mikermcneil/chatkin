@@ -68,6 +68,7 @@ module.exports.sockets = {
     // TODO:
     // Remove this user from the zone.
 
+
     // By default: do nothing.
     // (but always trigger the callback)
     return done();

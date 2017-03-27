@@ -11,6 +11,8 @@ module.exports = {
 
     x: { type: 'number', required: true },
     y: { type: 'number', required: true },
+    lastCachedTweetsAt: { type: 'number' },
+    cachedTweets: { type: 'json' },
     nearbyUsers: { collection: 'User', via: 'currentZone' },
 
   },

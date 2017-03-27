@@ -22,6 +22,8 @@ module.exports = {
 
   fn: function (inputs, exits, env) {
 
+    var Twitter = require('machinepack-twitter');
+
     // latitude, longitude
     // - - - - - - - - - - - - - - - - - - - -
     // (85, -180) // top left corner of map
@@ -67,30 +69,69 @@ module.exports = {
         if (err) { return exits.error(err); }
         if (!zone) { return exits.error(new Error('Consistency violation: Expected Zone record to exist for coordinate ('+x+','+y+'), but it did not.  Are you sure the database is seeded with data?')); }
 
-        User.update()
-        .where({ username: inputs.username })
-        .set({ currentZone: zone.id })
-        .exec(function (err) {
+        (function searchTweetsMaybe(proceed){
+
+          // Use cached tweets, if possible -- as long as they're not too old.
+          var rightNow = Date.now();
+          var twoHoursAgo = rightNow - (1000*60*60*2);
+          var notTooStale = twoHoursAgo < zone.lastCachedTweetsAt;
+          if (notTooStale)  {
+            return proceed(undefined, zone.cachedTweets);
+          }
+
+          // FUTURE: Probably cache the bearer token rather than looking it up every time.
+          Twitter.getBearerToken({
+            consumerKey: sails.config.custom.twitterConsumerKey,
+            consumerSecret: sails.config.custom.twitterConsumerSecret,
+          }).exec(function(err, bearerToken) {
+            if (err) { return proceed(err); }
+
+            Twitter.searchTweets({
+              bearerToken: bearerToken,
+              latitude: inputs.lat,
+              longitude: inputs.long,
+              radius: 5
+            }).exec(function(err, matchingTweets){
+              if (err) { return proceed(err); }
+
+              // Cache tweets
+              Zone.update({ id: zone.id })
+              .set({ cachedTweets: matchingTweets, lastCachedTweetsAt: rightNow })
+              .exec(function(err) {
+                if (err) { return proceed(err); }
+                return proceed(undefined, matchingTweets);
+              });
+            });
+          });
+
+        })(function (err){
           if (err) { return exits.error(err); }
 
-          sails.log('@'+inputs.username+' arrived in zone with coordinates: ( %d, %d )', x, y);
-
-          // Subscribe to socket (RPS) notifications about this zone.
-          Zone.subscribe(env.req, [zone.id]);
-
-          // Publish this user's arrival to the new zone.
-          Zone.publish([zone.id], {
-            verb: 'userArrived',
-            username: inputs.username,
-            remark: thisUser.remark
-          }, env.req);
-
-          // See how many other people are here already.
-          User.count({ currentZone: zone.id }).exec(function (err, numUsersHere){
+          User.update()
+          .where({ username: inputs.username })
+          .set({ currentZone: zone.id })
+          .exec(function (err) {
             if (err) { return exits.error(err); }
-            return exits.success(numUsersHere - 1);
+
+            sails.log('@'+inputs.username+' arrived in zone with coordinates: ( %d, %d )', x, y);
+
+            // Subscribe to socket (RPS) notifications about this zone.
+            Zone.subscribe(env.req, [zone.id]);
+
+            // Publish this user's arrival to the new zone.
+            Zone.publish([zone.id], {
+              verb: 'userArrived',
+              username: inputs.username,
+              remark: thisUser.remark
+            }, env.req);
+
+            // See how many other people are here already.
+            User.count({ currentZone: zone.id }).exec(function (err, numUsersHere){
+              if (err) { return exits.error(err); }
+              return exits.success(numUsersHere - 1);
+            });
           });
-        });
+        });//</ self-calling function >
       });
     });
 
