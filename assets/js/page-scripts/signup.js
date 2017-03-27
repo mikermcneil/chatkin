@@ -14,11 +14,13 @@
     data: {
       isSyncing: false,
       username: '',
-      password: ''
+      password: '',
+      usernameTaken: false
     },
 
     methods: {
       submitSignupForm: function() {
+        vm.usernameTaken = false;
         vm.isSyncing = true;
         io.socket.put('/signup', {
           username: vm.username,
@@ -28,7 +30,7 @@
           if(jwr.error) {
             switch(jwr.headers['x-exit']) {
               case 'emailAlreadyInUse':
-                // TODO: show error message saying that username is taken
+                vm.usernameTaken = true;
                 return;
               default:
                 console.error('Server responded with an error.  (Please refresh the page and try again.)');
@@ -38,7 +40,7 @@
             }
           }//-*
 
-          window.location = '/';
+         window.location = '/?'+vm.username;
 
 
         });

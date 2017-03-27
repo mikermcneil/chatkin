@@ -12,21 +12,25 @@
     el: '#'+PAGE_NAME,
 
     data: {
-      isSyncing: false
+      isSyncing: false,
+      username: '',
+      password: '',
+      invalidCredentials: false
     },
 
     methods: {
       submitLoginForm: function() {
+        vm.invalidCredentials = false;
         vm.isSyncing = true;
         io.socket.put('/login', {
-          username: 'todo',
-          password: 'todo',
+          username: vm.username,
+          password: vm.password,
         }, function(data, jwr) {
           vm.isSyncing = false;
           if(jwr.error) {
             switch(jwr.headers['x-exit']) {
               case 'notFound':
-                // TODO: show error message saying the credentials are invalid
+                vm.invalidCredentials = true;
                 return;
               default:
                 console.error('Server responded with an error.  (Please refresh the page and try again.)');
@@ -36,7 +40,7 @@
             }
           }//-*
 
-          window.location = '/';
+          window.location = '/?'+vm.username;
 
 
         });

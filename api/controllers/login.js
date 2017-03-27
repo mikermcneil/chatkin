@@ -14,7 +14,10 @@ module.exports = {
 
 
   exits: {
-    notFound: { description: 'The provided username and password combination doesn\'t match any known user.', statusCode: 404 }
+    notFound: {
+      statusCode: 404,
+      description: 'The provided username and password combination doesn\'t match any known user.'
+    }
   },
 
 
@@ -40,9 +43,7 @@ module.exports = {
         encryptedPassword: userRecord.password
       })
       .exec({
-        error: function(err) {
-          return exits.error(err);
-        },
+        error: function(err) { return exits.error(err); },
         incorrect: function () {
           // If the password doesn't match, then also
           // exit thru "notFound" to prevent sniffing.
