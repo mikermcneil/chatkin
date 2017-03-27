@@ -52,37 +52,26 @@ module.exports.bootstrap = function(cb) {
       return;
     }//-•
 
-    // Create a few users.
-    User.createEach([
-      { username: 'rachaelshaw' },
-      { username: 'irlnathan' },
-      { username: 'particlebanana' },
-      { username: 'sgress454' },
-      { username: 'mikermcneil' }
-    ]).exec(function(err) {
-      if (err) { return cb(err); }
-
-      // Build a representation of all 61,200 zones.
-      sails.log('Building %d zones...', xMax*yMax);
-      var zones = [];
-      for (var x=0; x<xMax; x++) {
-        for (var y=0; y<yMax; y++) {
-          zones.push({ x: x, y: y });
-        }
+    // Build a representation of all 61,200 zones.
+    sails.log('Building %d zones...', xMax*yMax);
+    var zones = [];
+    for (var x=0; x<xMax; x++) {
+      for (var y=0; y<yMax; y++) {
+        zones.push({ x: x, y: y });
       }
+    }
 
-      // Save new zones to the database.
-      sails.log('Persisting %d zones...', xMax*yMax);
-      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-      // Note: PostgreSQL only allows up to ~15,000 records to be created in a single createEach.
-      // > If you need to work around that, file an issue in `pg`, import the initial data manually,
-      // > or write up a workaround that splits this up into separate queries instead of one.
-      // > (For help, visit https://sailsjs.com/support)
-      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-      Zone.createEach(zones).exec(function(err) {
-        if (err) { return cb(err); }
-        return cb();
-      });
+    // Save new zones to the database.
+    sails.log('Persisting %d zones...', xMax*yMax);
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // Note: PostgreSQL only allows up to ~15,000 records to be created in a single createEach.
+    // > If you need to work around that, file an issue in `pg`, import the initial data manually,
+    // > or write up a workaround that splits this up into separate queries instead of one.
+    // > (For help, visit https://sailsjs.com/support)
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    Zone.createEach(zones).exec(function(err) {
+      if (err) { return cb(err); }
+      return cb();
     });
   });
 
