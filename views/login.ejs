@@ -5,16 +5,20 @@
       <form class="form" v-on:submit.prevent="submitLoginForm">
         <div class="form-group">
           <label for="login_username">Username</label>
-          <input class="form-control input-lg" id="login_username" type="text">
+          <input class="form-control input-lg" id="login_username" type="text" v-model="username">
         </div>
         <div class="form-group">
           <label for="login_password">Password</label>
-          <input class="form-control input-lg" id="login_password" type="password">
+          <input class="form-control input-lg" id="login_password" type="password" v-model="password">
+        </div>
+        <div v-if="invalidCredentials">
+          <p>The username or password for you entered was incorrect. Please try again.</p>
         </div>
         <button class="btn btn-lg btn-block btn-primary" type="submit">
           <span v-if="isSyncing">Logging in...</span>
           <span v-else>Login</span>
         </button>
+        <p class="text-center">Need an account? <a href="/signup">Sign up</a>.</p>
       </form>
     </div>
   </div>

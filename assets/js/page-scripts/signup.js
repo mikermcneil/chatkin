@@ -1,13 +1,13 @@
 (function (){
 
-  var PAGE_NAME = 'login';
+  var PAGE_NAME = 'signup';
 
 
   // Bail if this file isn't applicable.
   if (!document.getElementById(PAGE_NAME)) { return; }
 
 
-  // Set up the Vue instance for our login page
+  // Set up the Vue instance for our signup page
   var vm = new Vue({
     el: '#'+PAGE_NAME,
 
@@ -15,22 +15,22 @@
       isSyncing: false,
       username: '',
       password: '',
-      invalidCredentials: false
+      usernameTaken: false
     },
 
     methods: {
-      submitLoginForm: function() {
-        vm.invalidCredentials = false;
+      submitSignupForm: function() {
+        vm.usernameTaken = false;
         vm.isSyncing = true;
-        io.socket.put('/login', {
+        io.socket.put('/signup', {
           username: vm.username,
           password: vm.password,
         }, function(data, jwr) {
           vm.isSyncing = false;
           if(jwr.error) {
             switch(jwr.headers['x-exit']) {
-              case 'notFound':
-                vm.invalidCredentials = true;
+              case 'emailAlreadyInUse':
+                vm.usernameTaken = true;
                 return;
               default:
                 console.error('Server responded with an error.  (Please refresh the page and try again.)');
@@ -40,7 +40,7 @@
             }
           }//-*
 
-          window.location = '/?'+vm.username;
+         window.location = '/?'+vm.username;
 
 
         });

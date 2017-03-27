@@ -52,8 +52,7 @@
     <div v-if="username !== ''" class="form">
       <div class="well">
         <div class="container">
-          <textarea v-model="message" class="form-control" placeholder="Update your message here.">{{ message }}</textarea>
-          <button v-on:click="updateRemark()" class="btn btn-lg btn-primary btn-block">Update</button>
+          <input v-model="message" v-on:keyup.enter="updateRemark" type="text" class="form-control input-lg" placeholder="Update your message here.">
         </div>
       </div>
     </div>
