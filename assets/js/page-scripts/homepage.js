@@ -4,14 +4,9 @@
 
 
   // Bail if this file isn't applicable.
-  if (!document.getElementById(PAGE_NAME)) { return; }
+  if ($('#'+PAGE_NAME).length === 0) { return; }
 
-
-  // Come up with a username
-  var username = window.location.search.replace(/^\?/, '');
-  // TODO: remove hack ^^
-  //
-
+  var username = $('#main-content').attr('data-logged-in-user');
 
 
   // Set up the Vue instance for our homepage
@@ -55,7 +50,7 @@
         vm.communicatingWithServer = true;
 
         // Display map
-        var $map = document.getElementById('map');
+        var $map = $('#map');
         var mapImg = new Image();
         mapImg.src = 'https://maps.googleapis.com/maps/api/staticmap?center=' + geoPosition.coords.latitude + ',' + geoPosition.coords.longitude + '&zoom=13&size=200x200&sensor=false';
         $map.appendChild(mapImg);
@@ -70,6 +65,7 @@
             console.error('Server responded with an error.  (Please refresh the page and try again.)');
             console.error('Error details:');
             console.error(jwr.error);
+            vm.communicatingWithServer = false;
             return;
           }//-•
 

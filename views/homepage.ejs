@@ -1,7 +1,7 @@
 <div id="homepage">
-  <div id="main-content">
+  <div id="main-content" data-logged-in-user="<%= username %>">
     <div class="container">
-      <div v-else class="window panel panel-default" id="message-window">
+      <div class="window panel panel-default" id="message-window">
         <div v-if="syncingLocation" class="panel-heading">Getting location from browser...</div>
         <div v-else-if="errorFetchingLocation" class="panel-heading">Error fetching location.</div>
         <div v-else-if="communicatingWithServer" class="panel-heading">Communicating with server...</div>
@@ -9,7 +9,6 @@
           <span v-if="numOthersInZone === 0">You are the only one here.</span>
           <span v-else>There {{numOthersInZone === 1 ? 'is' : 'are'}} {{numOthersInZone}} other {{numOthersInZone === 1 ? 'person' : 'people'}}  here.</span>
         </div>
-        <div v-else class="panel-heading">There was an error communicating with the server. Please refresh the page and try again.</div>
         <div class="location-info panel-body">
           <div id="activity">
             <template v-for="notification in activity">

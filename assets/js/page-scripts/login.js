@@ -4,7 +4,7 @@
 
 
   // Bail if this file isn't applicable.
-  if (!document.getElementById(PAGE_NAME)) { return; }
+  if ($('#'+PAGE_NAME).length === 0) { return; }
 
 
   // Set up the Vue instance for our login page
