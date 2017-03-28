@@ -11,6 +11,13 @@
           <label for="signup_password">Password</label>
           <input class="form-control input-lg" id="signup_password" type="password" v-model="password">
         </div>
+        <div class="form-group">
+          <label for="signup_password-confirmation">Confirm password</label>
+          <input class="form-control input-lg" id="signup_password-confirmation" type="password" v-model="passwordConfirmation">
+        </div>
+        <div v-if="passwordMatchError">
+          <p>Your password confirmation doesn't match the password you entered.</p>
+        </div>
         <div v-if="usernameTaken">
           <p>That username is already taken. Please try another.</p>
         </div>

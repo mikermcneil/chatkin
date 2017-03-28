@@ -15,13 +15,23 @@
       isSyncing: false,
       username: '',
       password: '',
-      usernameTaken: false
+      passwordConfirmation: '',
+      usernameTaken: false,
+      passwordMatchError: false
     },
 
     methods: {
       submitSignupForm: function() {
         vm.usernameTaken = false;
+        vm.passwordMatchError = false;
         vm.isSyncing = true;
+
+        if(vm.password !== vm.passwordConfirmation) {
+          vm.isSyncing = false;
+          vm.passwordMatchError = true;
+          return;
+        }
+
         io.socket.put('/signup', {
           username: vm.username,
           password: vm.password,
