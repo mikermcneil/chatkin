@@ -11,7 +11,7 @@
 module.exports.routes = {
 
 
-  'GET /': { view: 'homepage' },
+  'GET /': { action: 'homepage' },
   'GET /login': { view: 'login' },
   'GET /signup': { view: 'signup' },
   'PUT /login': { action: 'login' },
