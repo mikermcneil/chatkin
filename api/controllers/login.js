@@ -23,7 +23,7 @@ module.exports = {
 
   fn: function (inputs, exits, env) {
 
-    var stdlib = require('sails-stdlib');
+    var passwords = require('machinepack-passwords');
 
     // Find the user record with the provided `username`
     User.findOne({
@@ -38,7 +38,7 @@ module.exports = {
 
       // Otherwise, we have a user record,
       // so verify the password that was entered.
-      stdlib('passwords').checkPassword({
+      passwords.checkPassword({
         passwordAttempt: inputs.password,
         encryptedPassword: userRecord.password
       })

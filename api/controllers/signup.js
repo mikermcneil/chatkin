@@ -30,10 +30,10 @@ module.exports = {
   },
 
   fn: function(inputs, exits, env) {
-    var stdlib = require('sails-stdlib');
+    var passwords = require('machinepack-passwords');
 
     // Encrypt the password
-    stdlib('passwords').encryptPassword({
+    passwords.encryptPassword({
       password: inputs.password
     })
     .exec(function(err, hashedPassword) {
@@ -63,7 +63,7 @@ module.exports = {
         return exits.success();
 
       });// </ User.create().exec() >
-    });// </ stdlib('passwords').encryptPassword().exec() >
+    });// </ passwords.encryptPassword().exec() >
 
   }
 

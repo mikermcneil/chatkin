@@ -40,7 +40,7 @@
             }
           }//-*
 
-         window.location = '/?'+vm.username;
+         window.location = '/';
 
 
         });
