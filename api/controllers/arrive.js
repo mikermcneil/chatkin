@@ -122,7 +122,8 @@ module.exports = {
             Zone.publish([zone.id], {
               verb: 'userArrived',
               username: inputs.username,
-              remark: thisUser.remark
+              remark: thisUser.remark,
+              avatarColor: thisUser.avatarColor
             }, env.req);
 
             // See how many other people are here already.

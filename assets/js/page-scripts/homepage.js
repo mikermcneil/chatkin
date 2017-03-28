@@ -18,11 +18,13 @@
     data: {
       activity: [],
       username: username,
+      skinTone: '',
       message: '',
       numOthersInZone: null,
       syncingLocation: true,
       communicatingWithServer: false,
-      errorFetchingLocation: false
+      errorFetchingLocation: false,
+      arrived: false
     },
 
 
@@ -71,6 +73,7 @@
           vm.numOthersInZone = data;
 
           vm.communicatingWithServer = false;
+          vm.arrived = true;
           console.log('It worked!  Now arrived in zone.');
           console.log('You can change your remark by running the following code:');
           console.log('```');

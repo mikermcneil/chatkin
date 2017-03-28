@@ -14,16 +14,16 @@
             <template v-for="notification in activity">
               <% /* if the activity is an entrance */ %>
               <template v-if="notification.verb === 'userArrived'">
-                <p><strong>{{notification.username}}</strong> has arrived.</p>
-                <p v-if="notification.remark !== ''"><strong>{{notification.username}} says:</strong> {{notification.remark}}</p>
+                <p><i class="chatkin-icon icon-logo-chatkin" :style="{color: notification.avatarColor}"></i> <strong>{{notification.username}}</strong> has arrived.</p>
+                <p v-if="notification.remark !== ''"><i class="chatkin-icon icon-logo-chatkin" :style="{color: notification.avatarColor}"></i><strong>{{notification.username}}:</strong> {{notification.remark}}</p>
               </template>
               <% /* if the activity is a remark from someone else */%>
               <template v-if="notification.verb === 'userRemarked'">
-                <p><strong>{{notification.username}} says:</strong> {{notification.remark}}</p>
+                <p><i class="chatkin-icon icon-logo-chatkin" :style="{color: notification.avatarColor}"></i><strong>{{notification.username}} says:</strong> {{notification.remark}}</p>
               </template>
               <% /* if the activity is YOUR remark */%>
               <template v-if="notification.verb === 'updatedMyRemark'">
-                <p><strong>You say:</strong> {{notification.remark}}</p>
+                <p><i class="chatkin-icon icon-logo-chatkin" :style="{color: notification.avatarColor}"></i><strong>You say:</strong> {{notification.remark}}</p>
               </template>
             </template>
           </div>
@@ -35,7 +35,13 @@
   <div class="form">
     <div class="well">
       <div class="container">
-        <input v-model="message" v-on:keyup.enter="updateRemark" type="text" class="form-control input-lg" placeholder="Update your message here." value="<%= remark %>">
+        <input v-model="message"
+          v-bind:disabled="(syncingLocation || errorFetchingLocation || communicatingWithServer)"
+          v-on:keyup.enter="updateRemark"
+          type="text"
+          class="form-control input-lg"
+          placeholder="Add a message!"
+          value="<%= remark %>">
       </div>
     </div>
   </div>

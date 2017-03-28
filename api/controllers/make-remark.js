@@ -35,7 +35,8 @@ module.exports = {
       Zone.publish([thisUser.currentZone], {
         verb: 'userRemarked',
         username: inputs.username,
-        remark: thisUser.remark
+        remark: thisUser.remark,
+        avatarColor: thisUser.avatarColor
       }, env.req);
 
       return exits.success();

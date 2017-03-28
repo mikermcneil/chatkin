@@ -11,6 +11,7 @@ module.exports = {
 
     username: { type: 'string', unique: true, required: true },
     password: { type: 'string', required: true },
+    avatarColor: { type: 'string', required: true },
     remark: { type: 'string' },
     currentZone: { model: 'Zone' },
 

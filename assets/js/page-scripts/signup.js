@@ -6,6 +6,11 @@
   // Bail if this file isn't applicable.
   if ($('#'+PAGE_NAME).length === 0) { return; }
 
+  // Get the initial randomized avatar color.
+  var startingRed = (Math.floor(Math.random()*255));
+  var startingGreen = (Math.floor(Math.random()*255));
+  var startingBlue = (Math.floor(Math.random()*255));
+  var startingColor = 'rgb('+startingRed+','+startingGreen+','+startingBlue+')';
 
   // Set up the Vue instance for our signup page
   var vm = new Vue({
@@ -17,10 +22,19 @@
       password: '',
       passwordConfirmation: '',
       usernameTaken: false,
-      passwordMatchError: false
+      passwordMatchError: false,
+      randomizedColor: startingColor
     },
 
     methods: {
+      changeColor: function() {
+        var red = (Math.floor(Math.random()*255));
+        var green = (Math.floor(Math.random()*255));
+        var blue = (Math.floor(Math.random()*255));
+
+        vm.randomizedColor = 'rgb('+red+','+green+','+blue+')';
+      },
+
       submitSignupForm: function() {
         vm.usernameTaken = false;
         vm.passwordMatchError = false;
@@ -32,9 +46,11 @@
           return;
         }
 
+
         io.socket.put('/signup', {
           username: vm.username,
           password: vm.password,
+          avatarColor: vm.randomizedColor
         }, function(data, jwr) {
           vm.isSyncing = false;
           if(jwr.error) {

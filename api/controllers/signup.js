@@ -17,6 +17,12 @@ module.exports = {
       description: 'The unencrypted password to use for the new account.',
       example: 'password123',
       required: true
+    },
+
+    avatarColor: {
+      description: 'The avatar color for the new user.',
+      example: 'rgb(131,202,185)',
+      required: true
     }
 
   },
@@ -42,7 +48,8 @@ module.exports = {
       // Try to create a user record.
       User.create({
         username: inputs.username,
-        password: hashedPassword
+        password: hashedPassword,
+        avatarColor: inputs.avatarColor
       })
       .meta({ fetch: true })
       .exec(function(err, newUserRecord) {
