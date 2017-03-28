@@ -11,6 +11,10 @@
 
 module.exports.bootstrap = function(cb) {
 
+  if(process.version.match(/^v0\./)) {
+    return cb(new Error('This example app should be run with node version 4.x or above. (You are using '+process.version+')'));
+  }
+
   sails.config.custom = sails.config.custom || {};
   sails.config.custom.numZonesPerDegreeSquare = sails.config.custom.numZonesPerDegreeSquare || 1;
   sails.config.custom.numZonesPerDegreeSquare = Math.floor(sails.config.custom.numZonesPerDegreeSquare);
