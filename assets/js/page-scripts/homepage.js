@@ -50,10 +50,8 @@
         vm.communicatingWithServer = true;
 
         // Display map
-        var $map = $('#map');
-        var mapImg = new Image();
-        mapImg.src = 'https://maps.googleapis.com/maps/api/staticmap?center=' + geoPosition.coords.latitude + ',' + geoPosition.coords.longitude + '&zoom=13&size=200x200&sensor=false';
-        $map.appendChild(mapImg);
+        var $mapImg = $('<img src="https://maps.googleapis.com/maps/api/staticmap?center=' + geoPosition.coords.latitude + ',' + geoPosition.coords.longitude + '&zoom=13&size=200x200&sensor=false"/>');
+        $('#map').append($mapImg);
 
         // Communicate w/ server
         // console.log('communicating with server...');
