@@ -75,7 +75,7 @@ module.exports = {
 
           // Use cached weather, if possible -- as long as it's not too old.
           var rightNow = Date.now();
-          var fourHoursAgo = rightNow - (1000*60*60*2);
+          var fourHoursAgo = rightNow - (1000*60*60*4);
           var notTooStale = fourHoursAgo < zone.lastCachedWeatherAt;
           if (notTooStale)  {
             return proceed();
@@ -93,11 +93,18 @@ module.exports = {
             .set({ cachedWeather: weather, lastCachedWeatherAt: rightNow })
             .exec(function(err) {
               if (err) { return proceed(err); }
+
+              // Stick the newly-fetched weather on our zone record
+              // so we have it in the same format as if it was already
+              // cached beforehand; just in case we want it that way
+              // below.  (Makes it easier to think about.)
+              zone.cachedWeather = weather;
+
               return proceed();
             });
           });
 
-        })(function afterCachingWeather(err, weather){
+        })(function afterCachingWeather(err){
           if (err) { return exits.error(err); }
 
           // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -134,6 +141,13 @@ module.exports = {
                 .set({ cachedTweets: matchingTweets, lastCachedTweetsAt: rightNow })
                 .exec(function(err) {
                   if (err) { return proceed(err); }
+
+                  // Stick the newly-fetched tweets on our zone record
+                  // so we have it in the same format as if it was already
+                  // cached beforehand; just in case we want it that way
+                  // below.  (Makes it easier to think about.)
+                  zone.cachedTweets = matchingTweets;
+
                   return proceed();
                 });
               });
@@ -167,7 +181,7 @@ module.exports = {
                 return exits.success({
                   id: zone.id,
                   numOtherUsersHere: numUsersHere - 1,
-                  weather: zone.weather
+                  weather: zone.cachedWeather
                   //TODO: include list of users in this zone with their statuses (can just change this .count() to a .find() -- or better yet do .populate() back up top)
                 });
               });

@@ -75,6 +75,7 @@
           vm.communicatingWithServer = false;
           vm.arrived = true;
           console.log('It worked!  Now arrived in zone.');
+          console.log('The weather in this zone is:',data.weather);
           console.log('You can change your remark by running the following code:');
           console.log('```');
           console.log('io.socket.put(\'/user/'+ username +'/remark\',{remark: \'hi\'},console.log.bind(console))');
@@ -83,6 +84,7 @@
           // Display map
           var $mapImg = $('<img src="https://maps.googleapis.com/maps/api/staticmap?center=' + geoPosition.coords.latitude + ',' + geoPosition.coords.longitude + '&zoom=7&size=200x200&sensor=false"/>');
           $('#map').append($mapImg);
+
 
           // When the socket connects
           io.socket.on('zone', function(msg){
