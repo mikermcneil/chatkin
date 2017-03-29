@@ -18,13 +18,14 @@
     data: {
       activity: [],
       username: username,
-      skinTone: '',
+      avatarColor: '',
       message: '',
+      currentZone: null,
       numOthersInZone: null,
       syncingLocation: true,
       communicatingWithServer: false,
       errorFetchingLocation: false,
-      arrived: false
+      zoneDetailsVisible: false
     },
 
 
@@ -51,10 +52,6 @@
         vm.syncingLocation = false;
         vm.communicatingWithServer = true;
 
-        // Display map
-        var $mapImg = $('<img src="https://maps.googleapis.com/maps/api/staticmap?center=' + geoPosition.coords.latitude + ',' + geoPosition.coords.longitude + '&zoom=13&size=200x200&sensor=false"/>');
-        $('#map').append($mapImg);
-
         // Communicate w/ server
         // console.log('communicating with server...');
         io.socket.put('/user/'+ username +'/zone', {
@@ -69,8 +66,10 @@
             return;
           }//-•
 
-          console.log('There are '+data+' other people here.');
-          vm.numOthersInZone = data;
+          console.log('There are '+data.numOtherUsersHere+' other people here.');
+          vm.numOthersInZone = data.numOtherUsersHere;
+          vm.currentZone = data.id;
+          console.log('currentZone',vm.currentZone);
 
           vm.communicatingWithServer = false;
           vm.arrived = true;
@@ -79,6 +78,10 @@
           console.log('```');
           console.log('io.socket.put(\'/user/'+ username +'/remark\',{remark: \'hi\'},console.log.bind(console))');
           console.log('```');
+
+          // Display map
+          var $mapImg = $('<img src="https://maps.googleapis.com/maps/api/staticmap?center=' + data.lat + ',' + data.long + '&zoom=7&size=200x200&sensor=false"/>');
+          $('#map').append($mapImg);
 
           // When the socket connects
           io.socket.on('zone', function(msg){
@@ -130,6 +133,18 @@
           });
         }
       },//</updateRemark>
+
+      focusHiddenInput: function() {
+        // If the zone info is still loading, or if we weren't able to get the location, bail.
+        if(vm.syncingLocation || vm.communicatingWithServer || vm.errorFetchingLocation) {
+          console.log('still loading!!!');
+          return;
+        }
+
+        // Otherwise, we have zone info, so focus the hidden input
+        // to show the information.
+        $('#zone-details-hidden-input').focus();
+      },
     }//</methods>
   });
 

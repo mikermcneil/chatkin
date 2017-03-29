@@ -3,8 +3,8 @@
 @z-form: 100;
 
 // height/width variables
-@form-height: 85px;
-@topbar-height: 60px;
+@form-height: 70px;
+@topbar-height: 50px;
 
 // homepage styles
 #homepage {
@@ -15,37 +15,119 @@
     height: 100%;
     width: 100%;
     padding-bottom: @form-height + @topbar-height + 25;
+    background-color: #fff;
 
-    .topbar-logo {
-      font-family: 'Comfortaa', 'Lato', 'Helvetica', Arial, sans-serif;
-      position: relative;
-      top: -4px;
-      color: @brand-chatkin;
-      i {
-        font-size: 24px;
+    .topbar {
+      height: @topbar-height;
+      background-color: @accent-blue;
+      padding-top: 10px;
+      .branding {
+        font-family: @header-font;
+        font-weight: 700;
         position: relative;
-        top: 5px;
+        top: -4px;
+        color: #fff;
+        position: relative;
+        font-size: 24px;
+        i {
+          color: @brand-chatkin;
+          font-size: 30px;
+          position: relative;
+          top: 5px;
+          z-index: 100;
+        }
+        .logo-bg {
+          width: 22px;
+          height: 20px;
+          background-color: #fff;
+          position: absolute;
+          left: 4px;
+          top: 1px;
+          z-index: 10;
+        }
       }
-      &:hover {
-        color: darken(@brand-chatkin, 10%);
+
+      .zone-info {
+        display: inline-block;
+        float: right;
+        padding-top: 2px;
+        position: relative;
+        overflow: visible;
+        z-index: 200;
+        .zone-name {
+          color: #fff;
+          font-family: @header-font;
+          font-size: 15px;
+          position: relative;
+          top: -4px;
+          text-transform: uppercase;
+        }
+        >i {
+          color: #fff;
+          font-size: 24px;
+          cursor: pointer;
+          &:hover {
+            color: @accent-lt-blue;
+          }
+          &.disabled {
+            cursor: default;
+            &:hover {
+              color: #fff;
+            }
+          }
+        }
+        .offscreen {
+          position: absolute;
+          right: -9999px;
+        }
+        .zone-details {
+          border-radius: 7px;
+          background-color: rgba(255,255,255,0.9);
+          border: 1px solid @border-gray;
+          position: absolute;
+          right: 0px;
+          top: 30px;
+          padding-top: 10px;
+          padding-bottom: 10px;
+          padding-left: 10px;
+          padding-right: 10px;
+          opacity: 0;
+          pointer-events: none;
+          #map {
+            width: 200px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 5px;
+            background-color: lighten(#ebebeb, 5%);
+          }
+          &.visible {
+            opacity: 1;
+          }
+        }
       }
     }
+
     .container {
       height: 100%;
       .window {
         height: 100%;
-        overflow: auto;
-        .location-info {
-          padding-right: 240px;
-          min-height: 240px;
-          position: relative;
-          #map {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            width: 200px;
-            height: 200px;
-            background-color: lighten(#ebebeb, 5%);
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        .syncing-box {
+          width: 100%;
+          max-width: 300px;
+          text-align: center;
+          margin-left: auto;
+          margin-right: auto;
+          margin-top: 100px;
+          .chat-buddy {
+            font-size: 40px;
+            color: @brand-chatkin;
+            position: relative;
+          }
+          .loading-message {
+            color: @accent-blue;
           }
         }
       }
@@ -58,14 +140,8 @@
     width: 100%;
     bottom: 0px;
     left: 0px;
-    .well {
-      height: 100%;
-      border-bottom-left-radius: 0px;
-      border-bottom-right-radius: 0px;
-      textarea {
-        height: 80px;
-        margin-bottom: 20px;
-      }
-    }
+    background-color: @accent-lt-blue;
+    border-top: 1px solid @border-gray;
+    padding-top: 10px;
   }
 }

@@ -15,7 +15,7 @@ module.exports = {
 
 
   exits: {
-    success: { description: 'It worked.', outputFriendlyName: 'Num other people here', outputExample: 3 },
+    success: { description: 'It worked.', outputFriendlyName: 'Num other people here', outputExample: {} },
     userNotFound: { description: 'No such user.', statusCode: 400 }
   },
 
@@ -129,7 +129,12 @@ module.exports = {
             // See how many other people are here already.
             User.count({ currentZone: zone.id }).exec(function (err, numUsersHere){
               if (err) { return exits.error(err); }
-              return exits.success(numUsersHere - 1);
+              return exits.success({
+                id: zone.id,
+                numOtherUsersHere: numUsersHere - 1,
+                lat: inputs.lat,
+                long: inputs.long
+              });
             });
           });
         });//</ self-calling function >
