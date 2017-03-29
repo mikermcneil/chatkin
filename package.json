@@ -1,5 +1,5 @@
 {
-  "name": "inabottle",
+  "name": "chatkin",
   "private": true,
   "version": "0.0.0",
   "description": "a Sails application",
@@ -25,8 +25,8 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/sailshq/inabottle.git"
+    "url": "git://github.com/sailshq/chatkin.git"
   },
-  "author": "mikermcneil",
+  "author": "Rachael Shaw and Mike McNeil",
   "license": "MIT"
 }

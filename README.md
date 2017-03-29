@@ -1,4 +1,4 @@
-# inabottle
+# chatkin3
 
 a [Sails](http://sailsjs.com) application
 

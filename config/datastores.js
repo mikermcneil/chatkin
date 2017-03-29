@@ -19,7 +19,7 @@ module.exports.datastores = {
     //adapter: 'sails-mysql',// OK
     //adapter: 'sails-postgresql',// OK
     // adapter: 'sails-mongo',// OK
-    // url: 'localhost/inabottle',
+    // url: 'localhost/chatkin',
   },
 
 
