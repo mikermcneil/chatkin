@@ -8,13 +8,14 @@
     "async": "2.0.1",
     "grunt": "1.0.1",
     "lodash": "3.10.1",
+    "machinepack-openweather": "^1.0.0",
+    "machinepack-passwords": "^2.3.0",
     "sails": "^1.0.0-31",
     "sails-hook-grunt": "^1.0.4",
     "sails-hook-orm": "^2.0.0-0",
     "sails-hook-sockets": "^1.0.1",
     "sails-mongo": "^1.0.0-5",
     "sails-mysql": "^1.0.0-10",
-    "machinepack-passwords": "^2.3.0",
     "sails-postgresql": "^1.0.0-10"
   },
   "scripts": {
