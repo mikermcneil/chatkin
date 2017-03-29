@@ -121,7 +121,8 @@ module.exports = {
               return proceed();
             }
 
-            // FUTURE: Probably cache the bearer token rather than looking it up every time.
+            // FUTURE: Probably temporarily cache the bearer token, rather than looking it up every time.
+            // (But note that it expires)
             Twitter.getBearerToken({
               consumerKey: sails.config.custom.twitterConsumerKey,
               consumerSecret: sails.config.custom.twitterConsumerSecret,
