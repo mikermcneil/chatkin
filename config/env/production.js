@@ -65,8 +65,6 @@ module.exports = {
 
   models: {
 
-    datastore: 'default',
-
     /**************************************************************************
     *                                                                         *
     * To help avoid accidents, Sails automatically sets the automigration     *
@@ -223,6 +221,8 @@ module.exports = {
     ***************************************************************************/
     onlyAllowOrigins: [
       'http://localhost:1337',
+      'https://chatkin.herokuapp.com',
+      'https://chatkin.com',
     ],
 
 
