@@ -45,7 +45,7 @@
       </div>
     </div>
   </div>
-  <div class="form">
+  <div class="form" v-if="!(syncingLocation || errorFetchingLocation || communicatingWithServer)" v-on:click="enableMessageField">
     <div class="container">
       <div class="avatar" :class="editingMessage ? 'hovering' : ''">
         <!-- <i class="chatkin-icon icon-logo-chatkin" style="color: <%= avatarColor %>"></i> -->
@@ -53,15 +53,15 @@
       </div>
       <input id="update-remark-field"
         v-model="message"
-        v-bind:disabled="(syncingLocation || errorFetchingLocation || communicatingWithServer || !editingMessage)"
+        v-bind:disabled="!editingMessage"
         v-on:keyup.enter="updateRemark"
         type="text"
         class="form-control input-lg"
         :class="!editingMessage ? 'disabled' : ''"
-        placeholder="Add a message!"/>
-        <span class="edit-btn" v-if="!editingMessage" v-on:click="enableMessageField">
+        :placeholder="editingMessage ? '' : 'Click to add a message.'"/>
+        <!-- <span class="edit-btn" v-if="!editingMessage" v-on:click="enableMessageField">
           <i class="chatkin-icon icon-pencil"></i>
-        </span>
+        </span> -->
     </div>
   </div>
 </div>

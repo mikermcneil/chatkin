@@ -150,22 +150,20 @@
 
     methods: {
       updateRemark: function() {
-        if(vm.message !== '') {
-          io.socket.put('/user/'+vm.username+'/remark', {
-            remark: vm.message
-          }, function(data, jwr) {
-            if (jwr.error) {
-              console.error('Server responded with an error.  (Please refresh the page and try again.)');
-              console.error('Error details:');
-              console.error(jwr.error);
-              return;
-            }//-•
+        io.socket.put('/user/'+vm.username+'/remark', {
+          remark: vm.message
+        }, function(data, jwr) {
+          if (jwr.error) {
+            console.error('Server responded with an error.  (Please refresh the page and try again.)');
+            console.error('Error details:');
+            console.error(jwr.error);
+            return;
+          }//-•
 
-            // Update my remark in the UI.
-            $('#my-remark').text(vm.message);
-            vm.editingMessage = false;
-          });
-        }
+          // Update my remark in the UI.
+          $('#my-remark').text(vm.message);
+          vm.editingMessage = false;
+        });
       },//</updateRemark>
 
       focusHiddenInput: function() {
