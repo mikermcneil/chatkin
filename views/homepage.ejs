@@ -9,7 +9,7 @@
           <div class="logo-bg"></div>
         </span>
         <span class="zone-info">
-          <span class="zone-name" v-if="currentZone">#{{currentZone}}</span>
+          <!-- <span class="zone-name" v-if="currentZone">#{{currentZone}}</span> -->
           <i class="chatkin-icon icon-location" v-on:click="focusHiddenInput" v-if="currentZone"></i>
           <input type="text" id="zone-details-hidden-input" class="offscreen" v-on:focus="zoneDetailsVisible = true" v-on:blur="zoneDetailsVisible = false" placeholder="Focusing this input shows the zone details."/>
           <div class="zone-details" v-bind:class="zoneDetailsVisible ? 'visible' : ''">
@@ -32,12 +32,6 @@
           <div v-else-if="communicatingWithServer" class="loading-message">Communicating with server...</div>
         </div>
         <div class="activity" v-else>
-          <!-- <div class="remark special">
-            <div class="avatar">
-              <i class="chatkin-icon icon-logo-chatkin" style="color: <%= avatarColor %>"></i>
-            </div>
-            <p id="my-remark"><%= remark %></p>
-          </div> -->
           <template v-for="user in otherUsersHere">
             <div class="remark">
               <div class="avatar">
