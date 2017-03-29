@@ -22,6 +22,7 @@
       submitLoginForm: function() {
         vm.invalidCredentials = false;
         vm.isSyncing = true;
+
         io.socket.put('/login', {
           username: vm.username,
           password: vm.password,
