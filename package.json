@@ -8,7 +8,7 @@
     "async": "2.0.1",
     "grunt": "1.0.1",
     "lodash": "3.10.1",
-    "machinepack-openweather": "irlnathan/machinepack-openweather#v2.0.0",
+    "machinepack-openweather": "irlnathan/machinepack-openweather#v2.0.1",
     "machinepack-passwords": "^2.3.0",
     "sails": "^1.0.0-31",
     "sails-hook-grunt": "^1.0.4",
