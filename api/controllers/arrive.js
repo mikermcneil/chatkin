@@ -112,47 +112,50 @@ module.exports = {
           // use `async.auto` to fetch the weather and search tweets simultaneously.
           // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
           (function cacheTweetsMaybe(proceed){
+
+            // Use cached tweets, if possible -- as long as they're not too old.
+            var rightNow = Date.now();
+            var twoHoursAgo = rightNow - (1000*60*60*2);
+            var notTooStale = twoHoursAgo < zone.lastCachedTweetsAt;
+            if (notTooStale)  {
               return proceed();
+            }
 
-            // // Use cached tweets, if possible -- as long as they're not too old.
-            // var rightNow = Date.now();
-            // var twoHoursAgo = rightNow - (1000*60*60*2);
-            // var notTooStale = twoHoursAgo < zone.lastCachedTweetsAt;
-            // if (notTooStale)  {
-            //   return proceed();
-            // }
+            // FUTURE: Probably cache the bearer token rather than looking it up every time.
+            Twitter.getBearerToken({
+              consumerKey: sails.config.custom.twitterConsumerKey,
+              consumerSecret: sails.config.custom.twitterConsumerSecret,
+            }).exec(function(err, bearerToken) {
+              if (err) { return proceed(err); }
 
-            // // FUTURE: Probably cache the bearer token rather than looking it up every time.
-            // Twitter.getBearerToken({
-            //   consumerKey: sails.config.custom.twitterConsumerKey,
-            //   consumerSecret: sails.config.custom.twitterConsumerSecret,
-            // }).exec(function(err, bearerToken) {
-            //   if (err) { return proceed(err); }
+              // console.log('Searching for tweets around ('+inputs.lat+'° N,'+inputs.long+'°)');
+              Twitter.searchTweets({
+                bearerToken: bearerToken,
+                latitude: inputs.lat,
+                longitude: inputs.long,
+                radius: 5
+              }).exec(function(err, matchingTweets){
+                if (err) { return proceed(err); }
 
-            //   Twitter.searchTweets({
-            //     bearerToken: bearerToken,
-            //     latitude: inputs.lat,
-            //     longitude: inputs.long,
-            //     radius: 5
-            //   }).exec(function(err, matchingTweets){
-            //     if (err) { return proceed(err); }
+                // console.log('For zone #'+zone.id+'...');
+                // console.log('%d matching tweets:', matchingTweets.length, matchingTweets);
 
-            //     // Cache tweets
-            //     Zone.update({ id: zone.id })
-            //     .set({ cachedTweets: matchingTweets, lastCachedTweetsAt: rightNow })
-            //     .exec(function(err) {
-            //       if (err) { return proceed(err); }
+                // Cache tweets
+                Zone.update({ id: zone.id })
+                .set({ cachedTweets: matchingTweets, lastCachedTweetsAt: rightNow })
+                .exec(function(err) {
+                  if (err) { return proceed(err); }
 
-            //       // Stick the newly-fetched tweets on our zone record
-            //       // so we have it in the same format as if it was already
-            //       // cached beforehand; just in case we want it that way
-            //       // below.  (Makes it easier to think about.)
-            //       zone.cachedTweets = matchingTweets;
+                  // Stick the newly-fetched tweets on our zone record
+                  // so we have it in the same format as if it was already
+                  // cached beforehand; just in case we want it that way
+                  // below.  (Makes it easier to think about.)
+                  zone.cachedTweets = matchingTweets;
 
-            //       return proceed();
-            //     });
-            //   });
-            // });
+                  return proceed();
+                });
+              });
+            });
 
           })(function afterCachingTweets(err){
             if (err) { return exits.error(err); }
