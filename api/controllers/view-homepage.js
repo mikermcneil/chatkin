@@ -7,11 +7,6 @@ module.exports = {
   description: 'Show the homepage (if logged in) or otherwise, redirect to the login page.',
 
 
-  inputs: {
-
-  },
-
-
   exits: {
 
     success: {
@@ -20,7 +15,9 @@ module.exports = {
     },
 
     notLoggedIn: {
-      responseType: 'redirect'
+      responseType: 'redirect',
+      description: 'Requesting user was not authenticated.',
+      extendedDescription: 'You must be logged in to be allowed to view a zone page.'
     }
   },
 
@@ -38,7 +35,6 @@ module.exports = {
     User.findOne({
       id: env.req.session.userId
     }).exec(function (err, loggedInUserRecord) {
-
       if (err) { return exits.error(err); }
 
       if (!loggedInUserRecord) {

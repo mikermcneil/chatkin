@@ -8,7 +8,6 @@ module.exports = {
 
 
   inputs: {
-    username: { type: 'string', required: true },
     lat: { type: 'number', required: true },
     long: { type: 'number', required: true },
   },
@@ -16,7 +15,11 @@ module.exports = {
 
   exits: {
     success: { description: 'It worked.', outputFriendlyName: 'Zone info' },
-    userNotFound: { description: 'No such user.', statusCode: 400 }
+    notLoggedIn: {
+      statusCode: 401,
+      description: 'Requesting user was not authenticated.',
+      extendedDescription: 'You must be logged in to be allowed to arrive in a zone.'
+    }
   },
 
 
@@ -25,12 +28,28 @@ module.exports = {
     var Twitter = require('machinepack-twitter');
     var OpenWeather = require('machinepack-openweather');
 
+    // Get access to request instance.
+    // (We'll use this for accessing the session and subscribing/publishing around the socket.)
+    var req = env.req;
+
+    if (!req.isSocket) {
+      return exits.error(new Error('This is not a socket request.  (In order to arrive in a zone, you must use VR over socket.io -- i.e. `io.socket`)'));
+    }
+
+    // Check if the requesting user is logged in.
+    // If not, then bail.
+    if (!req.session.userId) {
+      return exits.notLoggedIn();
+    }// --•
+
+
+
     // latitude, longitude
     // - - - - - - - - - - - - - - - - - - - -
-    // (85, -180) // top left corner of map
-    // (-85, 180) // bottom right corner of map
+    // (90, -180) // top left corner of map
+    // (-90, 180) // bottom right corner of map
     var xDegrees = inputs.long + 180;
-    var yDegrees = (inputs.lat*(-1)) + 85;
+    var yDegrees = (inputs.lat*(-1)) + 90;
 
     // Visualization:
     // - - - - - - - - - - - - - - - - - - - -
@@ -41,7 +60,7 @@ module.exports = {
     //     |   etc            |
     //     |                  |
     //     |                  |
-    // 170 |__________________|
+    // 180 |__________________|
 
     // Without specifiying `numZonesPerDegreeSquare`, it defaults
     // to one -- meaning we would get one zone for every 1° longitude,
@@ -58,12 +77,12 @@ module.exports = {
     var x = Math.floor(xDegrees * sails.config.custom.numZonesPerDegreeSquare);
     var y = Math.floor(yDegrees * sails.config.custom.numZonesPerDegreeSquare);
 
-    User.findOne({ username: inputs.username }).exec(function(err, thisUser){
+    User.findOne({ id: req.session.userId }).exec(function(err, thisUser){
       if (err) { return exits.error(err); }
-      if (!thisUser) { return exits.userNotFound(); }
+      if (!thisUser) { return exits.error(new Error('The requesting user is logged in as user `'+req.session.userId+'`, but no such user exists in the database.  This should never happen!')); }
 
       if (thisUser.currentZone) {
-        Zone.unsubscribe(env.req, [thisUser.currentZone]);
+        Zone.unsubscribe(req, [thisUser.currentZone]);
       }
 
       Zone.findOne({ x: x, y: y }).exec(function(err, zone) {
@@ -162,34 +181,40 @@ module.exports = {
             if (err) { return exits.error(err); }
 
             User.update()
-            .where({ username: inputs.username })
+            .where({ username: thisUser.username })
             .set({ currentZone: zone.id })
             .exec(function (err) {
               if (err) { return exits.error(err); }
 
-              sails.log('@'+inputs.username+' arrived in zone with coordinates: ( %d, %d )', x, y);
+              sails.log('@'+thisUser.username+' arrived in zone with coordinates: ( %d, %d )', x, y);
 
               // Subscribe to socket (RPS) notifications about this zone.
-              Zone.subscribe(env.req, [zone.id]);
+              Zone.subscribe(req, [zone.id]);
 
               // Publish this user's arrival to the new zone.
               Zone.publish([zone.id], {
                 verb: 'userArrived',
-                username: inputs.username,
+                username: thisUser.username,
                 remark: thisUser.remark,
                 avatarColor: thisUser.avatarColor
-              }, env.req);
+              }, req);
 
-              // See how many other people are here already.
-              User.count({ currentZone: zone.id }).exec(function (err, numUsersHere){
+              // Look up any other people who are in here already.
+              User.find({ currentZone: zone.id }).exec(function (err, usersHere){
                 if (err) { return exits.error(err); }
+
+                var otherUsersHere = _.without(usersHere, { id: thisUser.id });
+
+
                 return exits.success({
                   id: zone.id,
-                  numOtherUsersHere: numUsersHere - 1,
-                  weather: zone.cachedWeather
-                  //TODO: include list of users in this zone with their statuses (can just change this .count() to a .find() -- or better yet do .populate() back up top)
+                  numOtherUsersHere: otherUsersHere.length,
+                  otherUsersHere: otherUsersHere,
+                  weather: zone.cachedWeather,
                 });
+
               });
+
             });
           });//</ cacheTweetsMaybe  (self-calling function) >
         });//</ cacheWeatherMaybe  (self-calling function) >
