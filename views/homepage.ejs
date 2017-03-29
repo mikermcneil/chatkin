@@ -1,5 +1,5 @@
 <div id="homepage">
-  <div id="main-content" data-logged-in-user="<%= username %>">
+  <div id="main-content" data-logged-in-user="<%= username %>" data-current-message="<%= remark %>">
     <nav class="topbar">
       <div class="container">
         <span class="branding">
@@ -30,23 +30,13 @@
           <div v-else-if="communicatingWithServer" class="loading-message">Communicating with server...</div>
         </div>
         <!-- <div v-else class="panel-heading">Welcome, <strong><%= username %></strong>!</div> -->
-        <div class="location-info">
-          <div id="activity">
-            <template v-for="notification in activity">
-              <% /* if the activity is an entrance */ %>
-              <template v-if="notification.verb === 'userArrived'">
-                <p><i class="chatkin-icon icon-logo-chatkin" :style="{color: notification.avatarColor}"></i> <strong>{{notification.username}}</strong> has arrived.</p>
-                <p v-if="notification.remark !== ''"><i class="chatkin-icon icon-logo-chatkin" :style="{color: notification.avatarColor}"></i><strong>{{notification.username}}:</strong> {{notification.remark}}</p>
-              </template>
-              <% /* if the activity is a remark from someone else */%>
-              <template v-if="notification.verb === 'userRemarked'">
-                <p><i class="chatkin-icon icon-logo-chatkin" :style="{color: notification.avatarColor}"></i><strong>{{notification.username}} says:</strong> {{notification.remark}}</p>
-              </template>
-              <% /* if the activity is YOUR remark */%>
-              <template v-if="notification.verb === 'updatedMyRemark'">
-                <p><i class="chatkin-icon icon-logo-chatkin" :style="{color: notification.avatarColor}"></i><strong>You say:</strong> {{notification.remark}}</p>
-              </template>
-            </template>
+        <div id="activity">
+          <div class="message you">
+            <div class="avatar">
+              <i class="chatkin-icon icon-logo-chatkin" style="color: <%= avatarColor %>"></i>
+              <p>{{username}}</p>
+            </div>
+            <p>{{message}}</p>
           </div>
         </div>
       </div>

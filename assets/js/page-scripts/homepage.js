@@ -7,6 +7,9 @@
   if ($('#'+PAGE_NAME).length === 0) { return; }
 
   var username = $('#main-content').attr('data-logged-in-user');
+  $('#main-content').removeAttr('data-logged-in-user');
+  var message = $('#main-content').attr('data-current-message');
+  $('#main-content').removeAttr('data-current-message');
 
 
   // Set up the Vue instance for our homepage
@@ -19,7 +22,7 @@
       activity: [],
       username: username,
       avatarColor: '',
-      message: '',
+      message: message,
       currentZone: null,
       numOthersInZone: null,
       syncingLocation: true,
