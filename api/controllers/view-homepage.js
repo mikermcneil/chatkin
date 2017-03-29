@@ -49,7 +49,8 @@ module.exports = {
       // Then respond with HTML.
       return exits.success({
         username: loggedInUserRecord.username,
-        remark: loggedInUserRecord.remark
+        remark: loggedInUserRecord.remark,
+        avatarColor: loggedInUserRecord.avatarColor
       });
 
     });//</User.findOne()>
