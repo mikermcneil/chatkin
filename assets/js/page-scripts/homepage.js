@@ -27,6 +27,7 @@
       errorFetchingLocation: false,
       zoneDetailsVisible: false,
       otherUsersHere: [],
+      editingMessage: false,
       // A more descriptive error message for debugging in development:
       errorMsg: '',
     },
@@ -162,6 +163,7 @@
 
             // Update my remark in the UI.
             $('#my-remark').text(vm.message);
+            vm.editingMessage = false;
           });
         }
       },//</updateRemark>
@@ -177,6 +179,14 @@
         // to show the information.
         $('#zone-details-hidden-input').focus();
       },
+
+      enableMessageField: function() {
+        // Enable editing of the message.
+        vm.editingMessage = true;
+        // Focus the field. (We need to manually re-enable it first, because otherwise it will
+        // still be disabled when this code runs.
+        $('#update-remark-field').removeAttr('disabled').focus();
+      }
     }//</methods>
   });
 
