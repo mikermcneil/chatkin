@@ -55,7 +55,7 @@ module.exports = {
       .exec(function(err, newUserRecord) {
         if(err) {
           if(err.code === 'E_UNIQUE') {
-            return exits.emailAlreadyInUse(err);
+            return exits.usernameAlreadyInUse(err);
           }
           return exits.error(err);
         }
