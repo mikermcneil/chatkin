@@ -130,6 +130,44 @@
             color: @accent-blue;
           }
         }
+
+        .activity {
+          .remark {
+            padding-top: 15px;
+            padding-bottom: 15px;
+            padding-left: 120px;
+            padding-right: 15px;
+            position: relative;
+            min-height: 100px;
+            margin-bottom: 10px;
+            // border-bottom: 1px solid lighten(@border-gray, 5%);
+            .avatar {
+              width: 100px;
+              height: 75px;
+              position: absolute;
+              left: 0px;
+              top: 15px;
+              text-align: center;
+              padding-top: 5px;
+              padding-bottom: 5px;
+              padding-right: 5px;
+              padding-left: 5px;
+              border-right: 3px solid #ebebeb;
+              i {
+                font-size: 46px;
+              }
+              p {
+                margin-top: 5px;
+                margin-bottom: 0px;
+                overflow-x: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                font-family: @header-font;
+                font-weight: 700;
+              }
+            }
+          }
+        }
       }
     }
   }

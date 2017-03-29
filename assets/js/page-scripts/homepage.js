@@ -8,8 +8,6 @@
 
   var username = $('#main-content').attr('data-logged-in-user');
   $('#main-content').removeAttr('data-logged-in-user');
-  var message = $('#main-content').attr('data-current-message');
-  $('#main-content').removeAttr('data-current-message');
 
 
   // Set up the Vue instance for our homepage
@@ -19,16 +17,16 @@
 
     // Initialize data
     data: {
-      activity: [],
       username: username,
       avatarColor: '',
-      message: message,
+      message: '',
       currentZone: null,
       numOthersInZone: null,
       syncingLocation: true,
       communicatingWithServer: false,
       errorFetchingLocation: false,
-      zoneDetailsVisible: false
+      zoneDetailsVisible: false,
+      otherUsersHere: [],
     },
 
 
@@ -83,13 +81,27 @@
           console.log('```');
 
           // Display map
-          var $mapImg = $('<img src="https://maps.googleapis.com/maps/api/staticmap?center=' + data.lat + ',' + data.long + '&zoom=7&size=200x200&sensor=false"/>');
+          var $mapImg = $('<img src="https://maps.googleapis.com/maps/api/staticmap?center=' + geoPosition.coords.latitude + ',' + geoPosition.coords.longitude + '&zoom=7&size=200x200&sensor=false"/>');
           $('#map').append($mapImg);
 
           // When the socket connects
           io.socket.on('zone', function(msg){
             console.log('* * Received zone notification from server with message:', msg);
-            vm.activity.push(msg);
+            if(msg.username === vm.username) {
+              return;
+            }
+
+            var userInZone = _.find(vm.otherUsersHere, {username: msg.username});
+            if(!_.isUndefined(userInZone)) {
+              userInZone.remark = msg.remark;
+            }
+            else {
+              vm.otherUsersHere.unshift({
+                username: msg.username,
+                avatarColor: msg.avatarColor,
+                remark: msg.remark
+              });
+            }
 
             // If a user arrived, increase the number of other users in this zone.
             if(msg.verb === 'userArrived') {
@@ -128,11 +140,8 @@
               return;
             }//-•
 
-            vm.activity.push({
-              verb: 'updatedMyRemark',
-              username: vm.username,
-              remark: vm.message
-            });
+            // Update my remark in the UI.
+            $('#my-remark').text(vm.message);
           });
         }
       },//</updateRemark>

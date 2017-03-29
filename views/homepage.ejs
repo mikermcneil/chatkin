@@ -1,5 +1,5 @@
 <div id="homepage">
-  <div id="main-content" data-logged-in-user="<%= username %>" data-current-message="<%= remark %>">
+  <div id="main-content" data-logged-in-user="<%= username %>">
     <nav class="topbar">
       <div class="container">
         <span class="branding">
@@ -23,22 +23,31 @@
       <div class="window" id="message-window">
         <div class="syncing-box" v-if="syncingLocation || errorFetchingLocation || communicatingWithServer">
           <div class="chat-buddy">
-            <i class="chatkin-icon icon-logo-chatkin"></i>
+            <i class="chatkin-icon icon-globe"></i>
           </div>
           <div v-if="syncingLocation" class="loading-message">Getting location from browser...</div>
           <div v-else-if="errorFetchingLocation" class="loading-message">Error fetching location.</div>
           <div v-else-if="communicatingWithServer" class="loading-message">Communicating with server...</div>
         </div>
-        <!-- <div v-else class="panel-heading">Welcome, <strong><%= username %></strong>!</div> -->
-        <div id="activity">
-          <div class="message you">
+        <div class="activity" v-else>
+          <div class="remark special">
             <div class="avatar">
               <i class="chatkin-icon icon-logo-chatkin" style="color: <%= avatarColor %>"></i>
               <p>{{username}}</p>
             </div>
-            <p>{{message}}</p>
+            <p id="my-remark"><%= remark %></p>
           </div>
+          <template v-for="user in otherUsersHere">
+            <div class="remark">
+              <div class="avatar">
+                <i class="chatkin-icon icon-logo-chatkin" :style="{color: user.avatarColor}"></i>
+                <p>{{user.username}}</p>
+              </div>
+              <p id="my-remark">{{user.remark}}</p>
+            </div>
+          </template>
         </div>
+        <!-- <div v-else class="panel-heading">Welcome, <strong><%= username %></strong>!</div> -->
       </div>
     </div>
   </div>
@@ -49,8 +58,7 @@
         v-on:keyup.enter="updateRemark"
         type="text"
         class="form-control input-lg"
-        placeholder="Add a message!"
-        value="<%= remark %>">
+        placeholder="Add a message!"/>
     </div>
   </div>
 </div>
