@@ -65,6 +65,8 @@ module.exports = {
 
   models: {
 
+    datastore: 'default',
+
     /**************************************************************************
     *                                                                         *
     * To help avoid accidents, Sails automatically sets the automigration     *
