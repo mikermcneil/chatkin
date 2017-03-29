@@ -19,8 +19,57 @@ module.exports.bootstrap = function(cb) {
   sails.config.custom.numZonesPerDegreeSquare = sails.config.custom.numZonesPerDegreeSquare || 1;
   sails.config.custom.numZonesPerDegreeSquare = Math.floor(sails.config.custom.numZonesPerDegreeSquare);
 
+
+  // Quick forward about zone dimensions:
+  // ----------------------------------------------------------------
+  // • 1° of latitude is between 110.567km and 111.699km tall
+  //   (thus approximately 111km for our fuzzy purposes.)
+  //
+  // • A degree of longitude is widest at the equator (also ~111km) and gradually shrinks
+  //   to zero at the poles.  More formally, the width of 1° of longitude depends on the
+  //   latitude as given by the formula `|cos(lat)| * ARPX_LAT_WIDTH_IN_KM`, where `lat`
+  //   is the latitude in decimal degrees (see https://en.wikipedia.org/wiki/Decimal_degrees)
+  //   and APRX_LAT_WIDTH_IN_KM is the width in km of 1° of latitude at the point of
+  //   measurement-- which for our fuzzy purposes here can always be simply rounded to 111km.
+  //
+  //
+  // e.g. for a zone in Austin, TX located at approximately
+  // lat: 30.28 / longitude: -97.71
+  //
+  // ...we can compute the width and height of a default 1° sq zone
+  // as follows:
+  //
+  // > Original formula:
+  // > lon = |cos(lat)| * APRX_LAT_WIDTH_IN_KM
+  //
+  // ```
+  // Math.abs(Math.cos(30.28)) * 111
+  // // => 46.76344697164029 kilometers
+  // ```
+  //
+  // --
+  // Most of the time, apps like this could get away with using fuzzy zone
+  // boundaries, and simply compute a relevancy radius using something really
+  // simple and naive-- e.g. dividing its approximate latitudinal height (111)
+  // by two.  If we cared more about accuracy, we might consider computing either
+  // the shortest or longest hypotenuse from the particular lat/long coordinates
+  // within the zone out to each of its four corners.  For a conservative radius,
+  // we could use the shortest, or for a more liberal, the longest.
+  //
+  // But for an even more accurate picture, we need to not only use the relevancy
+  // radius, but also adjust the lat/long of the center point where the radius applies--
+  // i.e. to the lat/long coordinates at the center of the rectangular zone. Even then,
+  // since zones are rectangles and not circles, a radius will never be _exactly_ right
+  // (esp. since the actual km dimensions of zones are uneven rectangles, where an
+  // ellipse would be at least closer to the truth).  Nonetheless, normalizing the
+  // coordinates goes a long way towards improving accuracy in situations where you
+  // have little other choice but to cast a circular net (e.g. the Twitter search API).
+  // ----------------------------------------------------------------
+
+
+  // Now we'll build our coordinate system.
   var xMax = Math.floor(360 * sails.config.custom.numZonesPerDegreeSquare);
-  var yMax = Math.floor(170 * sails.config.custom.numZonesPerDegreeSquare);
+  var yMax = Math.floor(180 * sails.config.custom.numZonesPerDegreeSquare);
   // - - - - - - - - - - - - - - - - - - - -
   //     0                  xMAX
   //       __________________
@@ -56,7 +105,7 @@ module.exports.bootstrap = function(cb) {
       return;
     }//-•
 
-    // Build a representation of all 61,200 zones.
+    // Build a representation of all 60,000 or so zones.
     sails.log('Building %d zones...', xMax*yMax);
     var zones = [];
     for (var x=0; x<xMax; x++) {
