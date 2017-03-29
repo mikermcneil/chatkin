@@ -1,5 +1,12 @@
 <div id="homepage">
   <div id="main-content" data-logged-in-user="<%= username %>">
+    <nav class="topbar">
+      <div class="container-fluid">
+        <span class="branding">
+          <i class="chatkin-icon icon-logo-chatkin"></i> chatkin
+        </span>
+      </div>
+    </nav>
     <div class="container">
       <div class="window panel panel-default" id="message-window">
         <div v-if="syncingLocation" class="panel-heading">Getting location from browser...</div>

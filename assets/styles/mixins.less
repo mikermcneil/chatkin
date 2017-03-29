@@ -1,0 +1,41 @@
+/**
+ * Color variables
+ */
+@brand-chatkin: #90B63E;
+@border-gray:  #9CA4A6;
+
+
+/**
+ * Small form container
+ * (For login and signup forms)
+ */
+.small-form-container() {
+  width: 100%;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgba(255,255,255,0.75);
+  border-radius: 7px;
+  border: 1px solid @border-gray;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 10px;
+  .logo {
+    padding-top: 35px;
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+    color: @brand-chatkin;
+    text-align: center;
+    border-bottom: 1px solid @border-gray;
+    i {
+      font-size: 64px;
+    }
+    h1 {
+      margin-top: 10px;
+      margin-bottom: 0px;
+    }
+  }
+  .submit {
+    margin-bottom: 10px;
+  }
+}

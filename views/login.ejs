@@ -1,7 +1,12 @@
 <div id="login">
   <div class="container">
-    <div class="jumbotron">
-      <h1>in a bottle</h1>
+    <div class="login-form">
+      <div class="logo">
+        <div class="logo-icon">
+          <i class="chatkin-icon icon-logo-chatkin"></i>
+        </div>
+        <h1>chatkin</h1>
+      </div>
       <form class="form" v-on:submit.prevent="submitLoginForm">
         <div class="form-group">
           <label for="login_username">Username</label>
@@ -14,7 +19,7 @@
         <div v-if="invalidCredentials">
           <p>The username or password for you entered was incorrect. Please try again.</p>
         </div>
-        <button class="btn btn-lg btn-block btn-primary" type="submit">
+        <button class="btn submit btn-lg btn-block btn-success" type="submit">
           <span v-if="isSyncing">Logging in...</span>
           <span v-else>Login</span>
         </button>

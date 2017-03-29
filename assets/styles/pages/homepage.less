@@ -4,16 +4,32 @@
 
 // height/width variables
 @form-height: 85px;
+@topbar-height: 60px;
 
 // homepage styles
 #homepage {
+
   #main-content {
     position: fixed;
     z-index: @z-messages;
     height: 100%;
     width: 100%;
-    padding-top: 75px;
-    padding-bottom: @form-height + 25;
+    padding-bottom: @form-height + @topbar-height + 25;
+
+    .topbar-logo {
+      font-family: 'Comfortaa', 'Lato', 'Helvetica', Arial, sans-serif;
+      position: relative;
+      top: -4px;
+      color: @brand-chatkin;
+      i {
+        font-size: 24px;
+        position: relative;
+        top: 5px;
+      }
+      &:hover {
+        color: darken(@brand-chatkin, 10%);
+      }
+    }
     .container {
       height: 100%;
       .window {
