@@ -62,7 +62,7 @@ module.exports = {
 
         // --•
         // If we made it here, the user record was successfully created.
-        console.log('NEW USER RECORD:'+newUserRecord);
+        // console.log('NEW USER RECORD:'+newUserRecord);
 
         // Store the user id in the session
         env.req.session.userId = newUserRecord.id;

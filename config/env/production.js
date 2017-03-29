@@ -335,16 +335,19 @@ module.exports = {
   ***************************************************************************/
   custom: {
 
-    twitterConsumerKey: 'key-prod_fake_bd32301385130a0bafe030c',
-    twitterConsumerSecret: 'sk_prod__fake_Nfgh82401348jaDa3lkZ0d9Hm',
+    // twitterConsumerKey: 'key-prod_fake_bd32301385130a0bafe030c',
+    // twitterConsumerSecret: 'sk_prod__fake_Nfgh82401348jaDa3lkZ0d9Hm',
+    // openWeatherApiKey: 'FAKEj38291FAKEn3kadaNADa3FAKE91013135iimFAKE',
     //--------------------------------------------------------------------------
     // /\   OR, to avoid checking them in to version control, you might opt to
     // ||   set sensitive credentials like these using environment variables.
     //
     // For example:
     // ```
-    // twitterConsumerKey=key-prod_fake_bd32301385130a0bafe030c
-    // twitterConsumerSecret=sk_prod__fake_Nfgh82401348jaDa3lkZ0d9Hm
+    // sails_custom__twitterConsumerKey='key-prod_fake_bd32301385130a0bafe030c'
+    // sails_custom__twitterConsumerSecret='sk_prod__fake_Nfgh82401348jaDa3lkZ0d9Hm'
+    // sails_custom__openWeatherApiKey='FAKEj38291FAKEn3kadaNADa3FAKE91013135iimFAKE'
+    // etc...
     // ```
     //--------------------------------------------------------------------------
 
