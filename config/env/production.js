@@ -289,7 +289,7 @@ module.exports = {
     * (http://sailsjs.com/config/http)                                         *
     *                                                                          *
     ***************************************************************************/
-    // trustProxy: true,
+    trustProxy: true,
 
   },
 

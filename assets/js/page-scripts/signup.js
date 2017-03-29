@@ -46,7 +46,6 @@
           return;
         }
 
-
         io.socket.put('/signup', {
           username: vm.username,
           password: vm.password,

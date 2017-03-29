@@ -3,7 +3,9 @@
     <nav class="topbar">
       <div class="container">
         <span class="branding">
-          <i class="chatkin-icon icon-logo-chatkin"></i> chatkin
+          <!-- <i class="chatkin-icon icon-logo-chatkin"></i>  -->
+          <i class="chatkin-icon icon-logo-chatkin"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i>
+          chatkin
           <div class="logo-bg"></div>
         </span>
         <span class="zone-info">
@@ -30,16 +32,17 @@
           <div v-else-if="communicatingWithServer" class="loading-message">Communicating with server...</div>
         </div>
         <div class="activity" v-else>
-          <div class="remark special">
+          <!-- <div class="remark special">
             <div class="avatar">
               <i class="chatkin-icon icon-logo-chatkin" style="color: <%= avatarColor %>"></i>
             </div>
             <p id="my-remark"><%= remark %></p>
-          </div>
+          </div> -->
           <template v-for="user in otherUsersHere">
             <div class="remark">
               <div class="avatar">
-                <i class="chatkin-icon icon-logo-chatkin" :style="{color: user.avatarColor}"></i>
+                <!-- <i class="chatkin-icon icon-logo-chatkin" :style="{color: user.avatarColor}"></i> -->
+                <i class="chatkin-icon icon-logo-chatkin" :style="{color: user.avatarColor}"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i>
               </div>
               <p id="my-remark">{{user.remark}}</p>
             </div>
@@ -51,6 +54,10 @@
   </div>
   <div class="form">
     <div class="container">
+      <div class="avatar">
+        <!-- <i class="chatkin-icon icon-logo-chatkin" style="color: <%= avatarColor %>"></i> -->
+        <i class="chatkin-icon icon-logo-chatkin" style="color: <%= avatarColor %>"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i>
+      </div>
       <input v-model="message"
         v-bind:disabled="(syncingLocation || errorFetchingLocation || communicatingWithServer)"
         v-on:keyup.enter="updateRemark"
