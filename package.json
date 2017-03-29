@@ -6,6 +6,7 @@
   "keywords": [],
   "dependencies": {
     "async": "2.0.1",
+    "connect-redis": "^3.2.0",
     "grunt": "1.0.1",
     "lodash": "3.10.1",
     "machinepack-openweather": "^2.0.1",
