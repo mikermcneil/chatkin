@@ -33,7 +33,6 @@
           <div class="remark special">
             <div class="avatar">
               <i class="chatkin-icon icon-logo-chatkin" style="color: <%= avatarColor %>"></i>
-              <p>{{username}}</p>
             </div>
             <p id="my-remark"><%= remark %></p>
           </div>
@@ -41,7 +40,6 @@
             <div class="remark">
               <div class="avatar">
                 <i class="chatkin-icon icon-logo-chatkin" :style="{color: user.avatarColor}"></i>
-                <p>{{user.username}}</p>
               </div>
               <p id="my-remark">{{user.remark}}</p>
             </div>
@@ -62,3 +60,38 @@
     </div>
   </div>
 </div>
+
+<!-- hack to make it clear when a fatal error occurs -->
+<script>
+///////////////////////////////////////////////////////////////////////////////////////////
+// Capture uncaught errors (and trigger a fatal error if appropriate)
+//
+// This NEVER prevents the error from continuing to be uncaught- it's just here
+// to ensure that if any JS errors occur, we notice them immediately, even if we
+// don't have Chrome dev tools open.
+//
+// ---------------------------------------------------------------------------------------
+// For more info about `window.onerror`, see:
+// https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onerror
+///////////////////////////////////////////////////////////////////////////////////////////
+window.onerror = function onUncaughtException(message, scriptSrc, lineNo, charNo, err){
+
+  // Just in case the DOM isn't ready yet, wait until it is:
+  $(function (){
+    // Then prepend a message about the error in the body show it shows up at the top of the page.
+    $('body').prepend(
+    '<div style="color: red; background: white; padding: 5px; font-size: 14px;">'+
+    '  <strong>A fatal error occurred.</strong>'+
+    '  <pre>'+err+'</pre>'+
+    '</div>'
+    );
+    // console.error('Fatal error occurred:',err);
+  });
+
+  // Returning `true` would suppress the actual uncaught error from
+  // showing up in the JavaScript console. But we don't want to play
+  // with fire for now.  Just getting access to this is enough.
+  // We allow the error to continue to be uncaught.
+  return false;
+};
+</script>

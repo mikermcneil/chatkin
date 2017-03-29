@@ -27,6 +27,8 @@
       errorFetchingLocation: false,
       zoneDetailsVisible: false,
       otherUsersHere: [],
+      // A more descriptive error message for debugging in development:
+      errorMsg: '',
     },
 
 
@@ -120,6 +122,22 @@
 
         });
       }, function failedToGetLocation(err) {
+        throw new Error(err.code + ' :: ' + err.message);
+        // // FOR DEVELOPMENT:
+        // // Show error message in the UI
+        // if(!err.stack) {
+        //   try {
+        //     throw new Error(err);
+        //   }
+        //   catch(e) {
+        //     vm.errorMsg = JSON.stringify(e.stack);
+        //   }
+        // }
+        // else {
+        //   vm.errorMsg = JSON.stringify(err.stack);
+        // }
+        // </ FOR DEVELOPMENT >
+
         vm.syncingLocation = false;
         vm.errorFetchingLocation = true;
         console.error('Could not load location.  (Please refresh the page and try again.)');
