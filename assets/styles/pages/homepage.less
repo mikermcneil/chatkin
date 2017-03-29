@@ -19,14 +19,17 @@
 
     .topbar {
       height: @topbar-height;
-      background-color: @accent-blue;
+      // background-color: @accent-blue;
+      background-color: rgba(255,255,255,0.9);
       padding-top: 10px;
+      border-bottom: 1px solid @accent-lt-blue;
       .branding {
         font-family: @header-font;
         font-weight: 700;
         position: relative;
         top: -4px;
-        color: #fff;
+        color: @brand-chatkin;
+        // color: #fff;
         position: relative;
         font-size: 24px;
         i {
@@ -35,15 +38,6 @@
           position: relative;
           top: 5px;
           z-index: 100;
-        }
-        .logo-bg {
-          width: 22px;
-          height: 20px;
-          background-color: #fff;
-          position: absolute;
-          left: 4px;
-          top: 1px;
-          z-index: 10;
         }
       }
 
@@ -55,7 +49,8 @@
         overflow: visible;
         z-index: 200;
         .zone-name {
-          color: #fff;
+          color: @accent-blue;
+          // color: #fff;
           font-family: @header-font;
           font-size: 15px;
           position: relative;
@@ -63,11 +58,13 @@
           text-transform: uppercase;
         }
         >i {
-          color: #fff;
+          color: @brand-chatkin;
+          // color: #fff;
           font-size: 24px;
           cursor: pointer;
           &:hover {
-            color: @accent-lt-blue;
+            // color: @accent-lt-blue;
+            color: darken(@brand-chatkin, 10%);
           }
           &.disabled {
             cursor: default;
@@ -165,20 +162,40 @@
     width: 100%;
     bottom: 0px;
     left: 0px;
-    background-color: @accent-lt-blue;
-    border-top: 1px solid @border-gray;
+    background-color: lighten(@accent-lt-blue, 10%);
+    border-top: 1px solid @accent-lt-blue;
     padding-top: 10px;
     overflow: visible;
     .container {
       position: relative;
       .avatar {
         position: absolute;
-        left: -4px;
+        left: 10px;
         top: -68px;
-        .hover-buddy();
         i {
           font-size: 75px;
           float: left;
+        }
+        &.hovering {
+          .hover-buddy();
+        }
+      }
+      input {
+        &.disabled {
+          border: 1px solid transparent;
+          background-color: transparent;
+          box-shadow: none;
+        }
+      }
+      .edit-btn {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        font-size: 26px;
+        color: lighten(@accent-blue, 5%);
+        cursor: pointer;
+        &:hover {
+          color: @accent-blue;
         }
       }
     }

@@ -11,7 +11,7 @@
     "lodash": "3.10.1",
     "machinepack-openweather": "^2.0.1",
     "machinepack-passwords": "^2.3.0",
-    "machinepack-twitter": "rachaelshaw/machinepack-twitter#app-specific-auth",
+    "machinepack-twitter": "^1.2.1",
     "sails": "^1.0.0-31",
     "sails-hook-grunt": "^1.0.4",
     "sails-hook-orm": "^2.0.0-0",
