@@ -4,7 +4,8 @@
 @brand-chatkin: #90B63E;
 @border-gray:  #9CA4A6;
 @accent-blue: #3C7A80;
-@accent-lt-blue: #bdcdd5;
+// @accent-lt-blue: #bdcdd5;
+@accent-lt-blue: #C9D9E2;
 
 /**
  * Font variables
@@ -65,4 +66,59 @@
      -ms-transform    : translate(@x, @y);
      -o-transform     : translate(@x, @y);
      transform        : translate(@x, @y);
+ }
+
+
+ /**
+  * Animation
+  */
+
+ .animationName(@name) {
+     -moz-animation-name: @name;
+     -webkit-animation-name: @name;
+     -ms-animation-name: @name;
+     -o-animation-name: @name;
+     animation-name: @name;
+ }
+
+ .animationDuration(@duration) {
+     -moz-animation-duration: @duration;
+     -webkit-animation-duration: @duration;
+     -ms-animation-duration: @duration;
+     -o-animation-duration: @duration;
+     animation-duration: @duration;
+ }
+
+ .animationIterationCount(@iterationCount) {
+     -moz-animation-iteration-count: @iterationCount;
+     -webkit-animation-iteration-count: @iterationCount;
+     -ms-animation-iteration-count: @iterationCount;
+     -o-animation-iteration-count: @iterationCount;
+     animation-iteration-count: @iterationCount;
+ }
+
+ .hover-buddy() {
+  .animationName(hover-buddy);
+  .animationDuration(2.5s);
+  .animationIterationCount(infinite);
+  @-webkit-keyframes hover-buddy {
+    0%   {-webkit-transform: translatey(0px);}
+    50%  {-webkit-transform: translatey(-2px);}
+    100% {-webkit-transform: translatey(0px);}
+  }
+  @-moz-keyframes fade-in {
+    0%   {-moz-transform: translatey(0px);}
+    50%  {-moz-transform: translatey(-2px);}
+    100% {-moz-transform: translatey(0px);}
+  }
+  @-o-keyframes fade-in {
+    0%   {-o-transform: translatey(0px);}
+    50%  {-o-transform: translatey(-2px);}
+    100% {-o-transform: translatey(0px);}
+  }
+  @keyframes fade-in {
+    0%   {transform: translatey(0px);}
+    50%  {transform: translatey(-2px);}
+    100% {transform: translatey(0px);}
+  }
  }

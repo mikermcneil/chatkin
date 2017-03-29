@@ -153,7 +153,7 @@ module.exports = {
     * > (For a full list, see http://sailsjs.com/plugins/sessions)             *
     *                                                                          *
     ***************************************************************************/
-    // adapter: 'connect-redis',
+    adapter: 'connect-redis',
     // url: 'redis://user:password@localhost:6379/dbname',
     //--------------------------------------------------------------------------
     // /\   OR, to avoid checking it in to version control, you might opt to
@@ -289,7 +289,7 @@ module.exports = {
     * (http://sailsjs.com/config/http)                                         *
     *                                                                          *
     ***************************************************************************/
-    // trustProxy: true,
+    trustProxy: true,
 
   },
 

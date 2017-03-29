@@ -50,7 +50,7 @@ module.exports.bootstrap = function(cb) {
       User.update({ currentZone: {'!=':null} })
       .set({ currentZone: null })
       .exec(function(err) {
-        if(err) { return cbb(err); }
+        if(err) { return cb(err); }
         return cb();
       });//_∏_
       return;

@@ -168,5 +168,19 @@
     background-color: @accent-lt-blue;
     border-top: 1px solid @border-gray;
     padding-top: 10px;
+    overflow: visible;
+    .container {
+      position: relative;
+      .avatar {
+        position: absolute;
+        left: -4px;
+        top: -68px;
+        .hover-buddy();
+        i {
+          font-size: 75px;
+          float: left;
+        }
+      }
+    }
   }
 }
