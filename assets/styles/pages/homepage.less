@@ -18,11 +18,13 @@
     background-color: #fff;
 
     .topbar {
+      background-color: lighten(@accent-lt-blue, 10%);
+      border-bottom: 1px solid @accent-lt-blue;
       height: @topbar-height;
       // background-color: @accent-blue;
-      background-color: rgba(255,255,255,0.9);
+      // background-color: rgba(255,255,255,0.9);
       padding-top: 10px;
-      border-bottom: 1px solid @accent-lt-blue;
+      // border-bottom: 1px solid @accent-lt-blue;
       .branding {
         font-family: @header-font;
         font-weight: 700;
@@ -162,15 +164,16 @@
     width: 100%;
     bottom: 0px;
     left: 0px;
-    background-color: lighten(@accent-lt-blue, 10%);
-    border-top: 1px solid @accent-lt-blue;
+    // background-color: lighten(@accent-lt-blue, 10%);
+    // border-top: 1px solid @accent-lt-blue;
+    border-top: 1px solid @border-lt-gray;
     padding-top: 10px;
     overflow: visible;
     .container {
       position: relative;
       .avatar {
         position: absolute;
-        left: 10px;
+        right: 10px;
         top: -68px;
         i {
           font-size: 75px;
@@ -185,19 +188,23 @@
           border: 1px solid transparent;
           background-color: transparent;
           box-shadow: none;
+          text-align: right;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
-      .edit-btn {
-        position: absolute;
-        right: 10px;
-        top: 10px;
-        font-size: 26px;
-        color: lighten(@accent-blue, 5%);
-        cursor: pointer;
-        &:hover {
-          color: @accent-blue;
-        }
-      }
+      // .edit-btn {
+      //   position: absolute;
+      //   right: 10px;
+      //   top: 10px;
+      //   font-size: 26px;
+      //   color: lighten(@accent-blue, 5%);
+      //   cursor: pointer;
+      //   &:hover {
+      //     color: @accent-blue;
+      //   }
+      // }
     }
   }
 }
