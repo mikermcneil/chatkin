@@ -126,6 +126,44 @@ module.exports = {
         })(function afterCachingWeather(err){
           if (err) { return exits.error(err); }
 
+          // Compute relevancy radius and adjusted lat/long:
+          // > For more about what this is and why we have to compute
+          // > it this way, see config/bootstrap.js.
+          var zoneCenterLatitudeDeg;
+          var zoneCenterLongitudeDeg;
+          var relevancyRadius;
+          try {
+            zoneCenterLatitudeDeg = (function(){
+              var zoneTopLatitudeDeg = inputs.lat;
+              var ZONE_HEIGHT_IN_DEG = (1 / sails.config.custom.numZonesPerDegreeSquare);
+              return zoneTopLatitudeDeg + (ZONE_HEIGHT_IN_DEG/2);
+            })();
+            zoneCenterLongitudeDeg = (function(){
+              var zoneLeftLongitudeDeg = inputs.long;
+              var ZONE_WIDTH_IN_DEG = (1 / sails.config.custom.numZonesPerDegreeSquare);
+              return zoneLeftLongitudeDeg + (ZONE_WIDTH_IN_DEG/2);
+            })();
+            relevancyRadius = (function(){
+              var ZONE_HEIGHT_IN_DEG = (1 / sails.config.custom.numZonesPerDegreeSquare);
+              var ZONE_WIDTH_IN_DEG = (1 / sails.config.custom.numZonesPerDegreeSquare);
+              var zoneHeightKm = 111 * ZONE_HEIGHT_IN_DEG;
+              var zoneWidthKm = Math.abs(Math.cos(zoneCenterLatitudeDeg)) * (111*ZONE_WIDTH_IN_DEG);
+              var zoneEdgeHypotenuse = Math.sqrt(Math.pow(zoneHeightKm,2) + Math.pow(zoneWidthKm,2));
+              console.log('zoneWidthKm :: '+zoneWidthKm);
+              console.log('zoneHeightKm :: '+zoneHeightKm);
+              console.log('Math.pow(zoneHeightKm,2) :: '+Math.pow(zoneHeightKm,2));
+              console.log('Math.pow(zoneWidthKm,2) :: '+Math.pow(zoneWidthKm,2));
+              console.log('Math.sqrt(Math.pow(zoneHeightKm,2) + Math.pow(zoneWidthKm,2)) :: '+Math.sqrt(Math.pow(zoneHeightKm,2) + Math.pow(zoneWidthKm,2)));
+
+              // This little guy forms something close to a "circle of best fit" in our
+              // rectangular zone.
+              return zoneEdgeHypotenuse;
+            })();
+          } catch (e) { return proceed(e); }
+
+          console.log('Adjusted zone center coordinates: ('+zoneCenterLatitudeDeg+'° N,'+zoneCenterLongitudeDeg+'°)');
+          console.log('Relevancy radius: '+relevancyRadius);
+
           // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
           // FUTURE: To improve zone load time (esp. for the first load of the day for that zone),
           // use `async.auto` to fetch the weather and search tweets simultaneously.
@@ -148,39 +186,8 @@ module.exports = {
             }).exec(function(err, bearerToken) {
               if (err) { return proceed(err); }
 
-              // Compute relevancy radius and adjusted lat/long:
-              // > For more about what this is and why we have to compute
-              // > it this way, see config/bootstrap.js.
-              var zoneCenterLatitudeDeg;
-              var zoneCenterLongitudeDeg;
-              var relevancyRadius;
-              try {
-                zoneCenterLatitudeDeg = (function(){
-                  var zoneTopLatitudeDeg = inputs.lat;
-                  var ZONE_HEIGHT_IN_DEG = (1 / sails.config.custom.numZonesPerDegreeSquare);
-                  return zoneTopLatitudeDeg + (ZONE_HEIGHT_IN_DEG/2);
-                })();
-                zoneCenterLongitudeDeg = (function(){
-                  var zoneLeftLongitudeDeg = inputs.long;
-                  var ZONE_WIDTH_IN_DEG = (1 / sails.config.custom.numZonesPerDegreeSquare);
-                  return zoneLeftLongitudeDeg + (ZONE_WIDTH_IN_DEG/2);
-                })();
-                relevancyRadius = (function(){
-                  var ZONE_HEIGHT_IN_DEG = (1 / sails.config.custom.numZonesPerDegreeSquare);
-                  var ZONE_WIDTH_IN_DEG = (1 / sails.config.custom.numZonesPerDegreeSquare);
-                  var zoneHeightKm = 111 * ZONE_HEIGHT_IN_DEG;
-                  var zoneWidthKm = Math.abs(Math.cos(zoneCenterLatitudeDeg)) * (111*ZONE_WIDTH_IN_DEG);
-                  var zoneEdgeHypotenuse = Math.sqrt(Math.pow(zoneHeightKm) + Math.pow(zoneWidthKm));
-
-                  // This little guy forms something close to a "circle of best fit" in our
-                  // rectangular zone.
-                  return zoneEdgeHypotenuse;
-                })();
-              } catch (e) { return proceed(e); }
-
               console.log('Searching for tweets from ('+inputs.lat+'° N,'+inputs.long+'°)');
-              console.log('Adjusted zone center coordinates: ('+zoneCenterLatitudeDeg+'° N,'+zoneCenterLongitudeDeg+'°)');
-              console.log('Relevancy radius: '+relevancyRadius);
+              console.log('(Note that adjusted zone center coordinates will be used instead...)');
 
               Twitter.searchTweets({
                 bearerToken: bearerToken,
@@ -243,6 +250,9 @@ module.exports = {
                   id: zone.id,
                   numOtherUsersHere: otherUsersHere.length,
                   otherUsersHere: otherUsersHere,
+                  relevancyRadius: relevancyRadius,
+                  zoneCenterLatitudeDeg: zoneCenterLatitudeDeg,
+                  zoneCenterLongitude: zoneCenterLongitude,
                   weather: zone.cachedWeather,
                 });
 

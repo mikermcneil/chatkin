@@ -84,29 +84,74 @@
           console.log('io.socket.put(\'/user/'+ username +'/remark\',{remark: \'hi\'},console.log.bind(console))');
           console.log('```');
 
+
+          // Compute zoom
+          // ------------------------------------------------------------------
+          //
+          // Derivation:
+          // ```
+          // 142/7 = radiusKm/x
+          // 142*x / 7 = radiusKm
+          // 142x = radiusKm*7
+          // x = radiusKm*7 / 142
+          // ```
+          //
+          // Thus:
+          // approximateZoomLevel = Math.min(MAX_ZOOM, radiusKm*7 / 142);
+          //
+          var zoom = (function(){
+
+            var radiusKm = 142; // TODO: use real radiuskm from server
+
+            var MAX_ZOOM = 21;
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            // ^^ Note that Google maps max zoom actually varies based on coordinates
+            // (https://developers.google.com/maps/documentation/javascript/maxzoom).
+            // But for our purposes, this is fine.  It's the max zoom in the middle
+            // of nowhere out in the Pacific ocean.
+            // (https://www.google.com/maps/@13.3428522,-133.3336917,21z)
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+            return Math.min(MAX_ZOOM, radiusKm*7 / 142);
+          })();
+          // ------------------------------------------------------------------
+
           // Display map
-          var $mapImg = $('<img src="https://maps.googleapis.com/maps/api/staticmap?center=' + geoPosition.coords.latitude + ',' + geoPosition.coords.longitude + '&zoom=7&size=200x200&sensor=false"/>');
+          var mapCenterLatitude = geoPosition.coords.latitude;// TODO: use real adjusted coordinates from server instead
+          var mapCenterLongitude = geoPosition.coords.longitude;// TODO: use real adjusted coordinates from server instead
+          var $mapImg = $('<img src="https://maps.googleapis.com/maps/api/staticmap?center=' + mapCenterLatitude + ',' + mapCenterLongitude + '&zoom='+zoom+'&size=200x200&sensor=false"/>');
           $('#map').append($mapImg);
 
 
-          // When the socket connects
+          // Every time a "zone" socket event from the server arrives...
           io.socket.on('zone', function(msg){
             console.log('* * Received zone notification from server with message:', msg);
-            if(msg.username === vm.username) {
-              return;
-            }
+
+            // Ignore messages that mention the currently-logged in user.
+            if(msg.username === vm.username) { return; }//-•
+
+
 
             var userInZone = _.find(vm.otherUsersHere, {username: msg.username});
             if(!_.isUndefined(userInZone)) {
               userInZone.remark = msg.remark;
             }
-            else {
+            // If this notification is about a user leaving the zone, remove the user
+            // from the user interface.
+            else if (msg.verb === 'userLeft') {
+              // TODO
+            }
+            // If it's about a new user joining the zone, add that user
+            // to the UI.
+            else if (msg.verb === 'userArrived') {
               vm.otherUsersHere.unshift({
                 username: msg.username,
                 avatarColor: msg.avatarColor,
                 remark: msg.remark
               });
             }
+            // Otherwise, we don't know wtf it is.
+            else { throw new Error('Consistency violation: Unrecognized message received in "zone" socket event handler: '+msg); }
 
             // If a user arrived, increase the number of other users in this zone.
             if(msg.verb === 'userArrived') {
@@ -116,10 +161,7 @@
             else if(msg.verb === 'userLeft') {
               vm.numOthersInZone--;
             }
-          });
-
-          // TODO:
-          // Add another message for when someone leaves a zone.
+          });//</ .on('zone') >
 
         });
       }, function failedToGetLocation(err) {
