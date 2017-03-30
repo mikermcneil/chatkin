@@ -166,21 +166,22 @@ module.exports = {
                   return zoneLeftLongitudeDeg + (ZONE_WIDTH_IN_DEG/2);
                 })();
                 relevancyRadius = (function(){
-                  var zoneHeightKm;
-                  var zoneWidthKm;
-                  var zoneEdgeHypotenuse;
-                  //todo
+                  var ZONE_HEIGHT_IN_DEG = (1 / sails.config.custom.numZonesPerDegreeSquare);
+                  var ZONE_WIDTH_IN_DEG = (1 / sails.config.custom.numZonesPerDegreeSquare);
+                  var zoneHeightKm = 111 * ZONE_HEIGHT_IN_DEG;
+                  var zoneWidthKm = Math.abs(Math.cos(zoneCenterLatitudeDeg)) * (111*ZONE_WIDTH_IN_DEG);
+                  var zoneEdgeHypotenuse = Math.sqrt(Math.pow(zoneHeightKm) + Math.pow(zoneWidthKm));
 
-                  //- - - - - - - - - - - - - - - - - - - - - - - - - - -
-                  return 5;
-                  //^^^^
-                  //TODO: do the real calculations as hinted at above
-                  //instead of this stuff
-                  //- - - - - - - - - - - - - - - - - - - - - - - - - - -
+                  // This little guy forms something close to a "circle of best fit" in our
+                  // rectangular zone.
+                  return zoneEdgeHypotenuse;
                 })();
               } catch (e) { return proceed(e); }
 
-              // console.log('Searching for tweets around ('+inputs.lat+'° N,'+inputs.long+'°)');
+              console.log('Searching for tweets from ('+inputs.lat+'° N,'+inputs.long+'°)');
+              console.log('Adjusted zone center coordinates: ('+zoneCenterLatitudeDeg+'° N,'+zoneCenterLongitudeDeg+'°)');
+              console.log('Relevancy radius: '+relevancyRadius);
+
               Twitter.searchTweets({
                 bearerToken: bearerToken,
                 latitude: zoneCenterLatitudeDeg,
