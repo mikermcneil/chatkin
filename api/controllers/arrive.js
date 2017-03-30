@@ -252,7 +252,7 @@ module.exports = {
                   otherUsersHere: otherUsersHere,
                   relevancyRadius: relevancyRadius,
                   zoneCenterLatitudeDeg: zoneCenterLatitudeDeg,
-                  zoneCenterLongitude: zoneCenterLongitude,
+                  zoneCenterLongitude: zoneCenterLongitudeDeg,
                   weather: zone.cachedWeather,
                 });
 
