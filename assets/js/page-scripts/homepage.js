@@ -127,71 +127,93 @@
           io.socket.on('zone', function(msg){
             console.log('* * Received zone notification from server with message:', msg);
 
-            // Ignore messages that mention the currently-logged in user.
-            if(msg.username === vm.username) { return; }//-•
-
-
-
-            var userInZone = _.find(vm.otherUsersHere, {username: msg.username});
-            if(!_.isUndefined(userInZone)) {
-              userInZone.remark = msg.remark;
-            }
             // If this notification is about a user leaving the zone, remove the user
             // from the user interface.
-            else if (msg.verb === 'userLeft') {
-              // TODO
+            if (msg.verb === 'userLeft') {
+              // If this notification is about the currently logged-in user,
+              // just ignore it.
+              // (This can happen if a user has multiple tabs open.)
+              if(msg.username === vm.username) { return; }
+
+              // Remove the user from the list of other users in the zone.
+              _.remove(vm.otherUsersHere, {username: msg.username});
+              // Decrease the number of other users in this zone.
+              vm.numOthersInZone--;
             }
             // If it's about a new user joining the zone, add that user
             // to the UI.
             else if (msg.verb === 'userArrived') {
+              // If this notification is about the currently logged-in user,
+              // just ignore it.
+              // (This can happen if a user has multiple tabs open.)
+              if(msg.username === vm.username) { return; }
+              // Also, if this notification is about a user who is already here,
+              // ignore it.
+              // (Also can happen if a user has multiple tabs open.)
+              var userInZone = _.find(vm.otherUsersHere, {username: msg.username});
+              if(!_.isUndefined(userInZone)) { return; }
+
+              // Increase the number of other users in the zone.
+              vm.numOthersInZone++;
+              // Add the newly-arrived user to our list of `otherUsersHere`.
               vm.otherUsersHere.unshift({
                 username: msg.username,
                 avatarColor: msg.avatarColor,
                 remark: msg.remark
               });
             }
-            // Otherwise, we don't know wtf it is.
-            else { throw new Error('Consistency violation: Unrecognized message received in "zone" socket event handler: '+msg); }
+            // If this is about a user in this zone updating their remark,
+            // update the remark in the UI.
+            else if(msg.verb === 'userRemarked') {
+              // If this notification is about the currently logged-in user,
+              // just ignore it.
+              // (This can happen if a user has multiple tabs open.)
+              if(msg.username === vm.username) { return; }
 
-            // If a user arrived, increase the number of other users in this zone.
-            if(msg.verb === 'userArrived') {
-              vm.numOthersInZone++;
+              // Find the user in the `otherUsersHere` list.
+              var userInZone = _.find(vm.otherUsersHere, {username: msg.username});
+
+              // FOR NOW:
+              // If the user isn't in our list, assume they arrived before us
+              // and add them.
+              if(_.isUndefined(userInZone)) {
+                vm.otherUsersHere.unshift({
+                  username: msg.username,
+                  avatarColor: msg.avatarColor,
+                  remark: msg.remark
+                });
+              }
+              // Otherwise, update the existing user's remark.
+              else {
+                userInZone.remark = msg.remark;
+              }
+
+              // FUTURE:
+              // if(!_.isUndefined(userInZone)) { throw new Error('Consistency violation: received a `userRemarked` notification for a user who is not in this zone.');}
+              // // Update the user's remark.
+              // userInZone.remark = msg.remark;
             }
-            // If a user left, decrease the number of other users in this zone.
-            else if(msg.verb === 'userLeft') {
-              vm.numOthersInZone--;
-            }
+            // Otherwise, we don't know wtf it is.
+            else { throw new Error('Consistency violation: Unrecognized message received in "zone" socket event handler: '+JSON.stringify(msg)); }
           });//</ .on('zone') >
 
         });
       }, function failedToGetLocation(err) {
-        throw new Error(err.code + ' :: ' + err.message);
-        // // FOR DEVELOPMENT:
-        // // Show error message in the UI
-        // if(!err.stack) {
-        //   try {
-        //     throw new Error(err);
-        //   }
-        //   catch(e) {
-        //     vm.errorMsg = JSON.stringify(e.stack);
-        //   }
-        // }
-        // else {
-        //   vm.errorMsg = JSON.stringify(err.stack);
-        // }
-        // </ FOR DEVELOPMENT >
-
         vm.syncingLocation = false;
         vm.errorFetchingLocation = true;
         console.error('Could not load location.  (Please refresh the page and try again.)');
         console.error('Error details:');
         console.error(err);
+
+        throw new Error(err.code + ' :: ' + err.message);
+
       });
     },//</mounted>
 
 
     methods: {
       updateRemark: function() {
+        vm.editingMessage = false;
         io.socket.put('/user/'+vm.username+'/remark', {
           remark: vm.message
         }, function(data, jwr) {
@@ -199,12 +221,10 @@
             console.error('Server responded with an error.  (Please refresh the page and try again.)');
             console.error('Error details:');
             console.error(jwr.error);
+            // Re-enable the message field.
+            vm.editingMessage = true;
             return;
           }//-•
-
-          // Update my remark in the UI.
-          $('#my-remark').text(vm.message);
-          vm.editingMessage = false;
         });
       },//</updateRemark>
 
