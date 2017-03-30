@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'chatkin-icons';
-  src:  url('/fonts/chatkin-icons.eot?f7wvb8');
-  src:  url('/fonts/chatkin-icons.eot?f7wvb8#iefix') format('embedded-opentype'),
-    url('/fonts/chatkin-icons.woff2?f7wvb8') format('woff2'),
-    url('/fonts/chatkin-icons.ttf?f7wvb8') format('truetype'),
-    url('/fonts/chatkin-icons.woff?f7wvb8') format('woff'),
-    url('/fonts/chatkin-icons.svg?f7wvb8#chatkin-icons') format('svg');
+  src:  url('/fonts/chatkin-icons.eot?vhe0cm');
+  src:  url('/fonts/chatkin-icons.eot?vhe0cm#iefix') format('embedded-opentype'),
+    url('/fonts/chatkin-icons.woff2?vhe0cm') format('woff2'),
+    url('/fonts/chatkin-icons.ttf?vhe0cm') format('truetype'),
+    url('/fonts/chatkin-icons.woff?vhe0cm') format('woff'),
+    url('/fonts/chatkin-icons.svg?vhe0cm#chatkin-icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -62,12 +62,12 @@
 .icon-logo-chatkin .path2:before {
   content: "\e903";
   margin-left: -1.05859375em;
-  color: rgb(255, 255, 255);
+  color: inherit;
 }
 .icon-logo-chatkin .path3:before {
   content: "\e904";
   margin-left: -1.05859375em;
-  color: inherit;
+  color: rgb(255, 255, 255);
 }
 .icon-logo-chatkin .path4:before {
   content: "\e905";
@@ -79,5 +79,4 @@
   margin-left: -1.05859375em;
   color: inherit;
 }
-
 
