@@ -27,6 +27,7 @@
       errorFetchingLocation: false,
       zoneDetailsVisible: false,
       otherUsersHere: [],
+      editingMessage: false,
       // A more descriptive error message for debugging in development:
       errorMsg: '',
     },
@@ -149,21 +150,20 @@
 
     methods: {
       updateRemark: function() {
-        if(vm.message !== '') {
-          io.socket.put('/user/'+vm.username+'/remark', {
-            remark: vm.message
-          }, function(data, jwr) {
-            if (jwr.error) {
-              console.error('Server responded with an error.  (Please refresh the page and try again.)');
-              console.error('Error details:');
-              console.error(jwr.error);
-              return;
-            }//-•
+        io.socket.put('/user/'+vm.username+'/remark', {
+          remark: vm.message
+        }, function(data, jwr) {
+          if (jwr.error) {
+            console.error('Server responded with an error.  (Please refresh the page and try again.)');
+            console.error('Error details:');
+            console.error(jwr.error);
+            return;
+          }//-•
 
-            // Update my remark in the UI.
-            $('#my-remark').text(vm.message);
-          });
-        }
+          // Update my remark in the UI.
+          $('#my-remark').text(vm.message);
+          vm.editingMessage = false;
+        });
       },//</updateRemark>
 
       focusHiddenInput: function() {
@@ -177,6 +177,14 @@
         // to show the information.
         $('#zone-details-hidden-input').focus();
       },
+
+      enableMessageField: function() {
+        // Enable editing of the message.
+        vm.editingMessage = true;
+        // Focus the field. (We need to manually re-enable it first, because otherwise it will
+        // still be disabled when this code runs.
+        $('#update-remark-field').removeAttr('disabled').focus();
+      }
     }//</methods>
   });
 

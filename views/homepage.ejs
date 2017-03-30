@@ -6,7 +6,6 @@
           <!-- <i class="chatkin-icon icon-logo-chatkin"></i>  -->
           <i class="chatkin-icon icon-logo-chatkin"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i>
           chatkin
-          <div class="logo-bg"></div>
         </span>
         <span class="zone-info">
           <!-- <span class="zone-name" v-if="currentZone">#{{currentZone}}</span> -->
@@ -46,18 +45,23 @@
       </div>
     </div>
   </div>
-  <div class="form">
+  <div class="form" v-if="!(syncingLocation || errorFetchingLocation || communicatingWithServer)" v-on:click="enableMessageField">
     <div class="container">
-      <div class="avatar">
+      <div class="avatar" :class="editingMessage ? 'hovering' : ''">
         <!-- <i class="chatkin-icon icon-logo-chatkin" style="color: <%= avatarColor %>"></i> -->
         <i class="chatkin-icon icon-logo-chatkin" style="color: <%= avatarColor %>"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i>
       </div>
-      <input v-model="message"
-        v-bind:disabled="(syncingLocation || errorFetchingLocation || communicatingWithServer)"
+      <input id="update-remark-field"
+        v-model="message"
+        v-bind:disabled="!editingMessage"
         v-on:keyup.enter="updateRemark"
         type="text"
         class="form-control input-lg"
-        placeholder="Add a message!"/>
+        :class="!editingMessage ? 'disabled' : ''"
+        :placeholder="editingMessage ? '' : 'Click to add a message.'"/>
+        <!-- <span class="edit-btn" v-if="!editingMessage" v-on:click="enableMessageField">
+          <i class="chatkin-icon icon-pencil"></i>
+        </span> -->
     </div>
   </div>
 </div>
