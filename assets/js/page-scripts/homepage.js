@@ -6,10 +6,6 @@
   // Bail if this file isn't applicable.
   if ($('#'+PAGE_NAME).length === 0) { return; }
 
-  var username = $('#main-content').attr('data-logged-in-user');
-  $('#main-content').removeAttr('data-logged-in-user');
-
-
   // Set up the Vue instance for our homepage
   var vm = new Vue({
 
@@ -17,9 +13,9 @@
 
     // Initialize data
     data: {
-      username: username,
+      username: window.SAILS_LOCALS.username,
       avatarColor: '',
-      message: '',
+      message: window.SAILS_LOCALS.remark,
       currentZone: null,
       numOthersInZone: null,
       syncingLocation: true,
@@ -39,7 +35,7 @@
         throw new Error('Geolocation is not supported by your browser.');
       }
       // If no username was specified, stop here.
-      if(!username) {
+      if(!window.SAILS_LOCALS.username) {
         console.error('No username specified.  Try again w/ a username to continue.');
         return;
       }
@@ -58,7 +54,7 @@
 
         // Communicate w/ server
         // console.log('communicating with server...');
-        io.socket.put('/user/'+ username +'/zone', {
+        io.socket.put('/user/'+ window.SAILS_LOCALS.username +'/zone', {
           lat: geoPosition.coords.latitude,
           long: geoPosition.coords.longitude
         }, function(data, jwr){
@@ -81,7 +77,7 @@
           console.log('The weather in this zone is:',data.weather);
           console.log('You can change your remark by running the following code:');
           console.log('```');
-          console.log('io.socket.put(\'/user/'+ username +'/remark\',{remark: \'hi\'},console.log.bind(console))');
+          console.log('io.socket.put(\'/user/'+ window.SAILS_LOCALS.username +'/remark\',{remark: \'hi\'},console.log.bind(console))');
           console.log('```');
 
 
