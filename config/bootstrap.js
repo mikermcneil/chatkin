@@ -89,7 +89,7 @@ module.exports.bootstrap = function(cb) {
     if (err) { return cb(err); }
 
     if (numZones > xMax*yMax) {
-      return cb(new Error('Consistency violation: More zones than expected!'));
+      return cb(new Error('Consistency violation: More zones ('+numZones+') than expected!'));
     }
 
     if (numZones === xMax*yMax) {
