@@ -148,12 +148,39 @@ module.exports = {
             }).exec(function(err, bearerToken) {
               if (err) { return proceed(err); }
 
+              // Compute relevancy radius and adjusted lat/long:
+              // > For more about what this is and why we have to compute
+              // > it this way, see config/bootstrap.js.
+              var zoneCenterLatitudeDeg = (function(){
+                var zoneTopLatitudeDeg = inputs.lat;
+                var ZONE_HEIGHT_IN_DEG = sails.config.custom.numZonesPerDegreeSquare;
+                return zoneTopLatitudeDeg + (ZONE_HEIGHT_IN_DEG/2);
+              })();
+              var zoneCenterLongitudeDeg = (function(){
+                var zoneLeftLongitudeDeg = inputs.long;
+                var ZONE_WIDTH_IN_DEG = sails.config.custom.numZonesPerDegreeSquare;
+                return zoneLeftLongitudeDeg + (ZONE_WIDTH_IN_DEG/2);
+              })();
+              var relevancyRadius = (function(){
+                var zoneHeightKm;
+                var zoneWidthKm;
+                var zoneEdgeHypotenuse;
+                //todo
+
+                //- - - - - - - - - - - - - - - - - - - - - - - - - - -
+                return 5;
+                //^^^^
+                //TODO: do the real calculations as hinted at above
+                //instead of this stuff
+                //- - - - - - - - - - - - - - - - - - - - - - - - - - -
+              })();
+
               // console.log('Searching for tweets around ('+inputs.lat+'° N,'+inputs.long+'°)');
               Twitter.searchTweets({
                 bearerToken: bearerToken,
-                latitude: inputs.lat,
-                longitude: inputs.long,
-                radius: 5
+                latitude: zoneCenterLatitudeDeg,
+                longitude: zoneCenterLongitudeDeg,
+                radius: relevancyRadius
               }).exec(function(err, matchingTweets){
                 if (err) { return proceed(err); }
 
