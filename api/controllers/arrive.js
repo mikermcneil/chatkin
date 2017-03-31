@@ -149,11 +149,11 @@ module.exports = {
               var zoneHeightKm = 111 * ZONE_HEIGHT_IN_DEG;
               var zoneWidthKm = Math.abs(Math.cos(zoneCenterLatitudeDeg)) * (111*ZONE_WIDTH_IN_DEG);
               var zoneEdgeHypotenuse = Math.sqrt(Math.pow(zoneHeightKm,2) + Math.pow(zoneWidthKm,2));
-              console.log('zoneWidthKm :: '+zoneWidthKm);
-              console.log('zoneHeightKm :: '+zoneHeightKm);
-              console.log('Math.pow(zoneHeightKm,2) :: '+Math.pow(zoneHeightKm,2));
-              console.log('Math.pow(zoneWidthKm,2) :: '+Math.pow(zoneWidthKm,2));
-              console.log('Math.sqrt(Math.pow(zoneHeightKm,2) + Math.pow(zoneWidthKm,2)) :: '+Math.sqrt(Math.pow(zoneHeightKm,2) + Math.pow(zoneWidthKm,2)));
+              sails.log.verbose('zoneWidthKm :: '+zoneWidthKm);
+              sails.log.verbose('zoneHeightKm :: '+zoneHeightKm);
+              sails.log.verbose('Math.pow(zoneHeightKm,2) :: '+Math.pow(zoneHeightKm,2));
+              sails.log.verbose('Math.pow(zoneWidthKm,2) :: '+Math.pow(zoneWidthKm,2));
+              sails.log.verbose('Math.sqrt(Math.pow(zoneHeightKm,2) + Math.pow(zoneWidthKm,2)) :: '+Math.sqrt(Math.pow(zoneHeightKm,2) + Math.pow(zoneWidthKm,2)));
 
               // This little guy forms something close to a "circle of best fit" in our
               // rectangular zone.
@@ -161,8 +161,8 @@ module.exports = {
             })();
           } catch (e) { return exits.error(e); }
 
-          console.log('Adjusted zone center coordinates: ('+zoneCenterLatitudeDeg+'° N,'+zoneCenterLongitudeDeg+'°)');
-          console.log('Relevancy radius: '+relevancyRadius);
+          sails.log.verbose('Adjusted zone center coordinates: ('+zoneCenterLatitudeDeg+'° N,'+zoneCenterLongitudeDeg+'°)');
+          sails.log.verbose('Relevancy radius: '+relevancyRadius);
 
           // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
           // FUTURE: To improve zone load time (esp. for the first load of the day for that zone),
@@ -186,8 +186,8 @@ module.exports = {
             }).exec(function(err, bearerToken) {
               if (err) { return proceed(err); }
 
-              console.log('Searching for tweets from ('+inputs.lat+'° N,'+inputs.long+'°)');
-              console.log('(Note that adjusted zone center coordinates will be used instead...)');
+              sails.log.verbose('Searching for tweets from ('+inputs.lat+'° N,'+inputs.long+'°)');
+              sails.log.verbose('(Note that adjusted zone center coordinates will be used instead...)');
 
               Twitter.searchTweets({
                 bearerToken: bearerToken,
@@ -197,8 +197,8 @@ module.exports = {
               }).exec(function(err, matchingTweets){
                 if (err) { return proceed(err); }
 
-                // console.log('For zone #'+zone.id+'...');
-                // console.log('%d matching tweets:', matchingTweets.length, matchingTweets);
+                sails.log.verbose('Note: This is zone #'+zone.id+'...');
+                sails.log.verbose('%d matching tweets found:', matchingTweets.length, matchingTweets);
 
                 // Cache tweets
                 Zone.update({ id: zone.id })
