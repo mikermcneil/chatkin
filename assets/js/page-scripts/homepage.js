@@ -28,6 +28,15 @@
         otherUsersHere: [],
       },
 
+      weather: {
+        iconClass: '',
+        kind: '',//'Thunderstorm', 'Drizzle', 'Rain', 'Snow', 'Atmosphere', 'Clear', 'Clouds', 'Extreme', or 'Additional'
+        description: '',
+        temp: null,
+        temp_min: null,
+        temp_max: null
+      },
+
       // For loading states
       syncing: 'location', // 'location', 'chatkinServer', 'form', or ''
 
@@ -80,9 +89,22 @@
 
           // Clear the loading state.
           vm.syncing = '';
+
           // Update our zone data.
-          vm.zone.numOtherUsersHere = data.numOtherUsersHere;
           vm.zone.id = data.id;
+          vm.zone.numOtherUsersHere = data.numOtherUsersHere;
+          vm.weather.kind = data.weather.weather[0].main;
+          vm.weather.description = data.weather.weather[0].description;
+          vm.weather.temp = data.weather.main.temp;
+          vm.weather.temp_min = data.weather.main.temp_min;
+          vm.weather.temp_max = data.weather.main.temp_max;
+          // Determine the weather icon class.
+          // (We just named our icons the same thing as the OpenWeatherMap
+          // icons, but prefixed with 'icon-weather-'.
+          // See https://openweathermap.org/weather-conditions for the list.)
+          console.log('WTF WEATHER',data.weather.weather[0]);
+          vm.weather.iconClass = 'icon-weather-'+data.weather.weather[0].icon;
+
 
           console.log('There are '+data.numOtherUsersHere+' other people here.');
           console.log('currentZone',vm.zone.id);
@@ -256,16 +278,27 @@
         });
       },//</updateRemark>
 
-      focusHiddenInput: function() {
+      focusHiddenInput: function(menuType) {
         // If the zone info is still loading, or if we weren't able to get the location, bail.
         if(vm.syncing || vm.errorType) {
-          console.log('still loading!!!');
           return;
         }
 
-        // Otherwise, we have zone info, so focus the hidden input
-        // to show the information.
-        $('#zone-details-hidden-input').focus();
+        // Otherwise, we have zone info, so figure out
+        // which hidden input to focus.
+        switch(menuType) {
+          case 'zoneDetails':
+            $('#zone-details-hidden-input').focus();
+            break;
+
+          case 'weatherDetails':
+            $('#weather-details-hidden-input').focus();
+            break;
+
+          default:
+            throw new Error('Consistency violation: unknown `menuType` passed into focusHiddenInput().');
+        }
+
       },
 
       enableMessageField: function() {

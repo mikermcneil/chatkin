@@ -43,22 +43,13 @@
         }
       }
 
-      .zone-info {
+      .menu-icon {
         display: inline-block;
         float: right;
         padding-top: 2px;
         position: relative;
         overflow: visible;
         z-index: 200;
-        .zone-name {
-          color: @accent-blue;
-          // color: #fff;
-          font-family: @header-font;
-          font-size: 15px;
-          position: relative;
-          top: -4px;
-          text-transform: uppercase;
-        }
         >i {
           color: @brand-chatkin;
           // color: #fff;
@@ -79,7 +70,7 @@
           position: absolute;
           right: -9999px;
         }
-        .zone-details {
+        .popup-menu {
           border-radius: 7px;
           background-color: rgba(255,255,255,0.9);
           border: 1px solid @border-gray;
@@ -92,15 +83,17 @@
           padding-right: 10px;
           opacity: 0;
           pointer-events: none;
+          &.visible {
+            opacity: 1;
+          }
+        }
+        .zone-details {
           #map {
             width: 200px;
             height: 200px;
             overflow: hidden;
             border-radius: 5px;
             background-color: lighten(#ebebeb, 5%);
-          }
-          &.visible {
-            opacity: 1;
           }
         }
       }
