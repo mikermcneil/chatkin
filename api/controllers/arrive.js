@@ -261,6 +261,14 @@ module.exports = {
                 try {
                   _.each(zone.cachedTweets, function (rawTweet){
 
+                    // Filter out the replies, since they aren't usually standalone messages,
+                    // and the retweets, since they won't look so great in the UI.
+                    var isReply = _.startsWith(rawTweet.text, '@');
+                    var isRetweet = _.startsWith(rawTweet.text, 'RT @');
+                    if(isReply || isRetweet) {
+                      return;
+                    }
+
                     // Compute a JS timestamp from this tweet's `created_at` property.
                     var tweetedAt = (new Date(rawTweet.created_at)).getTime();
 
