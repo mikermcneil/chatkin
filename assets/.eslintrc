@@ -39,8 +39,7 @@
     // ...
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    // If the "no-undef" rule is enabled in the top-level .eslintrc file, be sure to
-    // uncomment the following so that backend globals are not inadvertently allowed:
+    // Make sure backend globals aren't indadvertently tolerated in our client-side JS:
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     "sails": false,
     // (Don't disable lodash's `_` global; it's used in the client-side JS code too!)
