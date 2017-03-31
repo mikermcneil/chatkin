@@ -71,6 +71,7 @@
           right: -9999px;
         }
         .popup-menu {
+          width: 220px;
           border-radius: 7px;
           background-color: rgba(255,255,255,0.9);
           border: 1px solid @border-gray;
@@ -87,13 +88,16 @@
             opacity: 1;
           }
         }
-        .zone-details {
-          #map {
-            width: 200px;
-            height: 200px;
-            overflow: hidden;
-            border-radius: 5px;
-            background-color: lighten(#ebebeb, 5%);
+        &.zone-info {
+          margin-right: 10px;
+          .zone-details {
+            #map {
+              width: 200px;
+              height: 200px;
+              overflow: hidden;
+              border-radius: 5px;
+              background-color: lighten(#ebebeb, 5%);
+            }
           }
         }
       }

@@ -6,23 +6,24 @@
           <!-- <i class="chatkin-icon icon-logo-chatkin"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span></i> -->
           chatkin
         </span>
+        <span class="menu-icon weather-info">
+          <i class="chatkin-icon" v-bind:class="weather.iconClass ? weather.iconClass : ''" v-on:click="focusHiddenInput('weatherDetails')"></i>
+          <input type="text" id="weather-details-hidden-input" class="offscreen" v-on:focus="visibleMenu = 'weatherDetails'" v-on:blur="visibleMenu = ''" placeholder="Focusing this input shows the weather details."/>
+          <div class="popup-menu weather-details" v-bind:class="visibleMenu === 'weatherDetails' ? 'visible' : ''">
+            <h4>Weather: {{weather.description}}</h4>
+            <h5>{{weather.temp}}&deg;K</h5>
+            <p><strong>High:</strong> {{weather.temp_max}}&deg;K</p>
+            <p><strong>Low:</strong> {{weather.temp_min}}&deg;K</p>
+          </div>
+        </span>
         <span class="menu-icon zone-info">
-          <i class="chatkin-icon icon-location" v-on:click="focusHiddenInput('zoneDetails')"></i>
+          <i class="chatkin-icon icon-location" v-on:click="focusHiddenInput('zoneDetails')" v-if="!(syncing || errorType)"></i>
           <input type="text" id="zone-details-hidden-input" class="offscreen" v-on:focus="visibleMenu = 'zoneDetails'" v-on:blur="visibleMenu = ''" placeholder="Focusing this input shows the zone details."/>
           <div class="popup-menu zone-details" v-bind:class="visibleMenu === 'zoneDetails' ? 'visible' : ''">
             <h4>Zone #{{zone.id}}:</h4>
             <div id="map"></div>
             <span v-if="zone.numOtherUsersHere === 0">You are the only one here.</span>
             <span v-else>There {{zone.numOtherUsersHere === 1 ? 'is' : 'are'}} {{zone.numOtherUsersHere}} other {{zone.numOtherUsersHere === 1 ? 'person' : 'people'}}  here.</span>
-          </div>
-        </span>
-        <span class="menu-icon weather-info">
-          <i class="chatkin-icon" v-bind:class="weather.iconClass ? weather.iconClass : ''" v-on:click="focusHiddenInput('weatherDetails')"></i>
-          <input type="text" id="weather-details-hidden-input" class="offscreen" v-on:focus="visibleMenu = 'weatherDetails'" v-on:blur="visibleMenu = ''" placeholder="Focusing this input shows the weather details."/>
-          <div class="popup-menu weather-details" v-bind:class="visibleMenu === 'weatherDetails' ? 'visible' : ''">
-            <h4>Weather:</h4>
-            <p>{{weather.description}}</p>
-            <p>Current temperature: {{weather.temp}}K</p>
           </div>
         </span>
       </div>
