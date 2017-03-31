@@ -159,7 +159,7 @@ module.exports = {
               // rectangular zone.
               return zoneEdgeHypotenuse;
             })();
-          } catch (e) { return proceed(e); }
+          } catch (e) { return exits.error(e); }
 
           console.log('Adjusted zone center coordinates: ('+zoneCenterLatitudeDeg+'° N,'+zoneCenterLongitudeDeg+'°)');
           console.log('Relevancy radius: '+relevancyRadius);

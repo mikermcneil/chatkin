@@ -30,6 +30,7 @@ module.exports = {
       username: inputs.username
     })
     .exec(function(err, userRecord) {
+      if (err) { return exits.error(err); }
 
       // If there was no matching user, exit thru "notFound".
       if(!userRecord) {

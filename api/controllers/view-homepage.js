@@ -38,7 +38,7 @@ module.exports = {
       if (err) { return exits.error(err); }
 
       if (!loggedInUserRecord) {
-       return exits.error(new Error('The requesting user is logged in as user `'+env.req.session.userId+'`, but no such user exists in the database.  This should never happen!'));
+        return exits.error(new Error('The requesting user is logged in as user `'+env.req.session.userId+'`, but no such user exists in the database.  This should never happen!'));
       }
 
       // Then respond with HTML.
