@@ -55,14 +55,22 @@
           vm.isSyncing = false;
           if(jwr.error) {
             switch(jwr.headers['x-exit']) {
+
               case 'emailAlreadyInUse':
+                // Note that, if preferred, we could have also
+                // just looked at the response's status code here;
+                // i.e. 409 vs. 500.  In this example, we just use
+                // the X-Exit header to demonstrate that it is available
+                // when using actions2 on the server.
                 vm.usernameTaken = true;
                 return;
+
               default:
                 console.error('Server responded with an error.  (Please refresh the page and try again.)');
                 console.error('Error details:');
                 console.error(jwr.error);
                 return;
+
             }
           }//-•
 
