@@ -73,8 +73,6 @@
         // If global keydown fires with any obvious alphanumeric key, we'll make
         // sure the chat text field is in an editable state and focused (unless
         // it's syncing, of course).
-        var isAlphaNumeric = e.key && e.key.match(/^[a-z0-9]$/i) && !e.metaKey && !e.ctrlKey;
-        if (!isAlphaNumeric){ return; }
         if (vm.editingMessage) { return; }
         if (vm.syncing) { return; }
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -85,21 +83,35 @@
         // ```
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        // But otherwise if the text field is NOT editable, then we'll make it editable,
-        // focus it, highlight the text, and prevent the default behavior of this keydown
-        // event.
-        e.preventDefault();
-        vm.enableMessageField();
-
-        // Now select everything inside of the text field
-        // (since this was spawned from the keyboard and no more precise motive can be assumed.)
+        // Look up the message field
         var $field = $('#update-remark-field');
-        $field.get(0).setSelectionRange(0, $field.get(0).value.length);
-        // setTimeout(function afterWaitingForTheDigestThingy(){
-        //   var $field = $('#update-remark-field');
-        //   // $field.focus();
-        //   $field.get(0).setSelectionRange(0, $field.get(0).value.length);
-        // }, 0);
+
+        // Now we know the text field is NOT editable, so we'll make it editable,
+        // focus it, highlight the text, and prevent the default behavior of this keydown
+        // event.... well probably anyway.
+        //
+        // First let's make sure the keydown event came from a key we actually want
+        // to respond to.
+        var isAlphaNumeric = e.key && e.key.match(/^[a-z0-9]$/i) && !e.metaKey && !e.ctrlKey;
+
+        // Handle ENTER key by selecting everything inside of the text field.
+        // (since this was spawned from the keyboard and no more precise motive can be assumed.)
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          vm.enableMessageField();
+          $field.get(0).setSelectionRange(0, $field.get(0).value.length);
+        }
+        // If alphanumeric, then we'll set the field equal to that key's string value.
+        // (The user can press ENTER to cancel and revert the field's contents.)
+        else if (isAlphaNumeric) {
+          e.preventDefault();
+          vm.enableMessageField(e.key);
+        }
+        // Otherwise, if since the key is neither alphanumeric nor ENTER, we'll ignore it.
+        else {
+          return;
+        }
+
 
       });
 
@@ -340,13 +352,21 @@
 
       },
 
-      enableMessageField: function() {
+      clickMessageField: function(){
+        vm.enableMessageField();
+      },
+
+      enableMessageField: function(newMsg) {
         // If the zone info is still loading, or if something went wrong, bail.
         if(vm.syncing || vm.errorType) { return; }
         // If we're already editing, bail.
         if (vm.editingMessage) { return; }
-        // Track the remark before any editing.
+        // Track the original remark before any editing.
         vm.oldMessage = vm.me.message;
+        // If a new message was provided, set it.
+        if (!_.isUndefined(newMsg)) {
+          vm.me.message = newMsg;
+        }
         // Enable editing of the message.
         vm.editingMessage = true;
         // Focus the field. (We need to manually re-enable it first, because otherwise it will

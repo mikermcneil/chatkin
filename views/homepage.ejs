@@ -54,7 +54,7 @@
       </div>
     </div>
   </div>
-  <div class="form" v-if="!(syncing || errorType)" v-on:click="enableMessageField">
+  <div class="form" v-if="!(syncing || errorType)" v-on:click="clickMessageField">
     <div class="container">
       <div class="avatar" :class="editingMessage ? 'hovering' : ''">
         <!-- <i class="chatkin-icon icon-logo-chatkin" style="color: <%= avatarColor %>"></i> -->
@@ -69,7 +69,7 @@
         class="form-control input-lg"
         :class="!editingMessage ? 'disabled' : ''"
         :placeholder="editingMessage ? '' : 'Click to add a message.'"/>
-        <!-- <span class="edit-btn" v-if="!editingMessage" v-on:click="enableMessageField">
+        <!-- <span class="edit-btn" v-if="!editingMessage" v-on:click="clickMessageField">
           <i class="chatkin-icon icon-pencil"></i>
         </span> -->
     </div>
