@@ -69,11 +69,9 @@
       // a message without using the mouse.
       $(window).on('keydown', function(e) {
 
-
         // If global keydown fires with any obvious alphanumeric key, we'll make
         // sure the chat text field is in an editable state and focused (unless
         // it's syncing, of course).
-        if (vm.editingMessage) { return; }
         if (vm.syncing) { return; }
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // TODO: do nothing if ui is still initially loading, or if the remark is
@@ -94,18 +92,33 @@
         // to respond to.
         var isAlphaNumeric = e.key && e.key.match(/^[a-z0-9]$/i) && !e.metaKey && !e.ctrlKey;
 
+        // Handle ESC key by canceling changes to the remark, if the text field is currently
+        // in edit mode.  (Otherwise ignore this keyboard event.)
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          if (!vm.editingMessage) { return; }
+          else {
+            vm.cancelEditingRemark();
+          }
+        }
         // Handle ENTER key by selecting everything inside of the text field.
         // (since this was spawned from the keyboard and no more precise motive can be assumed.)
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          vm.enableMessageField();
-          $field.get(0).setSelectionRange(0, $field.get(0).value.length);
+        else if (e.key === 'Enter') {
+          if (vm.editingMessage) { return; }
+          else {
+            e.preventDefault();
+            vm.enableMessageField();
+            $field.get(0).setSelectionRange(0, $field.get(0).value.length);
+          }
         }
         // If alphanumeric, then we'll set the field equal to that key's string value.
         // (The user can press ENTER to cancel and revert the field's contents.)
         else if (isAlphaNumeric) {
-          e.preventDefault();
-          vm.enableMessageField(e.key);
+          if (vm.editingMessage) { return; }
+          else {
+            e.preventDefault();
+            vm.enableMessageField(e.key);
+          }
         }
         // Otherwise, if since the key is neither alphanumeric nor ENTER, we'll ignore it.
         else {
