@@ -89,43 +89,48 @@ module.exports = {
         if (err) { return exits.error(err); }
         if (!zone) { return exits.error(new Error('Consistency violation: Expected Zone record to exist for coordinate ('+x+','+y+'), but it did not.  Are you sure the database is seeded with data?')); }
 
-        sails.helpers.fetchAndCache({
-          maxAge: 1000*60*60*4,
-          fetch: function (proceed){
-            OpenWeather.getCurrentConditions({
-              apiKey: sails.config.custom.openWeatherApiKey,
-              latitude: inputs.lat,
-              longitude: inputs.long,
-            }).exec(function(err, weather) {
-              if (err) { return proceed(err); }
-              return proceed(undefined, weather);
-            });
-          },
-          readFromCache: function (proceed){
-            return proceed(undefined, {
-              data: zone.cachedWeather,
-              lastCachedAt: zone.lastCachedWeatherAt
-            });
-          },
-          writeToCache: function (data, proceed){
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // Note: The kind of caching logic below (for weather and tweets) could be extrapolated
+        // into a generic "fetchAndCache" helper.  For an example of that, check out this commit:
+        // https://github.com/mikermcneil/inabottle/commit/9a38001583d00d8b50fb8938d8f5cbcf7b63da99
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        (function cacheWeatherMaybe(proceed){
+
+          // Use cached weather, if possible -- as long as it's not too old.
+          var rightNow = Date.now();
+          var fourHoursAgo = rightNow - (1000*60*60*4);
+          var notTooStale = fourHoursAgo < zone.lastCachedWeatherAt;
+          if (notTooStale)  {
+            return proceed();
+          }
+
+          OpenWeather.getCurrentConditions({
+            apiKey: sails.config.custom.openWeatherApiKey,
+            latitude: inputs.lat,
+            longitude: inputs.long,
+          }).exec(function(err, weather) {
+            if (err) { return proceed(err); }
+
+            // Cache weather
             Zone.update({ id: zone.id })
             .set({ cachedWeather: weather, lastCachedWeatherAt: rightNow })
             .exec(function(err) {
               if (err) { return proceed(err); }
+
+              // Stick the newly-fetched weather on our zone record
+              // so we have it in the same format as if it was already
+              // cached beforehand; just in case we want it that way
+              // below.  (Makes it easier to think about.)
+              zone.cachedWeather = weather;
+
               return proceed();
             });
-          }
-        }).exec(function (err, report){
+          });
+
+        })(function afterCachingWeather(err){
           if (err) { return exits.error(err); }
-
-          // report.isFresh <= if the cache was used to fetch the data, this will be `false` (else `true`)
-
-          // Stick the newly-fetched weather on our zone record
-          // so we have it in the same format as if it was already
-          // cached beforehand; just in case we want it that way
-          // below.  (Makes it easier to think about.)
-          zone.cachedWeather = retureport.data;
-
 
           // Compute relevancy radius and adjusted lat/long:
           // > For more about what this is and why we have to compute
@@ -260,7 +265,7 @@ module.exports = {
               });//</ User.find().exec() >
             });//</ User.update().exec() >
           });//</ cacheTweetsMaybe  (self-calling function) >
-        });//</ fetchAndCache  (weather) >
+        });//</ cacheWeatherMaybe  (self-calling function) >
       });//</ Zone.findOne().exec() >
     });//</ User.findOne().exec() >
 
