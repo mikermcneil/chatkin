@@ -218,10 +218,23 @@
         throw new Error(err.code + ' :: ' + err.message);
 
       }, {
-        // In development, always just use the cached location.
-        // Otherwise, fetch the location if it's been over a minute since the last time.
+
+        // Under normal circumstances, we only fetch the location if it's been over a minute
+        // since the last time location was retrieved on this device.
+        maximumAge: 60000
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // ^^NOTE:
+        // In development, we *should* just be able to set this to `Infinity`, which is supposed
+        // to tell the browser that the cached location should be used and skip querying:
+        // ```
+        // maximumAge: io.sails.environment !== 'production' ? Infinity : 60000
+        // ```
         // (See https://developer.mozilla.org/en-US/docs/Web/API/PositionOptions for details)
-        maximumAge: io.sails.environment !== 'production' ? Infinity : 60000
+        //
+        // But unfortunately, it doesn't seem to be reliable, at least not in Chrome on desktop
+        // for macOS (you still end up getting an error about 403s after a while.)
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
       });
     },//</mounted>
 
