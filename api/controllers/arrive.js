@@ -86,7 +86,14 @@ module.exports = {
       }
 
       Zone.findOne({ x: x, y: y }).exec(function(err, zone) {
-        if (err) { return exits.error(err); }
+        if (err) {
+          if (err.name === 'AdapterError') {
+            return exits.error(new Error('Unexpeted adapter error!  Internal stack trace: '+err.raw.stack+'\n\nPrettified stack trace: '+err.stack));
+          }
+          else {
+            return exits.error(err);
+          }
+        }
         if (!zone) { return exits.error(new Error('Consistency violation: Expected Zone record to exist for coordinate ('+x+','+y+'), but it did not.  Are you sure the database is seeded with data?')); }
 
 
