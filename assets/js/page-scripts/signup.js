@@ -27,6 +27,7 @@
     },
 
     methods: {
+
       changeColor: function() {
         var red = (Math.floor(Math.random()*255));
         var green = (Math.floor(Math.random()*255));
@@ -63,13 +64,20 @@
                 console.error(jwr.error);
                 return;
             }
-          }//-*
+          }//-•
 
-         window.location = '/';
+          // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+          // IWMIH, the new account was created successfully and the current user's
+          // browser session is now "logged in" (associated with their user record
+          // in the database).
+          // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+          // Now go ahead and redirect to the new user's personalized home page.
+          window.location = '/';
 
-        });
+        });//</ io.socket.put() >
       }
+
     }
   });
 
