@@ -199,7 +199,8 @@ module.exports = {
                 bearerToken: bearerToken,
                 latitude: zoneCenterLatitudeDeg,
                 longitude: zoneCenterLongitudeDeg,
-                radius: relevancyRadius
+                radius: relevancyRadius,
+                q: '-filter:retweets AND -filter:replies AND -filter:links AND filter:safe'
               }).exec(function(err, matchingTweets){
                 if (err) { return proceed(err); }
 

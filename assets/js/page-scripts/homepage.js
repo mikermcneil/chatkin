@@ -161,6 +161,7 @@
 
 
           console.log('There are '+data.otherUsersHere.length+' other people here.');
+          console.log(data.otherUsersHere);
           console.log('currentZone',vm.zone.id);
 
           console.log('It worked!  Now arrived in zone.');
