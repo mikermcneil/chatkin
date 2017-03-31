@@ -235,7 +235,7 @@
         // for macOS (you still end up getting an error about 403s after a while.)
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-      });
+      });//</ getCurrentPosition >
     },//</mounted>
 
 
