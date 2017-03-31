@@ -92,6 +92,7 @@
 
           // Update our zone data.
           vm.zone.id = data.id;
+          vm.zone.otherUsersHere = data.otherUsersHere;
           vm.zone.numOtherUsersHere = data.numOtherUsersHere;
           vm.weather.kind = data.weather.weather[0].main;
           vm.weather.description = data.weather.weather[0].description;
