@@ -31,13 +31,15 @@ module.exports = {
       var thisUser = users[0];
       if (!thisUser) { return exits.userNotFound(); }
 
-      // Publish this user's new remark to his or her zone.
-      Zone.publish([thisUser.currentZone], {
-        verb: 'userRemarked',
-        username: inputs.username,
-        remark: thisUser.remark,
-        avatarColor: thisUser.avatarColor
-      }, env.req);
+      try {
+        // Publish this user's new remark to his or her zone.
+        Zone.publish([thisUser.currentZone], {
+          verb: 'userRemarked',
+          username: inputs.username,
+          remark: thisUser.remark,
+          avatarColor: thisUser.avatarColor
+        }, env.req);
+      } catch (e) { return exits.error(e); }
 
       return exits.success();
     });

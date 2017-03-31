@@ -82,7 +82,9 @@ module.exports = {
       if (!thisUser) { return exits.error(new Error('The requesting user is logged in as user `'+req.session.userId+'`, but no such user exists in the database.  This should never happen!')); }
 
       if (thisUser.currentZone) {
-        Zone.unsubscribe(req, [thisUser.currentZone]);
+        try {
+          Zone.unsubscribe(req, [thisUser.currentZone]);
+        } catch (e) { return exits.error(e); }
       }
 
       Zone.findOne({ x: x, y: y }).exec(function(err, zone) {
@@ -242,16 +244,18 @@ module.exports = {
 
               sails.log('@'+thisUser.username+' arrived in zone with coordinates: ( %d, %d )', x, y);
 
-              // Subscribe to socket (RPS) notifications about this zone.
-              Zone.subscribe(req, [zone.id]);
+              try {
+                // Subscribe to socket (RPS) notifications about this zone.
+                Zone.subscribe(req, [zone.id]);
 
-              // Publish this user's arrival to the new zone.
-              Zone.publish([zone.id], {
-                verb: 'userArrived',
-                username: thisUser.username,
-                remark: thisUser.remark,
-                avatarColor: thisUser.avatarColor
-              }, req);
+                // Publish this user's arrival to the new zone.
+                Zone.publish([zone.id], {
+                  verb: 'userArrived',
+                  username: thisUser.username,
+                  remark: thisUser.remark,
+                  avatarColor: thisUser.avatarColor
+                }, req);
+              } catch (e) { return exits.error(e); }
 
               // Look up any OTHER users who are in this zone already.
               User.find({
