@@ -239,11 +239,12 @@ module.exports = {
                 avatarColor: thisUser.avatarColor
               }, req);
 
-              // Look up any other people who are in here already.
-              User.find({ currentZone: zone.id }).exec(function (err, usersHere){
+              // Look up any OTHER users who are in this zone already.
+              User.find({
+                currentZone: zone.id,
+                id: {'!=': thisUser.id}
+              }).exec(function (err, otherUsersHere){
                 if (err) { return exits.error(err); }
-
-                var otherUsersHere = _.reject(usersHere, { id: thisUser.id });
 
                 return exits.success({
                   id: zone.id,
