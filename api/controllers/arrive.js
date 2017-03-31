@@ -245,7 +245,6 @@ module.exports = {
 
                 var otherUsersHere = _.without(usersHere, { id: thisUser.id });
 
-
                 return exits.success({
                   id: zone.id,
                   numOtherUsersHere: otherUsersHere.length,
@@ -256,13 +255,12 @@ module.exports = {
                   weather: zone.cachedWeather,
                 });
 
-              });
-
-            });
+              });//</ User.find().exec() >
+            });//</ User.update().exec() >
           });//</ cacheTweetsMaybe  (self-calling function) >
         });//</ cacheWeatherMaybe  (self-calling function) >
-      });
-    });
+      });//</ Zone.findOne().exec() >
+    });//</ User.findOne().exec() >
 
   }
 
