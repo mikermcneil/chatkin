@@ -33,8 +33,8 @@
         kind: '',//'Thunderstorm', 'Drizzle', 'Rain', 'Snow', 'Atmosphere', 'Clear', 'Clouds', 'Extreme', or 'Additional'
         description: '',
         temp: null,
-        temp_min: null,
-        temp_max: null
+        temp_min: null, //eslint-disable-line camelcase
+        temp_max: null //eslint-disable-line camelcase
       },
 
       // For loading states
@@ -90,14 +90,16 @@
           // Clear the loading state.
           vm.syncing = '';
 
+          window.DATA = data;//todo: remove this-- it's just for debugging
+
           // Update our zone data.
           vm.zone.id = data.id;
           vm.zone.numOtherUsersHere = data.numOtherUsersHere;
           vm.weather.kind = data.weather.weather[0].main;
           vm.weather.description = data.weather.weather[0].description;
           vm.weather.temp = data.weather.main.temp;
-          vm.weather.temp_min = data.weather.main.temp_min;
-          vm.weather.temp_max = data.weather.main.temp_max;
+          vm.weather.temp_min = data.weather.main.temp_min;//eslint-disable-line camelcase
+          vm.weather.temp_max = data.weather.main.temp_max;//eslint-disable-line camelcase
           // Determine the weather icon class.
           // (We just named our icons the same thing as the OpenWeatherMap
           // icons, but prefixed with 'icon-weather-'.
