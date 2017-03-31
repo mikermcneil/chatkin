@@ -252,10 +252,47 @@ module.exports = {
               }).exec(function (err, otherUsersHere){
                 if (err) { return exits.error(err); }
 
+                // Build a formatted version of the cached tweets for this zone
+                // that collates them by Twitter user.  In case there were multiple
+                // recent tweets sent from this zone by the same person, note that
+                // we use the most recent tweet.  (The following code also simplifies
+                // tweet data to be _roughly_ consistent with our user records.)
+                var strangersHere = [];
+                try {
+                  _.each(zone.cachedTweets, function (rawTweet){
+
+                    // Compute a JS timestamp from this tweet's `created_at` property.
+                    var tweetedAt = (new Date(rawTweet.created_at)).getTime();
+
+                    var stranger = _.find(strangersHere, {twitterUsername: rawTweet.user.screen_name});
+                    if (stranger) {
+                      if (stranger.updatedAt < tweetedAt) {
+                        stranger.remark = rawTweet.text;
+                        stranger.createdAt = tweetedAt;
+                        stranger.updatedAt = tweetedAt;
+                      }
+                    }
+                    else {
+                      strangersHere.push({
+                        createdAt: tweetedAt,
+                        updatedAt: tweetedAt,
+                        remark: rawTweet.text,
+                        currentZone: zone.id,
+                        avatarColor: '#1dcaff',
+                        username: '@twitter:'+rawTweet.user.screen_name,
+
+                        // Extra properties that _only_ strangers from Twitter have:
+                        twitterUsername: rawTweet.user.screen_name,
+                        twitterAvatarSrc: rawTweet.user.profile_image_url_https,
+                      });
+                    }
+
+                  });
+                } catch (e) { return exits.error(new Error('Unexpected error parsing tweets: '+e.stack)); }
+
                 return exits.success({
                   id: zone.id,
-                  numOtherUsersHere: otherUsersHere.length,
-                  otherUsersHere: otherUsersHere,
+                  otherUsersHere: otherUsersHere.concat(strangersHere),
                   relevancyRadius: relevancyRadius,
                   zoneCenterLatitudeDeg: zoneCenterLatitudeDeg,
                   zoneCenterLongitude: zoneCenterLongitudeDeg,
