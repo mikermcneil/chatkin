@@ -17,5 +17,9 @@ module.exports = {
 
   },
 
+  customToJSON: function (record){
+    return _.omit(record, 'password');
+  }
+
 };
 
