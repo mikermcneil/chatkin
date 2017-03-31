@@ -8,14 +8,13 @@
           chatkin
         </span>
         <span class="zone-info">
-          <!-- <span class="zone-name" v-if="currentZone">#{{currentZone}}</span> -->
-          <i class="chatkin-icon icon-location" v-on:click="focusHiddenInput" v-if="currentZone"></i>
+          <i class="chatkin-icon icon-location" v-on:click="focusHiddenInput" v-if="zone.id"></i>
           <input type="text" id="zone-details-hidden-input" class="offscreen" v-on:focus="zoneDetailsVisible = true" v-on:blur="zoneDetailsVisible = false" placeholder="Focusing this input shows the zone details."/>
           <div class="zone-details" v-bind:class="zoneDetailsVisible ? 'visible' : ''">
-            <h4>Zone #{{currentZone}}:</h4>
+            <h4>Zone #{{zone.id}}:</h4>
             <div id="map"></div>
-            <span v-if="numOthersInZone === 0">You are the only one here.</span>
-            <span v-else>There {{numOthersInZone === 1 ? 'is' : 'are'}} {{numOthersInZone}} other {{numOthersInZone === 1 ? 'person' : 'people'}}  here.</span>
+            <span v-if="zone.numOtherUsersHere === 0">You are the only one here.</span>
+            <span v-else>There {{zone.numOtherUsersHere === 1 ? 'is' : 'are'}} {{zone.numOtherUsersHere}} other {{zone.numOtherUsersHere === 1 ? 'person' : 'people'}}  here.</span>
           </div>
         </span>
       </div>
@@ -31,7 +30,7 @@
           <div v-else-if="communicatingWithServer" class="loading-message">Communicating with server...</div>
         </div>
         <div class="activity" v-else>
-          <template v-for="user in otherUsersHere">
+          <template v-for="user in zone.otherUsersHere">
             <div class="remark">
               <div class="avatar">
                 <!-- <i class="chatkin-icon icon-logo-chatkin" :style="{color: user.avatarColor}"></i> -->
@@ -44,7 +43,6 @@
             </div>
           </template>
         </div>
-        <!-- <div v-else class="panel-heading">Welcome, <strong><%= username %></strong>!</div> -->
       </div>
     </div>
   </div>
@@ -55,7 +53,7 @@
         <i class="chatkin-icon icon-logo-chatkin" style="color: <%= avatarColor %>"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i>
       </div>
       <input id="update-remark-field"
-        v-model="message"
+        v-model="me.message"
         v-bind:disabled="!editingMessage"
         v-on:keyup.enter="updateRemark"
         type="text"

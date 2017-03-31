@@ -13,19 +13,23 @@
 
     // Initialize data
     data: {
-      username: window.SAILS_LOCALS.username,
-      avatarColor: '',
-      message: window.SAILS_LOCALS.remark,
-      currentZone: null,
-      numOthersInZone: null,
+      // User info:
+      me: {
+        username: window.SAILS_LOCALS.username,
+        avatarColor: window.SAILS_LOCALS.avatarColor,
+        message: window.SAILS_LOCALS.remark,
+      },
+      // Zone info
+      zone: {
+        id: null,
+        numOtherUsersHere: null,
+        otherUsersHere: [],
+      },
       syncingLocation: true,
       communicatingWithServer: false,
       errorFetchingLocation: false,
       zoneDetailsVisible: false,
-      otherUsersHere: [],
       editingMessage: false,
-      // A more descriptive error message for debugging in development:
-      errorMsg: '',
     },
 
 
@@ -67,9 +71,9 @@
           }//-•
 
           console.log('There are '+data.numOtherUsersHere+' other people here.');
-          vm.numOthersInZone = data.numOtherUsersHere;
-          vm.currentZone = data.id;
-          console.log('currentZone',vm.currentZone);
+          vm.zone.numOtherUsersHere = data.numOtherUsersHere;
+          vm.zone.id = data.id;
+          console.log('currentZone',vm.zone.id);
 
           vm.communicatingWithServer = false;
           vm.arrived = true;
@@ -129,12 +133,12 @@
               // If this notification is about the currently logged-in user,
               // just ignore it.
               // (This can happen if a user has multiple tabs open.)
-              if(msg.username === vm.username) { return; }
+              if(msg.username === vm.me.username) { return; }
 
               // Remove the user from the list of other users in the zone.
-              _.remove(vm.otherUsersHere, {username: msg.username});
+              _.remove(vm.zone.otherUsersHere, {username: msg.username});
               // Decrease the number of other users in this zone.
-              vm.numOthersInZone--;
+              vm.zone.numOtherUsersHere--;
             }
             // If it's about a new user joining the zone, add that user
             // to the UI.
@@ -142,17 +146,17 @@
               // If this notification is about the currently logged-in user,
               // just ignore it.
               // (This can happen if a user has multiple tabs open.)
-              if(msg.username === vm.username) { return; }
+              if(msg.username === vm.me.username) { return; }
               // Also, if this notification is about a user who is already here,
               // ignore it.
               // (Also can happen if a user has multiple tabs open.)
-              var userInZone = _.find(vm.otherUsersHere, {username: msg.username});
+              var userInZone = _.find(vm.zone.otherUsersHere, {username: msg.username});
               if(!_.isUndefined(userInZone)) { return; }
 
               // Increase the number of other users in the zone.
-              vm.numOthersInZone++;
+              vm.zone.numOtherUsersHere++;
               // Add the newly-arrived user to our list of `otherUsersHere`.
-              vm.otherUsersHere.unshift({
+              vm.zone.otherUsersHere.unshift({
                 username: msg.username,
                 avatarColor: msg.avatarColor,
                 remark: msg.remark
@@ -164,16 +168,16 @@
               // If this notification is about the currently logged-in user,
               // just ignore it.
               // (This can happen if a user has multiple tabs open.)
-              if(msg.username === vm.username) { return; }
+              if(msg.username === vm.me.username) { return; }
 
               // Find the user in the `otherUsersHere` list.
-              var userInZone = _.find(vm.otherUsersHere, {username: msg.username});
+              var userInZone = _.find(vm.zone.otherUsersHere, {username: msg.username});
 
               // FOR NOW:
               // If the user isn't in our list, assume they arrived before us
               // and add them.
               if(_.isUndefined(userInZone)) {
-                vm.otherUsersHere.unshift({
+                vm.zone.otherUsersHere.unshift({
                   username: msg.username,
                   avatarColor: msg.avatarColor,
                   remark: msg.remark
@@ -203,6 +207,11 @@
 
         throw new Error(err.code + ' :: ' + err.message);
 
+      }, {
+        // In development, always just use the cached location.
+        // Otherwise, fetch the location if it's been over a minute since the last time.
+        // (See https://developer.mozilla.org/en-US/docs/Web/API/PositionOptions for details)
+        maximumAge: io.sails.environment !== 'production' ? Infinity : 60000
       });
     },//</mounted>
 
@@ -210,8 +219,8 @@
     methods: {
       updateRemark: function() {
         vm.editingMessage = false;
-        io.socket.put('/user/'+vm.username+'/remark', {
-          remark: vm.message
+        io.socket.put('/user/'+vm.me.username+'/remark', {
+          remark: vm.me.message
         }, function(data, jwr) {
           if (jwr.error) {
             console.error('Server responded with an error.  (Please refresh the page and try again.)');
