@@ -14,7 +14,7 @@
     z-index: @z-messages;
     height: 100%;
     width: 100%;
-    padding-bottom: @form-height + @topbar-height + 25;
+    padding-bottom: @form-height + @topbar-height;
     background-color: #fff;
 
     .topbar {
@@ -104,12 +104,12 @@
       }
     }
 
-    .container {
+    .chat-window-wrapper {
       height: 100%;
+      overflow: auto;
       .window {
-        height: 100%;
-        overflow-y: auto;
         overflow-x: hidden;
+        padding-bottom: 50px;
 
         .syncing-box {
           width: 100%;
@@ -177,6 +177,7 @@
                 z-index: 10;
                 top: 0px;
                 left: 0px;
+                border-radius: 7px;
               }
             }
           }

@@ -24,7 +24,6 @@
       // Zone info
       zone: {
         id: null,
-        numOtherUsersHere: null,
         otherUsersHere: [],
       },
 
@@ -94,7 +93,7 @@
 
           // Update our zone data.
           vm.zone.id = data.id;
-          vm.zone.numOtherUsersHere = data.numOtherUsersHere;
+          vm.zone.otherUsersHere = data.otherUsersHere;
           vm.weather.kind = data.weather.weather[0].main;
           vm.weather.description = data.weather.weather[0].description;
           vm.weather.temp = data.weather.main.temp;
@@ -107,7 +106,7 @@
           vm.weather.iconClass = 'icon-weather-'+data.weather.weather[0].icon;
 
 
-          console.log('There are '+data.numOtherUsersHere+' other people here.');
+          console.log('There are '+data.otherUsersHere.length+' other people here.');
           console.log('currentZone',vm.zone.id);
 
           console.log('It worked!  Now arrived in zone.');
@@ -170,8 +169,6 @@
 
               // Remove the user from the list of other users in the zone.
               _.remove(vm.zone.otherUsersHere, {username: msg.username});
-              // Decrease the number of other users in this zone.
-              vm.zone.numOtherUsersHere--;
             }
             // If it's about a new user joining the zone, add that user
             // to the UI.
@@ -186,8 +183,6 @@
               var userInZone = _.find(vm.zone.otherUsersHere, {username: msg.username});
               if(!_.isUndefined(userInZone)) { return; }
 
-              // Increase the number of other users in the zone.
-              vm.zone.numOtherUsersHere++;
               // Add the newly-arrived user to our list of `otherUsersHere`.
               vm.zone.otherUsersHere.unshift({
                 username: msg.username,
