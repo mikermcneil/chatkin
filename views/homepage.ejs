@@ -22,8 +22,8 @@
           <div class="popup-menu zone-details" v-bind:class="visibleMenu === 'zoneDetails' ? 'visible' : ''">
             <h4>Zone #{{zone.id}}:</h4>
             <div id="map"></div>
-            <span v-if="zone.numOtherUsersHere === 0">You are the only one here.</span>
-            <span v-else>There {{zone.numOtherUsersHere === 1 ? 'is' : 'are'}} {{zone.numOtherUsersHere}} other {{zone.numOtherUsersHere === 1 ? 'person' : 'people'}}  here.</span>
+            <span v-if="zone.otherUsersHere.length === 0">You are the only one here.</span>
+            <span v-else>There {{zone.otherUsersHere.length === 1 ? 'is' : 'are'}} {{zone.otherUsersHere.length}} other {{zone.otherUsersHere.length === 1 ? 'person' : 'people'}}  here.</span>
           </div>
         </span>
       </div>
