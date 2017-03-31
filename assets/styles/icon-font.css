@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'chatkin-icons';
-  src:  url('/fonts/chatkin-icons.eot?vhe0cm');
-  src:  url('/fonts/chatkin-icons.eot?vhe0cm#iefix') format('embedded-opentype'),
-    url('/fonts/chatkin-icons.woff2?vhe0cm') format('woff2'),
-    url('/fonts/chatkin-icons.ttf?vhe0cm') format('truetype'),
-    url('/fonts/chatkin-icons.woff?vhe0cm') format('woff'),
-    url('/fonts/chatkin-icons.svg?vhe0cm#chatkin-icons') format('svg');
+  src:  url('/fonts/chatkin-icons.eot?s9u7k0');
+  src:  url('/fonts/chatkin-icons.eot?s9u7k0#iefix') format('embedded-opentype'),
+    url('/fonts/chatkin-icons.woff2?s9u7k0') format('woff2'),
+    url('/fonts/chatkin-icons.ttf?s9u7k0') format('truetype'),
+    url('/fonts/chatkin-icons.woff?s9u7k0') format('woff'),
+    url('/fonts/chatkin-icons.svg?s9u7k0#chatkin-icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -25,25 +25,91 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-weather-cloudy:before {
+.icon-weather-03d:before {
   content: "\e908";
 }
-.icon-weather-storm:before {
+.icon-weather-03n:before {
+  content: "\e908";
+}
+.icon-weather-scattered-clouds:before {
+  content: "\e908";
+}
+.icon-weather-04d:before {
   content: "\e909";
+}
+.icon-weather-04n:before {
+  content: "\e909";
+}
+.icon-weather-broken-clouds:before {
+  content: "\e909";
+}
+.icon-weather-02n:before {
+  content: "\e90d";
+}
+.icon-weather-few-clouds-night:before {
+  content: "\e90d";
+}
+.icon-weather-02d:before {
+  content: "\e911";
+}
+.icon-weather-few-clouds-day:before {
+  content: "\e911";
+}
+.icon-weather-11d:before {
+  content: "\e912";
+}
+.icon-weather-11n:before {
+  content: "\e912";
+}
+.icon-weather-thunderstorm:before {
+  content: "\e912";
+}
+.icon-weather-09d:before {
+  content: "\e913";
+}
+.icon-weather-09n:before {
+  content: "\e913";
+}
+.icon-weather-shower-rain:before {
+  content: "\e913";
+}
+.icon-weather-01n:before {
+  content: "\e914";
+}
+.icon-weather-clear-night:before {
+  content: "\e914";
+}
+.icon-weather-13d:before {
+  content: "\e90a";
+}
+.icon-weather-13n:before {
+  content: "\e90a";
 }
 .icon-weather-snow:before {
   content: "\e90a";
 }
+.icon-weather-10d:before {
+  content: "\e90b";
+}
+.icon-weather-10n:before {
+  content: "\e90b";
+}
 .icon-weather-rain:before {
   content: "\e90b";
 }
-.icon-weather-sunny:before {
+.icon-weather-01d:before {
   content: "\e90c";
 }
-.icon-weather-partly-cloudy:before {
-  content: "\e90d";
+.icon-weather-clear-day:before {
+  content: "\e90c";
 }
-.icon-weather-wind:before {
+.icon-weather-50d:before {
+  content: "\e90e";
+}
+.icon-weather-50n:before {
+  content: "\e90e";
+}
+.icon-weather-mist:before {
   content: "\e90e";
 }
 .icon-pencil:before {
@@ -61,22 +127,32 @@
 }
 .icon-logo-chatkin .path2:before {
   content: "\e903";
-  margin-left: -1.05859375em;
   color: inherit;
+  margin-left: -1.05859375em;
 }
 .icon-logo-chatkin .path3:before {
   content: "\e904";
+  color: inherit;
   margin-left: -1.05859375em;
-  color: rgb(255, 255, 255);
 }
 .icon-logo-chatkin .path4:before {
   content: "\e905";
+  color: rgb(255,255,255);
   margin-left: -1.05859375em;
-  color: inherit;
 }
 .icon-logo-chatkin .path5:before {
   content: "\e906";
-  margin-left: -1.05859375em;
   color: inherit;
+  margin-left: -1.05859375em;
+}
+.icon-logo-chatkin .path6:before {
+  content: "\e90f";
+  color: inherit;
+  margin-left: -1.05859375em;
+}
+.icon-logo-chatkin .path7:before {
+  content: "\e910";
+  color: inherit;
+  margin-left: -1.05859375em;
 }
 
