@@ -29,20 +29,25 @@
     "io": true,
     "SAILS_LOCALS": true,
 
+    // Additional globals specific to this app's browser JS code:
+    "$": true,
+    "_": true,
+    "Vue": true,
+
     // Allow any other window globals you're relying on here; e.g.
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // "$": true,
-    // "_": true,
-    // ...etc.
+    // ...
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     // If the "no-undef" rule is enabled in the top-level .eslintrc file, be sure to
     // uncomment the following so that backend globals are not inadvertently allowed:
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // "sails": false,
-    // "_": false,
-    // "async": false,
-    // // ...and any other backend globals (e.g. `"User": false`)
+    "sails": false,
+    // (Don't disable lodash's `_` global; it's used in the client-side JS code too!)
+    "async": false,
+    "User": false,
+    "Zone": false,
+    // ...and any other backend globals (e.g. `"Zebra": false`)
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   },
 

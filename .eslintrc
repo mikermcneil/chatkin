@@ -29,10 +29,12 @@
     // If "no-undef" is enabled below and your app uses globals, be sure to list all
     // relevant globals below (including the globalIds of models, if relevant):
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // "sails": true,
-    // "_": true,
-    // "async": true,
-    // ...and any other backend globals (e.g. `"User": true`)
+    "sails": true,
+    "_": true,
+    "async": true,
+    "User": true,
+    "Zone": true,
+    // ...and any other backend globals (e.g. `"Zebra": true`)
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   },
 
@@ -50,10 +52,10 @@
     "no-return-assign":             [2, "always"],
     "no-sequences":                 [2],
     "no-trailing-spaces":           [1],
-    "no-undef":                     [0],
+    "no-undef":                     [2],
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // ^^Note: If this "no-undef" rule is enabled (set to `[2]`), then model globals
-    // (e.g. `"User": true`) should also be included above under "globals".
+    // (e.g. `"Zebra": true`) should also be included above under "globals".
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     "no-unexpected-multiline":      [1],
     "no-unused-vars":               [1],
