@@ -28,7 +28,8 @@
     "test": "npm run lint && npm run custom-tests && echo 'Done.'",
     "lint": "node ./node_modules/eslint/bin/eslint . --max-warnings=0 && echo '✔  Your code looks good.'",
     "custom-tests": "echo \"(No other custom tests yet.)\" && echo",
-    "debug": "node debug app.js"
+    "debug": "node debug app.js",
+    "deploy": "echo '' && echo '' && echo 'Let us see if you are ready to deploy...' && echo '--' && git status && echo '' && echo '--' && echo 'I hope you are on the master branch and have everything pulled and stuff.' && echo 'Press CTRL+C to cancel.' && echo '(you have five seconds)' && sleep 5 && echo '' && echo 'Alright, here we go.  No turning back now!' && echo 'Deploying as version:' && npm version patch && echo '' && git push origin master && git push --tags && git push origin +master:deploy && git push --tags && echo '' && echo '--' && echo 'OK, done.  It should be live momentarily.' && echo '(if you get impatient, check the Heroku dashboard for status)'"
   },
   "main": "app.js",
   "repository": {
