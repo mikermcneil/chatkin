@@ -92,12 +92,22 @@
         // to respond to.
         var isAlphaNumeric = e.key && e.key.match(/^[a-z0-9]$/i) && !e.metaKey && !e.ctrlKey;
 
+        // Handle DELETE/BACKSPACE key by clearing the remark.
+        // > If currently in edit mode, or if the message was already cleared out,
+        // > we ignore this keyboard event.
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+          if (vm.editingMessage || vm.me.message === '') { return; }
+          else {
+            e.preventDefault();
+            vm.updateRemark('');
+          }
+        }
         // Handle ESC key by canceling changes to the remark, if the text field is currently
         // in edit mode.  (Otherwise ignore this keyboard event.)
-        if (e.key === 'Escape') {
-          e.preventDefault();
+        else if (e.key === 'Escape') {
           if (!vm.editingMessage) { return; }
           else {
+            e.preventDefault();
             vm.cancelEditingRemark();
           }
         }
@@ -326,9 +336,15 @@
 
 
     methods: {
-      updateRemark: function() {
+      updateRemark: function(newMsg) {
         vm.editingMessage = false;
-        // TODO: consider a syncing state
+        // ^^TODO: consider a separate syncing state
+
+        // If a new message was provided, set it.
+        if (!_.isUndefined(newMsg)) {
+          vm.me.message = newMsg;
+        }
+
         io.socket.put('/user/'+vm.me.username+'/remark', {
           remark: vm.me.message
         }, function(data, jwr) {
@@ -342,6 +358,10 @@
           }//-•
         });
       },//</updateRemark>
+
+      submitNewRemark: function() {
+        vm.updateRemark();
+      },
 
       focusHiddenInput: function(menuType) {
         // If the zone info is still loading, or if we weren't able to get the location, bail.
