@@ -243,7 +243,7 @@ module.exports = {
               User.find({ currentZone: zone.id }).exec(function (err, usersHere){
                 if (err) { return exits.error(err); }
 
-                var otherUsersHere = _.without(usersHere, { id: thisUser.id });
+                var otherUsersHere = _.reject(usersHere, { id: thisUser.id });
 
                 return exits.success({
                   id: zone.id,
