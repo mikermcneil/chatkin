@@ -47,6 +47,9 @@
 
       // For enabling/disabling the form
       editingMessage: false,
+
+      // For discard / dirty checking
+      oldMessage: ''
     },
 
 
@@ -60,6 +63,45 @@
         console.error('No username specified.  Try again w/ a username to continue.');
         return;
       }
+
+
+      // Bind a global keydown event to allow users to quickly begin composing
+      // a message without using the mouse.
+      $(window).on('keydown', function(e) {
+
+
+        // If global keydown fires with any obvious alphanumeric key, we'll make
+        // sure the chat text field is in an editable state and focused (unless
+        // it's syncing, of course).
+        var isAlphaNumeric = e.key && e.key.match(/^[a-z0-9]$/i) && !e.metaKey && !e.ctrlKey;
+        if (!isAlphaNumeric){ return; }
+        if (vm.editingMessage) { return; }
+        if (vm.syncing) { return; }
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // TODO: do nothing if ui is still initially loading, or if the remark is
+        // currently being synced to the server:
+        // ```
+        // if (vm.syncingMessage) { return; }
+        // ```
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        // But otherwise if the text field is NOT editable, then we'll make it editable,
+        // focus it, highlight the text, and prevent the default behavior of this keydown
+        // event.
+        e.preventDefault();
+        vm.enableMessageField();
+
+        // Now select everything inside of the text field
+        // (since this was spawned from the keyboard and no more precise motive can be assumed.)
+        var $field = $('#update-remark-field');
+        $field.get(0).setSelectionRange(0, $field.get(0).value.length);
+        // setTimeout(function afterWaitingForTheDigestThingy(){
+        //   var $field = $('#update-remark-field');
+        //   // $field.focus();
+        //   $field.get(0).setSelectionRange(0, $field.get(0).value.length);
+        // }, 0);
+
+      });
 
 
       // Otherwise, we have a username, so attempt to fetch the location.
@@ -260,6 +302,7 @@
     methods: {
       updateRemark: function() {
         vm.editingMessage = false;
+        // TODO: consider a syncing state
         io.socket.put('/user/'+vm.me.username+'/remark', {
           remark: vm.me.message
         }, function(data, jwr) {
@@ -298,12 +341,30 @@
       },
 
       enableMessageField: function() {
+        // If the zone info is still loading, or if something went wrong, bail.
+        if(vm.syncing || vm.errorType) { return; }
+        // If we're already editing, bail.
+        if (vm.editingMessage) { return; }
+        // Track the remark before any editing.
+        vm.oldMessage = vm.me.message;
         // Enable editing of the message.
         vm.editingMessage = true;
         // Focus the field. (We need to manually re-enable it first, because otherwise it will
         // still be disabled when this code runs.
         $('#update-remark-field').removeAttr('disabled').focus();
+      },
+
+      cancelEditingRemark: function (){
+        // If the zone info is still loading, or if something went wrong, bail.
+        if(vm.syncing || vm.errorType) { return; }
+        // Disable editing of the message.
+        vm.editingMessage = false;
+        // Revert the field content
+        vm.me.message = vm.oldMessage;
+        // Disable the field.
+        $('#update-remark-field').attr('disabled', 'disabled');
       }
+
     }//</methods>
   });
 

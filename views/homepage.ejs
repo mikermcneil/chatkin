@@ -63,7 +63,8 @@
       <input id="update-remark-field"
         v-model="me.message"
         v-bind:disabled="!editingMessage"
-        v-on:keyup.enter="updateRemark"
+        v-on:keydown.stop.enter="updateRemark"
+        v-on:keydown.stop.esc="cancelEditingRemark"
         type="text"
         class="form-control input-lg"
         :class="!editingMessage ? 'disabled' : ''"
@@ -74,6 +75,8 @@
     </div>
   </div>
 </div>
+
+
 
 <!-- hack to make it clear when a fatal error occurs -->
 <script>
