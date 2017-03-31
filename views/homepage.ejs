@@ -12,8 +12,8 @@
           <div class="popup-menu weather-details" v-bind:class="visibleMenu === 'weatherDetails' ? 'visible' : ''">
             <h4>Weather: {{weather.description}}</h4>
             <h5>{{weather.temp}}&deg; <a target="_blank" href="https://en.wikipedia.org/wiki/Kelvin" v-on:mousedown.prevent>Kelvin</a></h5>
-            <p><strong>High:</strong> {{weather.temp_max}}&deg; Kelvin</p>
-            <p><strong>Low:</strong> {{weather.temp_min}}&deg; Kelvin</p>
+            <p><strong>High:</strong> {{weather.temp_max}}&deg; K</p>
+            <p><strong>Low:</strong> {{weather.temp_min}}&deg; K</p>
           </div>
         </span>
         <span class="menu-icon zone-info">
