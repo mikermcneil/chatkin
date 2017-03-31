@@ -102,7 +102,6 @@
           // (We just named our icons the same thing as the OpenWeatherMap
           // icons, but prefixed with 'icon-weather-'.
           // See https://openweathermap.org/weather-conditions for the list.)
-          console.log('WTF WEATHER',data.weather.weather[0]);
           vm.weather.iconClass = 'icon-weather-'+data.weather.weather[0].icon;
 
 

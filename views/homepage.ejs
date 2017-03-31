@@ -11,9 +11,9 @@
           <input type="text" id="weather-details-hidden-input" class="offscreen" v-on:focus="visibleMenu = 'weatherDetails'" v-on:blur="visibleMenu = ''" placeholder="Focusing this input shows the weather details."/>
           <div class="popup-menu weather-details" v-bind:class="visibleMenu === 'weatherDetails' ? 'visible' : ''">
             <h4>Weather: {{weather.description}}</h4>
-            <h5>{{weather.temp}}&deg;K</h5>
-            <p><strong>High:</strong> {{weather.temp_max}}&deg;K</p>
-            <p><strong>Low:</strong> {{weather.temp_min}}&deg;K</p>
+            <h5>{{weather.temp}}&deg; <a target="_blank" href="https://en.wikipedia.org/wiki/Kelvin" v-on:mousedown.prevent>Kelvin</a></h5>
+            <p><strong>High:</strong> {{weather.temp_max}}&deg; Kelvin</p>
+            <p><strong>Low:</strong> {{weather.temp_min}}&deg; Kelvin</p>
           </div>
         </span>
         <span class="menu-icon zone-info">
