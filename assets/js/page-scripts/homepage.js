@@ -13,22 +13,31 @@
 
     // Initialize data
     data: {
+
       // User info:
       me: {
         username: window.SAILS_LOCALS.username,
         avatarColor: window.SAILS_LOCALS.avatarColor,
         message: window.SAILS_LOCALS.remark,
       },
+
       // Zone info
       zone: {
         id: null,
         numOtherUsersHere: null,
         otherUsersHere: [],
       },
-      syncingLocation: true,
-      communicatingWithServer: false,
-      errorFetchingLocation: false,
-      zoneDetailsVisible: false,
+
+      // For loading states
+      syncing: 'location', // 'location', 'chatkinServer', 'form', or ''
+
+      // For error states
+      errorType: '',// 'location' or ''
+
+      // For showing/hiding popup menus
+      visibleMenu: '',// 'zoneDetails', 'weatherDetails', or ''
+
+      // For enabling/disabling the form
       editingMessage: false,
     },
 
@@ -53,8 +62,7 @@
 
         // console.log('• got it!', geoPosition);
         // Done syncing location.
-        vm.syncingLocation = false;
-        vm.communicatingWithServer = true;
+        vm.syncing = 'chatkinServer';
 
         // Communicate w/ server
         // console.log('communicating with server...');
@@ -66,17 +74,19 @@
             console.error('Server responded with an error.  (Please refresh the page and try again.)');
             console.error('Error details:');
             console.error(jwr.error);
-            vm.communicatingWithServer = false;
+            vm.syncing = '';
             return;
           }//-•
 
-          console.log('There are '+data.numOtherUsersHere+' other people here.');
+          // Clear the loading state.
+          vm.syncing = '';
+          // Update our zone data.
           vm.zone.numOtherUsersHere = data.numOtherUsersHere;
           vm.zone.id = data.id;
+
+          console.log('There are '+data.numOtherUsersHere+' other people here.');
           console.log('currentZone',vm.zone.id);
 
-          vm.communicatingWithServer = false;
-          vm.arrived = true;
           console.log('It worked!  Now arrived in zone.');
           console.log('The weather in this zone is:',data.weather);
           console.log('You can change your remark by running the following code:');
@@ -199,8 +209,8 @@
 
         });
       }, function failedToGetLocation(err) {
-        vm.syncingLocation = false;
-        vm.errorFetchingLocation = true;
+        vm.syncing = '';
+        vm.errorType = 'location';
         console.error('Could not load location.  (Please refresh the page and try again.)');
         console.error('Error details:');
         console.error(err);
@@ -235,7 +245,7 @@
 
       focusHiddenInput: function() {
         // If the zone info is still loading, or if we weren't able to get the location, bail.
-        if(vm.syncingLocation || vm.communicatingWithServer || vm.errorFetchingLocation) {
+        if(vm.syncing || vm.errorType) {
           console.log('still loading!!!');
           return;
         }
