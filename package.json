@@ -20,9 +20,14 @@
     "sails-mysql": "^1.0.0-10",
     "sails-postgresql": "^1.0.0-10"
   },
+  "devDependencies": {
+    "eslint": "3.5.0"
+  },
   "scripts": {
     "start": "NODE_ENV=production node app.js",
-    "test": "echo && echo \"* * * * * * * * * * * * * * * * * * * * * * * * * * * \" && echo \"About to run tests...\" && echo && if ! node ./node_modules/mocha/bin/mocha --timeout 10000 ; then echo && echo && echo \"- - -\" && echo \"Looks like something went wrong.\" && echo \"|  If you are not sure what to do next, try:\" && echo \"|  npm install mocha --save-dev\" && echo \"|  \" && echo \"|  And then:\" && echo \"|  mkdir test/\" && echo ; fi",
+    "test": "npm run lint && npm run custom-tests && echo 'Done.'",
+    "lint": "node ./node_modules/eslint/bin/eslint . --max-warnings=0 && echo '✔  Your code looks good.'",
+    "custom-tests": "echo \"(No other custom tests yet.)\" && echo",
     "debug": "node debug app.js"
   },
   "main": "app.js",
