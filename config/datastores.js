@@ -16,7 +16,7 @@
 module.exports.datastores = {
 
   default: {
-    //adapter: 'sails-mysql',// OK
+    // adapter: 'sails-mysql',// OK
     //adapter: 'sails-postgresql',// OK
     // adapter: 'sails-mongo',// OK
     // url: 'localhost/chatkin',

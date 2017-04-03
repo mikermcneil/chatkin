@@ -169,6 +169,12 @@
 
           window.DATA = data;//todo: remove this-- it's just for debugging
 
+          // Add formatted "time ago" to the other users' messages.
+          _.each(data.otherUsersHere, function(otherUser) {
+            var updatedAtTimeAgo = moment(otherUser.updatedAt).fromNow();
+            otherUser.updatedAtTimeAgo = updatedAtTimeAgo;
+          });
+
           // Update our zone data.
           vm.zone.id = data.id;
           vm.zone.otherUsersHere = data.otherUsersHere;
@@ -266,7 +272,8 @@
               vm.zone.otherUsersHere.unshift({
                 username: msg.username,
                 avatarColor: msg.avatarColor,
-                remark: msg.remark
+                remark: msg.remark,
+                updatedAtTimeAgo: moment(userInZone.updatedAt).fromNow()
               });
             }
             // If this is about a user in this zone updating their remark,
@@ -287,12 +294,14 @@
                 vm.zone.otherUsersHere.unshift({
                   username: msg.username,
                   avatarColor: msg.avatarColor,
-                  remark: msg.remark
+                  remark: msg.remark,
+                  updatedAtTimeAgo: moment(userInZone.updatedAt).fromNow()
                 });
               }
-              // Otherwise, update the existing user's remark.
+              // Otherwise, update the existing user's remark and 'time ago'.
               else {
                 userInZone.remark = msg.remark;
+                userInZone.updatedAtTimeAgo = moment(userInZone.updatedAt).fromNow();
               }
 
               // FUTURE:
