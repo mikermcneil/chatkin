@@ -361,6 +361,13 @@
       },//</updateRemark>
 
       submitNewRemark: function() {
+        // If this is a mobile device, trigger a blur event on the field.
+        // (This will submit the form without leaving it in an odd state.)
+        if(bowser.mobile || bowser.tablet) {
+          $('#update-remark-field').blur();
+          return;
+        }
+        // Otherwise, this isn't a mobile device, so we'll just update it normally.
         vm.updateRemark();
       },
 
