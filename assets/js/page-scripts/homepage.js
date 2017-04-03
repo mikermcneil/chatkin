@@ -51,8 +51,6 @@
 
       // For discard / dirty checking
       oldMessage: '',
-
-      isOnMobileDevice: false,
     },
 
 
