@@ -311,9 +311,16 @@
               }
               // Otherwise, update the existing user's remark and 'time ago'.
               else {
-                userInZone.remark = msg.remark;
-                userInZone.updatedAt = new Date().getTime();
-                userInZone.updatedAtTimeAgo = moment(new Date().getTime()).fromNow();
+                // Make a shallow copy of the user data.
+                var userData = _.clone(userInZone);
+                // Remove the user data from our list of other users
+                _.remove(vm.zone.otherUsersHere, {username: msg.username});
+                // Update the copy's data
+                userData.remark = msg.remark;
+                userData.updatedAt = new Date().getTime();
+                userData.updatedAtTimeAgo = moment(new Date().getTime()).fromNow();
+                // Add it to the top of the list so the remark shows up first.
+                vm.zone.otherUsersHere.unshift(userData);
               }
 
               // FUTURE:
