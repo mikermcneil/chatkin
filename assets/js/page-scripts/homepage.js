@@ -175,6 +175,15 @@
             otherUser.updatedAtTimeAgo = updatedAtTimeAgo;
           });
 
+          // Update the time agos every minute.
+          setInterval(function() {
+            console.log('Updating timeagos...');
+            _.each(vm.zone.otherUsersHere, function(otherUser) {
+              var updatedAtTimeAgo = moment(otherUser.updatedAt).fromNow();
+              otherUser.updatedAtTimeAgo = updatedAtTimeAgo;
+            });
+          }, 60000);
+
           // Update our zone data.
           vm.zone.id = data.id;
           vm.zone.otherUsersHere = data.otherUsersHere;
@@ -273,7 +282,8 @@
                 username: msg.username,
                 avatarColor: msg.avatarColor,
                 remark: msg.remark,
-                updatedAtTimeAgo: moment(userInZone.updatedAt).fromNow()
+                updatedAt: new Date().getTime(),
+                updatedAtTimeAgo: moment(new Date().getTime()).fromNow(),
               });
             }
             // If this is about a user in this zone updating their remark,
@@ -295,13 +305,15 @@
                   username: msg.username,
                   avatarColor: msg.avatarColor,
                   remark: msg.remark,
-                  updatedAtTimeAgo: moment(userInZone.updatedAt).fromNow()
+                  updatedAt: new Date().getTime(),
+                  updatedAtTimeAgo: moment(new Date().getTime()).fromNow(),
                 });
               }
               // Otherwise, update the existing user's remark and 'time ago'.
               else {
                 userInZone.remark = msg.remark;
-                userInZone.updatedAtTimeAgo = moment(userInZone.updatedAt).fromNow();
+                userInZone.updatedAt = new Date().getTime();
+                userInZone.updatedAtTimeAgo = moment(new Date().getTime()).fromNow();
               }
 
               // FUTURE:

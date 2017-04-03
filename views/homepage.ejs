@@ -61,7 +61,7 @@
                 <p class="username">
                   <i class="tweet-icon chatkin-icon icon-social-twitter" v-if="user.twitterUsername" :style="{color: user.avatarColor}"></i>
                   <strong :style="{color: user.avatarColor}">{{user.twitterUsername ? '@'+user.twitterUsername : user.username}}</strong>
-                  <small>{{user.updatedAtTimeAgo}}</small><br/>
+                  <small :data-updated-at="user.updatedAt">{{user.updatedAtTimeAgo}}</small><br/>
                   {{user.remark}}
                 </p>
               </div>

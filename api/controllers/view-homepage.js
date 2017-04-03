@@ -48,7 +48,7 @@ module.exports = {
         avatarColor: loggedInUserRecord.avatarColor
       });
 
-    });//</User.findOne()>
+    }, exits.error);//</User.findOne()>
 
   }
 

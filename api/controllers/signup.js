@@ -69,7 +69,7 @@ module.exports = {
 
         return exits.success();
 
-      });// </ User.create().exec() >
+      }, exits.error);// </ User.create().exec() >
     });// </ passwords.encryptPassword().exec() >
 
   }
