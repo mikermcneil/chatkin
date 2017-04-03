@@ -186,7 +186,11 @@
 
           // Update our zone data.
           vm.zone.id = data.id;
-          vm.zone.otherUsersHere = data.otherUsersHere;
+          // Set `otherUsersHere` to be the list of other users sorted by
+          // when they were last updated.
+          vm.zone.otherUsersHere = _.sortBy(data.otherUsersHere, 'updatedAt');
+          // Now reverse the list, so that the newest messages are at the top.
+          vm.zone.otherUsersHere.reverse();
           vm.weather.kind = data.weather.weather[0].main;
           vm.weather.description = data.weather.weather[0].description;
           vm.weather.temp = data.weather.main.temp;
