@@ -77,13 +77,11 @@
         v-bind:disabled="!editingMessage"
         v-on:keydown.stop.enter="submitNewRemark"
         v-on:keydown.stop.esc="cancelEditingRemark"
+        v-on:blur="submitNewRemarkMaybe"
         type="text"
         class="form-control input-lg"
         :class="!editingMessage ? 'disabled' : ''"
-        :placeholder="editingMessage ? '' : 'Click to add a message.'"/>
-        <!-- <span class="edit-btn" v-if="!editingMessage" v-on:click="clickMessageField">
-          <i class="chatkin-icon icon-pencil"></i>
-        </span> -->
+        :placeholder="editingMessage ? '' : 'Click to add a message.'">
     </div>
   </div>
 </div>

@@ -50,7 +50,9 @@
       editingMessage: false,
 
       // For discard / dirty checking
-      oldMessage: ''
+      oldMessage: '',
+
+      isOnMobileDevice: false,
     },
 
 
@@ -362,6 +364,13 @@
 
       submitNewRemark: function() {
         vm.updateRemark();
+      },
+
+      submitNewRemarkMaybe: function() {
+        // If this is a mobile device, submit the remark on blur.
+        if(bowser.mobile || bowser.tablet) {
+          vm.updateRemark();
+        }
       },
 
       focusHiddenInput: function(menuType) {

@@ -137,6 +137,8 @@
   content: "\e904";
   margin-left: -1.05859375em;
   color: inherit;
+  position: relative;
+  top: -1px;
 }
 .icon-logo-chatkin .path4:before {
   content: "\e905";
