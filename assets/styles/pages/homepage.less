@@ -4,6 +4,7 @@
 
 // height/width variables
 @form-height: 70px;
+@form-height-mobile: 90px;
 @topbar-height: 50px;
 
 // homepage styles
@@ -214,7 +215,9 @@
           .hover-buddy();
         }
       }
-      input {
+      textarea {
+        height: @form-height - 20;
+        resize: none;
         &.disabled {
           border: 1px solid transparent;
           background-color: transparent;
@@ -223,6 +226,20 @@
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+        }
+      }
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    #main-content {
+      padding-bottom: @form-height-mobile + @topbar-height;
+    }
+    .form {
+      height: @form-height-mobile;
+      .container {
+        textarea {
+          height: @form-height-mobile - 20;
         }
       }
     }
