@@ -178,12 +178,6 @@
           // Update the time agos every minute.
           setInterval(function() {
             console.log('Updating timeagos...');
-            // var $timeAgos = $('[data-updated-at]');
-            // $timeAgos.each(function() {
-            //   var $timeAgo = $(this);
-            //   var timestamp = +$timeAgo.attr('data-updated-at');
-            //   $timeAgo.text(moment(timestamp).fromNow());
-            // });
             _.each(vm.zone.otherUsersHere, function(otherUser) {
               var updatedAtTimeAgo = moment(otherUser.updatedAt).fromNow();
               otherUser.updatedAtTimeAgo = updatedAtTimeAgo;
