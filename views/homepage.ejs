@@ -8,7 +8,13 @@
         </span>
         <span class="menu-icon weather-info">
           <i class="chatkin-icon" v-bind:class="weather.iconClass ? weather.iconClass : ''" v-on:click="focusHiddenInput('weatherDetails')"></i>
-          <input type="text" id="weather-details-hidden-input" class="offscreen" v-on:focus="visibleMenu = 'weatherDetails'" v-on:blur="visibleMenu = ''" placeholder="Focusing this input shows the weather details."/>
+          <input type="text"
+          id="weather-details-hidden-input"
+          class="offscreen"
+          v-on:focus="visibleMenu = 'weatherDetails'"
+          v-on:blur="visibleMenu = ''"
+          :disabled="(syncing || errorType) ? true : false"
+          placeholder="Focusing this input shows the weather details."/>
           <div class="popup-menu weather-details" v-bind:class="visibleMenu === 'weatherDetails' ? 'visible' : ''">
             <h4>Weather: {{weather.description}}</h4>
             <h5>{{weather.temp}}&deg; <a target="_blank" href="https://en.wikipedia.org/wiki/Kelvin" v-on:mousedown.prevent>Kelvin</a></h5>
@@ -18,7 +24,13 @@
         </span>
         <span class="menu-icon zone-info">
           <i class="chatkin-icon icon-location" v-on:click="focusHiddenInput('zoneDetails')" v-if="!(syncing || errorType)"></i>
-          <input type="text" id="zone-details-hidden-input" class="offscreen" v-on:focus="visibleMenu = 'zoneDetails'" v-on:blur="visibleMenu = ''" placeholder="Focusing this input shows the zone details."/>
+          <input type="text"
+          id="zone-details-hidden-input"
+          class="offscreen"
+          v-on:focus="visibleMenu = 'zoneDetails'"
+          v-on:blur="visibleMenu = ''"
+          :disabled="(syncing || errorType) ? true : false"
+          placeholder="Focusing this input shows the zone details."/>
           <div class="popup-menu zone-details" v-bind:class="visibleMenu === 'zoneDetails' ? 'visible' : ''">
             <h4>Zone #{{zone.id}}:</h4>
             <div id="map"></div>

@@ -27,6 +27,7 @@
         otherUsersHere: [],
       },
 
+      // Weather info
       weather: {
         iconClass: '',
         kind: '',//'Thunderstorm', 'Drizzle', 'Rain', 'Snow', 'Atmosphere', 'Clear', 'Clouds', 'Extreme', or 'Additional'
