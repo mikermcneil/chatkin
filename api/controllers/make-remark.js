@@ -39,10 +39,10 @@ module.exports = {
           remark: thisUser.remark,
           avatarColor: thisUser.avatarColor
         }, env.req);
-      } catch (e) { return exits.error(e); }
+      } catch (e) { return exits.error(new Error('Unexpected error publishing new remark to zone: '+e.stack)); }
 
       return exits.success();
-    });
+    }, exits.error);
 
   }
 

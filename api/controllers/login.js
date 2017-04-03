@@ -58,7 +58,7 @@ module.exports = {
 
         }//</on success>
       });//</checkPassword().exec()>
-    });//</User.findOne().exec()>
+    }, exits.error);//</User.findOne().exec()>
 
   }
 
