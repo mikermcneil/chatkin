@@ -58,7 +58,12 @@
               </div>
               <div class="message" v-if="user.remark !==''">
                 <div class="remark-bg" :style="{background: user.avatarColor}"></div>
-                <p><i class="tweet-icon chatkin-icon icon-social-twitter" v-if="user.twitterUsername" :style="{color: user.avatarColor}"></i>{{user.remark}}</p>
+                <p class="username">
+                  <i class="tweet-icon chatkin-icon icon-social-twitter" v-if="user.twitterUsername" :style="{color: user.avatarColor}"></i>
+                  <strong :style="{color: user.avatarColor}">{{user.twitterUsername ? '@'+user.twitterUsername : user.username}}</strong>
+                  <small>{{user.updatedAtTimeAgo}}</small><br/>
+                  {{user.remark}}
+                </p>
               </div>
             </div>
           </template>

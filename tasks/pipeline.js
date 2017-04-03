@@ -71,6 +71,9 @@
    // Then bowser
    'dependencies/bowser.min.js',
 
+   // Then moment
+   'dependencies/moment.js',
+
    // Bring in `.js` files for any other client-side JavaScript dependencies.
    // (e.g. Lodash, jQuery, React, bootstrap.js, Ember, Angular, etc.)
    'dependencies/**/*.js',
