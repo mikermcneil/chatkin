@@ -65,6 +65,12 @@
    // Load `sails.io` before everything else.
    'dependencies/sails.io.js',
 
+   // Then jQuery
+   'dependencies/jquery.js',
+
+   // Then bowser
+   'dependencies/bowser.min.js',
+
    // Bring in `.js` files for any other client-side JavaScript dependencies.
    // (e.g. Lodash, jQuery, React, bootstrap.js, Ember, Angular, etc.)
    'dependencies/**/*.js',
