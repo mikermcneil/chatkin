@@ -410,29 +410,6 @@
         }
       },
 
-      focusHiddenInput: function(menuType) {
-        // If the zone info is still loading, or if we weren't able to get the location, bail.
-        if(vm.syncing || vm.errorType) {
-          return;
-        }
-
-        // Otherwise, we have zone info, so figure out
-        // which hidden input to focus.
-        switch(menuType) {
-          case 'zoneDetails':
-            $('#zone-details-hidden-input').focus();
-            break;
-
-          case 'weatherDetails':
-            $('#weather-details-hidden-input').focus();
-            break;
-
-          default:
-            throw new Error('Consistency violation: unknown `menuType` passed into focusHiddenInput().');
-        }
-
-      },
-
       clickMessageField: function(){
         vm.enableMessageField();
       },
