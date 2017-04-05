@@ -1,14 +1,12 @@
 # chatkin3
 
-a [Sails](http://sailsjs.com) application
+A location-based chat application built on [Sails](http://sailsjs.com) and [Vue.js](https://vuejs.org/).
 
-
-> Warning: Do not deploy this to production without putting together more of a real front-end!
-> The browser code checked in currently is just a stub--  it just grabs a string from the URL
-> and trusts that as your username, sending it to the backend and injecting it directly into
-> the DOM.  If you were to put it online as-is, this would leave your users open to XSS attacks!
+Augments content using the [OpenWeatherMap](http://openweathermap.org/) and [Twitter](https://dev.twitter.com/) APIs. 
 
 ### Compatibility
+
+The production config checked in (`config/env/production.js`) assumes [MySQL](https://www.mysql.com/), but you could use any database supported by Waterline.
 
 Tested with:
 + sails-disk
@@ -19,8 +17,13 @@ Tested with:
 
 ### Links
 
-+ [Sails framework documentation](http://sailsjs.com/documentation)
-+ [Version notes / upgrading](http://sailsjs.com/documentation/upgrading/to-v-1-0)
-+ [Deployment tips](http://sailsjs.com/documentation/concepts/deployment)
-+ [Community support options](http://sailsjs.com/support)
-+ [Sails Flagship](https://flagship.sailsjs.com)
++ [Sails framework documentation](https://sailsjs.com/documentation)
++ [Version notes / upgrading](https://sailsjs.com/documentation/upgrading/to-v-1-0)
++ [Deployment tips](https://sailsjs.com/documentation/concepts/deployment)
++ [Community support options](https://sailsjs.com/support)
++ [Professional / enterprise options](https://sailsjs.com/studio)
+
+
+## License
+
+This example, like the Sails framework, is available under the MIT license.
