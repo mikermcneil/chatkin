@@ -268,11 +268,13 @@
               // (This can happen if a user has multiple tabs open.)
               if(msg.username === vm.me.username) { return; }
 
+              console.log('there are '+vm.zone.otherUsersHere.length+'other users here.');
               console.log(msg.username+' left.');
 
 
               // Remove the user from the list of other users in the zone.
               _.remove(vm.zone.otherUsersHere, {username: msg.username});
+              console.log('NOW there are '+vm.zone.otherUsersHere.length+'other users here.');
             }
             // If it's about a new user joining the zone, add that user
             // to the UI.
