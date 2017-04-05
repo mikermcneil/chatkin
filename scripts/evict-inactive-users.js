@@ -30,6 +30,7 @@ require('machine-as-script')({
         if(err) { return exits.error(err); }
 
         _.each(inactiveUsers, function(inactiveUser) {
+          console.log('inactive user was in zone: '+inactiveUser.currentZone);
           if(_.isNull(inactiveUser.currentZone)) { return; }
 
           Zone.publish([inactiveUser.currentZone], {
@@ -38,7 +39,7 @@ require('machine-as-script')({
           });
         });
 
-        sails.log('Finished evicting inactive users.');
+        sails.log('Finished evicting %d inactive users.', inactiveUsers.length);
 
         return exits.success();
 

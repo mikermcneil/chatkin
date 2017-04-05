@@ -265,6 +265,9 @@
               // (This can happen if a user has multiple tabs open.)
               if(msg.username === vm.me.username) { return; }
 
+              console.log(msg.username+' left.');
+
+
               // Remove the user from the list of other users in the zone.
               _.remove(vm.zone.otherUsersHere, {username: msg.username});
             }
