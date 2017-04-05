@@ -95,13 +95,34 @@ module.exports.bootstrap = function(cb) {
     if (numZones === xMax*yMax) {
       sails.log('Using existing zones and users.');
 
-      // Since the users must already exist, clear their zones just in case the server crashed.
-      User.update({ currentZone: {'!=':null} })
-      .set({ currentZone: null })
-      .exec(function(err) {
-        if(err) { return cb(err); }
-        return cb();
-      });//_∏_
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+      // A little sanity check.
+      // TODO: remove this once we're confident this is solved across all adapters.
+      User.find().exec(function(err, users){
+        if (err) { return cb(err); }
+
+        User.find({ currentZone: {'!=':null} }).exec(function(err, supposedlyAllUsersWithCurrentZoneNonNull){
+          if (err) { return cb(err); }
+
+          if (supposedlyAllUsersWithCurrentZoneNonNull.length !== _.filter(users, {currentZone:null})) {
+            return cb(new Error('Consistency violation: The `!=` constraint is not working properly with this adapter!'));
+          }
+          // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+          // Since the users must already exist, clear their zones just in case the server crashed.
+          User.update({ currentZone: {'!=':null} })
+          .set({ currentZone: null })
+          .exec(function(err) {
+            if(err) { return cb(err); }
+            return cb();
+          });
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        });// sanity check
+      });// sanity check
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+      //_∏_
       return;
     }//-•
 
