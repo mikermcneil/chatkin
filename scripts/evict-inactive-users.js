@@ -1,33 +1,32 @@
-var sails = require('sails');
-sails.load({
-  environment: 'cron'
-}, function (err){
-  if(err) {
-    console.error('Couldnt lift:'+err.stack);
-    return;
+require('machine-as-script')({
+
+
+  description: 'Remove users who haven\'t been active for a few hours from their zones.',
+
+
+  habitat: 'sails',
+
+
+  sails: require('sails'),
+
+
+  fn: function(inputs, exits) {
+
+    User.update({
+      //todo
+    })
+    .set({
+      currentZone: null
+    })
+    .exec(function(err){
+      if(err) { return exits.error(err); }
+
+      sails.log('Finished evicting inactive users.');
+
+      return exits.success();
+
+    });
   }
 
-  require('machine-as-script')({
 
-    habitat: 'sails',
-
-
-    sails: sails,
-
-
-    fn: function(inputs, exits) {
-      User.find().exec(function(err, users){
-        if(err) { return exits.error(err); }
-
-        console.log('sails.config.isCron', sails.config.isCron);
-
-        return exits.success();
-
-      });
-    }
-
-  }).exec();
-
-});
-
-
+}).exec();

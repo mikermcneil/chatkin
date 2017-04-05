@@ -13,6 +13,7 @@ module.exports = {
     password: { type: 'string', required: true },
     avatarColor: { type: 'string', required: true },
     remark: { type: 'string' },
+    lastActiveAt: { type: 'number' },
     currentZone: { model: 'Zone' },
 
   },
