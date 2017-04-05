@@ -96,7 +96,7 @@ module.exports.bootstrap = function(cb) {
       sails.log('Using existing zones and users.');
 
       // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-      // A little sanity check.
+      // A little sanity check just to demonstrate the != null constaint issue
       // TODO: remove this once we're confident this is solved across all adapters.
       User.find().exec(function(err, users){
         if (err) { return cb(err); }
