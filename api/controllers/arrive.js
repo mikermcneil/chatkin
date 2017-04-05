@@ -82,8 +82,16 @@ module.exports = {
       if (!thisUser) { return exits.error(new Error('The requesting user is logged in as user `'+req.session.userId+'`, but no such user exists in the database.  This should never happen!')); }
 
       if (thisUser.currentZone) {
+        // Unsubscribe this user from the old zone, and publish her departure
+        // to update other clients' UIs.
         try {
           Zone.unsubscribe(req, [thisUser.currentZone]);
+
+          Zone.publish([thisUser.currentZone], {
+            verb: 'userLeft',
+            username: thisUser.username
+          }, req);
+
         } catch (e) { return exits.error(e); }
       }
 
