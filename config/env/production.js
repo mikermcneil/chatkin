@@ -247,7 +247,7 @@ module.exports = {
     * (http://sailsjs.com/docs/concepts/deployment/scaling)                    *
     *                                                                          *
     ***************************************************************************/
-    // adapter: 'socket.io-redis',
+    adapter: 'socket.io-redis',
     // url: 'redis://user:password@bigsquid.redistogo.com:9562/dbname',
     //--------------------------------------------------------------------------
     // /\   OR, to avoid checking it in to version control, you might opt to
