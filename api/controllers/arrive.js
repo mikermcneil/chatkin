@@ -305,7 +305,8 @@ module.exports = {
                       strangersHere.push({
                         createdAt: tweetedAt,
                         updatedAt: tweetedAt,
-                        remark: rawTweet.text,
+                        // Tweet text already comes to us escaped (e.g. with '&amp;' instead of '&')
+                        remark: _.unescape(rawTweet.text),
                         currentZone: zone.id,
                         avatarColor: '#1dcaff',
                         username: '@twitter:'+rawTweet.user.screen_name,
