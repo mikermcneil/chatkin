@@ -46,6 +46,9 @@
       // For showing/hiding popup menus
       visibleMenu: '',// 'zoneDetails', 'weatherDetails', or ''
 
+      // Whether or not to animate the menu
+      animateMenu: true,
+
       // For enabling/disabling the form
       editingMessage: false,
 
@@ -372,6 +375,16 @@
 
 
     methods: {
+      showMenu: function(menuType){
+        if(menuType === '' || vm.visibleMenu === '') {
+          vm.animateMenu = true;
+        }
+        else {
+          vm.animateMenu = false;
+        }
+        vm.visibleMenu = menuType;
+      },
+
       updateRemark: function(newMsg) {
         vm.editingMessage = false;
         // ^^TODO: consider a separate syncing state

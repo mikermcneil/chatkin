@@ -5,9 +5,8 @@
         <span class="branding">chatkin</span>
         <span class="menu-icon weather-info">
           <i class="chatkin-icon"
-          v-bind:class="[visibleMenu === 'weatherDetails' ? 'active' : '', weather.iconClass]"
-          v-bind:class=""
-          v-on:click.stop="visibleMenu = 'weatherDetails'"></i>
+          v-bind:class="[visibleMenu === 'weatherDetails' ? 'active' : '', animateMenu ? 'animate' : '', weather.iconClass]"
+          v-on:click.stop="showMenu('weatherDetails')"></i>
           <div class="popup-menu weather-details"
             v-bind:class="visibleMenu === 'weatherDetails' && !(syncing || errorType) ? 'visible' : ''"
             v-on:click.stop>
@@ -22,8 +21,8 @@
         </span>
         <span class="menu-icon zone-info">
           <i class="chatkin-icon icon-location"
-          v-bind:class="visibleMenu === 'zoneDetails' ? 'active' : ''"
-          v-on:click.stop="visibleMenu = 'zoneDetails'" v-if="!(syncing || errorType)"></i>
+          v-bind:class="[visibleMenu === 'zoneDetails' ? 'active' : '', animateMenu ? 'animate' : '']"
+          v-on:click.stop="showMenu('zoneDetails')" v-if="!(syncing || errorType)"></i>
           <div class="popup-menu zone-details"
             v-bind:class="visibleMenu === 'zoneDetails' && !(syncing || errorType) ? 'visible' : ''"
             v-on:click.stop>
