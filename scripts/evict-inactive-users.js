@@ -12,11 +12,12 @@ require('machine-as-script')({
 
   fn: function(inputs, exits) {
 
+    var MAX_INACTIVE_TIME =  Date.now()-(1000*60*60*4);
+
     // Iterate over inactive users with non-null zones.
     User.stream({
 
-      // Users who were last active over 4 hours ago
-      lastActiveAt: { '<': Date.now()-(1000*60*60*4) }
+      lastActiveAt: { '<':  MAX_INACTIVE_TIME }
 
       // currentZone: { '!=': null } // TODO: put this back once it works
     })
