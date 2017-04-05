@@ -10,6 +10,7 @@
     "flaverr": "^1.1.1",
     "grunt": "1.0.1",
     "lodash": "3.10.1",
+    "machine-as-script": "^4.0.9",
     "machinepack-openweather": "^2.0.1",
     "machinepack-passwords": "^2.3.0",
     "machinepack-twitter": "^1.2.1",
