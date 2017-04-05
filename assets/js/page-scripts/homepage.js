@@ -273,7 +273,7 @@
 
 
               // Remove the user from the list of other users in the zone.
-              _.remove(vm.zone.otherUsersHere, {username: msg.username});
+              methods.removeUserFromZone(msg.username);
               console.log('NOW there are '+vm.zone.otherUsersHere.length+'other users here.');
             }
             // If it's about a new user joining the zone, add that user
@@ -377,6 +377,10 @@
 
 
     methods: {
+      removeUserFromZone: function(username){
+        _.remove(vm.zone.otherUsersHere, {username: username});
+      },
+
       showMenu: function(menuType){
         if(menuType === '' || vm.visibleMenu === '') {
           vm.animateMenu = true;
