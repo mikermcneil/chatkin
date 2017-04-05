@@ -296,7 +296,8 @@ module.exports = {
                     var stranger = _.find(strangersHere, {twitterUsername: rawTweet.user.screen_name});
                     if (stranger) {
                       if (stranger.updatedAt < tweetedAt) {
-                        stranger.remark = rawTweet.text;
+                        // Tweet text already comes to us escaped (e.g. with '&amp;' instead of '&')
+                        stranger.remark =  _.unescape(rawTweet.text);
                         stranger.createdAt = tweetedAt;
                         stranger.updatedAt = tweetedAt;
                       }
