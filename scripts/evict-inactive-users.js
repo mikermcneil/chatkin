@@ -1,3 +1,5 @@
+console.log('ENV:',process.env);
+
 require('machine-as-script')({
 
 
