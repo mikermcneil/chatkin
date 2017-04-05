@@ -249,7 +249,7 @@
           // Display map
           var mapCenterLatitude = geoPosition.coords.latitude;// TODO: use real adjusted coordinates from server instead
           var mapCenterLongitude = geoPosition.coords.longitude;// TODO: use real adjusted coordinates from server instead
-          var $mapImg = $('<img src="https://maps.googleapis.com/maps/api/staticmap?center=' + mapCenterLatitude + ',' + mapCenterLongitude + '&zoom='+zoom+'&size=200x200&sensor=false"/>');
+          var $mapImg = $('<img src="https://maps.googleapis.com/maps/api/staticmap?center=' + mapCenterLatitude + ',' + mapCenterLongitude + '&zoom='+zoom+'&size=200x200&key=AIzaSyAvbP5k24nkLhiTp2L8ambymkFWCaS2HvI"/>');
           $('#map').append($mapImg);
 
 
