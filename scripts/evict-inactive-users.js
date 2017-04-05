@@ -12,24 +12,26 @@ require('machine-as-script')({
 
   fn: function(inputs, exits) {
 
-    // Grab a list of inactive users with non-null zones.
-    User.find({
-      // TODO: add constraint so that this only applies to inactive users
-      // '!=': null // TODO: put this back once it works
+    // Iterate over inactive users with non-null zones.
+    User.stream({
+
+      // Users who were last active over 4 hours ago
+      lastActiveAt: { '<': Date.now()-(1000*60*60*4) }
+
+      // currentZone: { '!=': null } // TODO: put this back once it works
     })
-    .exec(function(err, inactiveUsers){
-      if(err) { return exits.error(err); }
+    .eachBatch(function(theseInactiveUsers, next) {
 
       User.update({
-        // todo
+        id: { in: _.pluck(theseInactiveUsers, 'id') }
       })
       .set({
         currentZone: null
       })
       .exec(function(err){
-        if(err) { return exits.error(err); }
+        if(err) { return next(err); }
 
-        _.each(inactiveUsers, function(inactiveUser) {
+        _.each(theseInactiveUsers, function(inactiveUser) {
           console.log('inactive user was in zone: '+inactiveUser.currentZone);
           if(_.isNull(inactiveUser.currentZone)) { return; }
 
@@ -39,11 +41,16 @@ require('machine-as-script')({
           });
         });
 
-        sails.log('Finished evicting %d inactive users.', inactiveUsers.length);
+        sails.log('Finished evicting %d inactive users.', theseInactiveUsers.length);
 
-        return exits.success();
+        return next();
 
-      }, exits.error);//</ User.update().exec() >
+      }, next);//</ User.update().exec() >
+
+    })
+    .exec(function(err){
+      if(err) { return exits.error(err); }
+      return exits.success();
     }, exits.error);//</ User.find().exec() >
 
   }

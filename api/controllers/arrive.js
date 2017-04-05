@@ -252,7 +252,10 @@ module.exports = {
 
             User.update()
             .where({ username: thisUser.username })
-            .set({ currentZone: zone.id })
+            .set({
+              currentZone: zone.id,
+              lastActiveAt: Date.now()
+            })
             .exec(function (err) {
               if (err) { return exits.error(err); }
 
