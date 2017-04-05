@@ -2,7 +2,7 @@
 
 A location-based chat application built on [Sails](http://sailsjs.com) and [Vue.js](https://vuejs.org/).
 
-Augments content using the [OpenWeatherMap](http://openweathermap.org/) and [Twitter](https://dev.twitter.com/) APIs. 
+Augments content using the [OpenWeatherMap](http://openweathermap.org/) and [Twitter](https://dev.twitter.com/) APIs.
 
 ### Compatibility
 
@@ -13,6 +13,11 @@ Tested with:
 + sails-mysql
 + sails-postgresql
 + sails-mongo
+
+
+### Scheduled jobs
+
+The scheduled jobs for this app live in the `scripts/` directory.  In our example deployment, we're using [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler) as our cron service.
 
 
 ### Links
@@ -26,4 +31,4 @@ Tested with:
 
 ## License
 
-This example, like the Sails framework, is available under the MIT license.
+This application, like the Sails framework, is available under the MIT license.
