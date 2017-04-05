@@ -54,6 +54,11 @@
 
       // For discard / dirty checking
       oldMessage: '',
+
+      // For tracking when our last interval ran, (see setInterval() in the mounted finction below)
+      // so we'll know whether we may have missed some activity on mobile devices.
+      // (Because the socket notifications aren't received if you leave the window.)
+      lastIntervalAt: null,
     },
 
 
@@ -178,14 +183,25 @@
             otherUser.updatedAtTimeAgo = updatedAtTimeAgo;
           });
 
-          // Update the time agos every minute.
+          var INTERVAL_TIME = 1000 * 60;
           setInterval(function() {
-            console.log('Updating timeagos...');
+            var now = new Date().getTime();
+            // If the last interval was 1s+ earlier than our specified interval time,
+            // then the browser window must have been inactive.
+            // (This happens on mobile when you leave the browser app.)
+            // In this case, we'll reload the page to make sure the zone info is still accurate.
+            if(!_.isNull(vm.lastIntervalAt) && now - vm.lastIntervalAt > INTERVAL_TIME + 1000) {
+              location.reload();
+            }
+            // Otherwise, the window has been active.
+            // Update the time agos for the messages.
             _.each(vm.zone.otherUsersHere, function(otherUser) {
               var updatedAtTimeAgo = moment(otherUser.updatedAt).fromNow();
               otherUser.updatedAtTimeAgo = updatedAtTimeAgo;
             });
-          }, 60000);
+            // Update `lastIntervalAt`
+            vm.lastIntervalAt = now;
+          }, INTERVAL_TIME);
 
           // Update our zone data.
           vm.zone.id = data.id;
