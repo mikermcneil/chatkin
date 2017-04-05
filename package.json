@@ -20,7 +20,8 @@
     "sails-hook-sockets": "^1.0.1",
     "sails-mongo": "^1.0.0-5",
     "sails-mysql": "^1.0.0-10",
-    "sails-postgresql": "^1.0.0-10"
+    "sails-postgresql": "^1.0.0-10",
+    "socket.io-redis": "^4.0.0"
   },
   "devDependencies": {
     "eslint": "3.5.0"
