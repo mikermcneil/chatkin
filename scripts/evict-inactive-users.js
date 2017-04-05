@@ -12,20 +12,39 @@ require('machine-as-script')({
 
   fn: function(inputs, exits) {
 
-    User.update({
-      //todo
+    // Grab a list of inactive users with non-null zones.
+    User.find({
+      // TODO: add constraint so that this only applies to inactive users
+      // '!=': null // TODO: put this back once it works
     })
-    .set({
-      currentZone: null
-    })
-    .exec(function(err){
+    .exec(function(err, inactiveUsers){
       if(err) { return exits.error(err); }
 
-      sails.log('Finished evicting inactive users.');
+      User.update({
+        //todo
+      })
+      .set({
+        currentZone: null
+      })
+      .exec(function(err){
+        if(err) { return exits.error(err); }
 
-      return exits.success();
+        _.each(inactiveUsers, function(inactiveUser) {
+          if(_.isNull(inactiveUser.currentZone)) { return; }
 
-    });
+          Zone.publish([inactiveUser.currentZone], {
+            verb: 'userLeft',
+            username: inactiveUser.username
+          });
+        });
+
+        sails.log('Finished evicting inactive users.');
+
+        return exits.success();
+
+      }, exits.error);//</ User.update().exec() >
+    }, exits.error);//</ User.find().exec() >
+
   }
 
 
