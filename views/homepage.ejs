@@ -4,27 +4,36 @@
       <div class="container">
         <span class="branding">chatkin</span>
         <span class="menu-icon weather-info">
-          <i class="chatkin-icon" v-bind:class="weather.iconClass ? weather.iconClass : ''" v-on:click.stop="visibleMenu = 'weatherDetails'"></i>
+          <i class="chatkin-icon"
+          v-bind:class="[visibleMenu === 'weatherDetails' ? 'active' : '', weather.iconClass]"
+          v-bind:class=""
+          v-on:click.stop="visibleMenu = 'weatherDetails'"></i>
           <div class="popup-menu weather-details"
             v-bind:class="visibleMenu === 'weatherDetails' && !(syncing || errorType) ? 'visible' : ''"
             v-on:click.stop>
-            <div class="mobile-overlay"></div>
-            <h4>Weather: {{weather.description}}</h4>
-            <h5>{{weather.temp}}&deg; <a target="_blank" href="https://en.wikipedia.org/wiki/Kelvin" v-on:mousedown.prevent>Kelvin</a></h5>
-            <p><strong>High:</strong> {{weather.temp_max}}&deg; K</p>
-            <p><strong>Low:</strong> {{weather.temp_min}}&deg; K</p>
+            <div class="mobile-overlay" v-on:click.stop="visibleMenu = ''"></div>
+            <div class="menu-content">
+              <h4>Weather: {{weather.description}}</h4>
+              <h5>{{weather.temp}}&deg; <a target="_blank" href="https://en.wikipedia.org/wiki/Kelvin" v-on:mousedown.prevent>Kelvin</a></h5>
+              <p><strong>High:</strong> {{weather.temp_max}}&deg; K</p>
+              <p><strong>Low:</strong> {{weather.temp_min}}&deg; K</p>
+            </div>
           </div>
         </span>
         <span class="menu-icon zone-info">
-          <i class="chatkin-icon icon-location" v-on:click.stop="visibleMenu = 'zoneDetails'" v-if="!(syncing || errorType)"></i>
+          <i class="chatkin-icon icon-location"
+          v-bind:class="visibleMenu === 'zoneDetails' ? 'active' : ''"
+          v-on:click.stop="visibleMenu = 'zoneDetails'" v-if="!(syncing || errorType)"></i>
           <div class="popup-menu zone-details"
             v-bind:class="visibleMenu === 'zoneDetails' && !(syncing || errorType) ? 'visible' : ''"
             v-on:click.stop>
-            <div class="mobile-overlay"></div>
-            <h4>Zone #{{zone.id}}:</h4>
-            <div id="map"></div>
-            <span v-if="zone.otherUsersHere.length === 0">You are the only one here.</span>
-            <span v-else>There {{zone.otherUsersHere.length === 1 ? 'is' : 'are'}} {{zone.otherUsersHere.length}} other {{zone.otherUsersHere.length === 1 ? 'person' : 'people'}}  here.</span>
+            <div class="mobile-overlay" v-on:click.stop="visibleMenu = ''"></div>
+            <div class="menu-content">
+              <h4>Zone #{{zone.id}}:</h4>
+              <div id="map"></div>
+              <span v-if="zone.otherUsersHere.length === 0">You are the only one here.</span>
+              <span v-else>There {{zone.otherUsersHere.length === 1 ? 'is' : 'are'}} {{zone.otherUsersHere.length}} other {{zone.otherUsersHere.length === 1 ? 'person' : 'people'}}  here.</span>
+            </div>
           </div>
         </span>
       </div>
