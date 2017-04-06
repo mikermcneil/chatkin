@@ -28,14 +28,7 @@
       },
 
       // Weather info
-      weather: {
-        iconClass: '',
-        kind: '',//'Thunderstorm', 'Drizzle', 'Rain', 'Snow', 'Atmosphere', 'Clear', 'Clouds', 'Extreme', or 'Additional'
-        description: '',
-        temp: null,
-        temp_min: null, //eslint-disable-line camelcase
-        temp_max: null //eslint-disable-line camelcase
-      },
+      weather: undefined,
 
       // For loading states
       syncing: 'location', // 'location', 'chatkinServer', 'form', or ''
@@ -227,19 +220,8 @@
                   });
                   // Update our zone data.
                   vm.zone.id = updatedData.id;
-                  // Set `otherUsersHere` to be the list of other users sorted by
-                  // when they were last updated.
                   vm.zone.otherUsersHere = updatedData.otherUsersHere;
-                  vm.weather.kind = updatedData.weather.weather[0].main;
-                  vm.weather.description = updatedData.weather.weather[0].description;
-                  vm.weather.temp = updatedData.weather.main.temp;
-                  vm.weather.temp_min = updatedData.weather.main.temp_min;//eslint-disable-line camelcase
-                  vm.weather.temp_max = updatedData.weather.main.temp_max;//eslint-disable-line camelcase
-                  // Determine the weather icon class.
-                  // (We just named our icons the same thing as the OpenWeatherMap
-                  // icons, but prefixed with 'icon-weather-'.
-                  // See https://openweathermap.org/weather-conditions for the list.)
-                  vm.weather.iconClass = 'icon-weather-'+updatedData.weather.weather[0].icon;
+                  vm.weather = updatedData.weather;
                 });
               });
             }
@@ -247,19 +229,8 @@
 
           // Update our zone data.
           vm.zone.id = data.id;
-          // Set `otherUsersHere` to be the list of other users sorted by
-          // when they were last updated.
           vm.zone.otherUsersHere = data.otherUsersHere;
-          vm.weather.kind = data.weather.weather[0].main;
-          vm.weather.description = data.weather.weather[0].description;
-          vm.weather.temp = data.weather.main.temp;
-          vm.weather.temp_min = data.weather.main.temp_min;//eslint-disable-line camelcase
-          vm.weather.temp_max = data.weather.main.temp_max;//eslint-disable-line camelcase
-          // Determine the weather icon class.
-          // (We just named our icons the same thing as the OpenWeatherMap
-          // icons, but prefixed with 'icon-weather-'.
-          // See https://openweathermap.org/weather-conditions for the list.)
-          vm.weather.iconClass = 'icon-weather-'+data.weather.weather[0].icon;
+          vm.weather = data.weather;
 
 
           console.log('There are '+data.otherUsersHere.length+' other people here.');

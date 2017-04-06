@@ -3,7 +3,7 @@
     <nav class="topbar">
       <div class="container">
         <span class="branding">chatkin</span>
-        <span class="menu-icon weather-info">
+        <span class="menu-icon weather-info" v-if="typeof weather === 'object'">
           <i class="chatkin-icon"
           v-bind:class="[visibleMenu === 'weatherDetails' ? 'active' : '', weather.iconClass]"
           v-on:click.stop="showMenu('weatherDetails')"></i>

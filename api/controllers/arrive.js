@@ -321,10 +321,23 @@ module.exports = {
                   });
                 } catch (e) { return exits.error(new Error('Unexpected error parsing tweets: '+e.stack)); }
 
+
+                // Format list of users:
                 var fullListOfOtherUsersHere = otherUsersHere.concat(strangersHere);
-                // List the most recently updated users at the beginning.
                 fullListOfOtherUsersHere = _.sortBy(fullListOfOtherUsersHere, 'updatedAt');
                 fullListOfOtherUsersHere.reverse();
+
+                // Format weather data:
+                var weatherData = {};
+                weatherData.kind = zone.cachedWeather.weather[0].main;//'Thunderstorm', 'Drizzle', 'Rain', 'Snow', 'Atmosphere', 'Clear', 'Clouds', 'Extreme', or 'Additional'
+                weatherData.description = zone.cachedWeather.weather[0].description;
+                weatherData.temp = zone.cachedWeather.main.temp;
+                weatherData.temp_min = zone.cachedWeather.main.temp_min;//eslint-disable-line camelcase
+                weatherData.temp_max = zone.cachedWeather.main.temp_max;//eslint-disable-line camelcase
+                // > (We just named our icons the same thing as the OpenWeatherMap
+                // > icons, but prefixed with 'icon-weather-'.
+                // > See https://openweathermap.org/weather-conditions for the list.)
+                weatherData.iconClass = 'icon-weather-'+zone.cachedWeather.weather[0].icon;
 
                 return exits.success({
                   id: zone.id,
@@ -332,7 +345,7 @@ module.exports = {
                   relevancyRadius: relevancyRadius,
                   zoneCenterLatitudeDeg: zoneCenterLatitudeDeg,
                   zoneCenterLongitude: zoneCenterLongitudeDeg,
-                  weather: zone.cachedWeather,
+                  weather: weatherData,
                 });
 
               }, exits.error);//</ User.find().exec() >
