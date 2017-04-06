@@ -10,16 +10,10 @@
 
 // homepage styles
 #homepage {
+  padding-top: @topbar-height;
+  padding-bottom: @form-height;
 
   #main-content {
-    position: absolute;
-    // z-index: @z-messages;
-    height: 100%;
-    width: 100%;
-    padding-top: @topbar-height;
-    padding-bottom: @form-height;
-    background-color: #fff;
-
     .topbar {
       position: fixed;
       top: 0px;
@@ -242,8 +236,8 @@
   }
 
   @media screen and (max-width: 500px) {
+    padding-bottom: @form-height-mobile;
     #main-content {
-      padding-bottom: @form-height-mobile;
       .topbar {
         .menu-icon {
           .popup-menu {
