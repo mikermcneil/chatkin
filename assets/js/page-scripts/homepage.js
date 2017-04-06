@@ -233,16 +233,16 @@
           vm.weather = data.weather;
 
 
-          console.log('There are '+data.otherUsersHere.length+' other people here.');
-          console.log(data.otherUsersHere);
-          console.log('currentZone',vm.zone.id);
+          // console.log('There are '+data.otherUsersHere.length+' other people here.');
+          // console.log(data.otherUsersHere);
+          // console.log('currentZone',vm.zone.id);
 
-          console.log('It worked!  Now arrived in zone.');
-          console.log('The weather in this zone is:',data.weather);
-          console.log('You can change your remark by running the following code:');
-          console.log('```');
-          console.log('io.socket.put(\'/user/'+ window.SAILS_LOCALS.username +'/remark\',{remark: \'hi\'},console.log.bind(console))');
-          console.log('```');
+          // console.log('It worked!  Now arrived in zone.');
+          // console.log('The weather in this zone is:',data.weather);
+          // console.log('You can change your remark by running the following code:');
+          // console.log('```');
+          // console.log('io.socket.put(\'/user/'+ window.SAILS_LOCALS.username +'/remark\',{remark: \'hi\'},console.log.bind(console))');
+          // console.log('```');
 
 
           // Compute zoom
@@ -446,6 +446,7 @@
         // (This will submit the form without leaving it in an odd state.)
         if(bowser.mobile || bowser.tablet) {
           $('#update-remark-field').blur();
+          $('html, body').animate({ scrollTop: 0 });
           return;
         }
         // Otherwise, this isn't a mobile device, so we'll just update it normally.
@@ -494,15 +495,6 @@
 
     }//</methods>
   });
-
-
-
-
-  // When the activity is updated...
-  vm.$watch('activity', function() {
-    // TODO: maybe autoscroll the message window.
-  });
-
 
 
 })();
