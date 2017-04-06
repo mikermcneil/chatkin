@@ -344,7 +344,7 @@ module.exports = {
                   otherUsersHere: fullListOfOtherUsersHere,
                   relevancyRadius: relevancyRadius,
                   zoneCenterLatitudeDeg: zoneCenterLatitudeDeg,
-                  zoneCenterLongitude: zoneCenterLongitudeDeg,
+                  zoneCenterLongitudeDeg: zoneCenterLongitudeDeg,
                   weather: weatherData,
                 });
 
