@@ -135,7 +135,6 @@
           .remark {
             padding-top: 16px;
             // padding-bottom: 15px;
-            padding-left: 60px;
             padding-right: 15px;
             position: relative;
             min-height: 62px;
@@ -146,11 +145,9 @@
               width: 70px;
               height: 75px;
               position: absolute;
-              left: 0px;
               top: 15px;
               i {
                 font-size: 46px;
-                float: left;
               }
             }
             .message {
@@ -186,6 +183,29 @@
                 top: 0px;
                 left: 0px;
                 border-radius: 7px;
+              }
+            }
+            &.other-user-remark {
+              padding-left: 60px;
+              .avatar {
+                left: 0px;
+                i {
+                  float: left;
+                }
+              }
+            }
+            &.my-remark {
+              // padding-right: 60px;
+              text-align: right;
+              .avatar {
+                display: none;
+                right: 0px;
+                i {
+                  float: right;
+                }
+              }
+              .message {
+                text-align: right;
               }
             }
           }

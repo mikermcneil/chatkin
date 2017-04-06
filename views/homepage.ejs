@@ -49,15 +49,16 @@
         </div>
         <div class="activity" v-else>
           <template v-for="user in zone.usersHere">
-            <div class="remark">
+            <div class="remark" v-bind:class="user.username === me.username ? 'my-remark' : 'other-user-remark'">
               <div class="avatar">
                 <i class="chatkin-icon icon-logo-chatkin" :style="{color: user.avatarColor}"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span></i>
               </div>
               <div class="message" v-if="user.remark !==''">
                 <div class="remark-bg" :style="{background: user.avatarColor}"></div>
-                <p class="username">
+                <p v-if="!user.twitterUsername && user.username === me.username">{{user.remark}}</p>
+                <p v-else>
                   <i class="tweet-icon chatkin-icon icon-social-twitter" v-if="user.twitterUsername" :style="{color: user.avatarColor}"></i>
-                  <strong :style="{color: user.avatarColor}">{{user.twitterUsername ? '@'+user.twitterUsername : user.username}}</strong>
+                  <strong :style="{color: user.avatarColor}">{{user.twitterUsername ? '@'+user.twitterUsername :  user.username}}</strong>
                   <small :data-updated-at="user.updatedAt">{{user.updatedAtTimeAgo}}</small><br/>
                   {{user.remark}}
                 </p>
