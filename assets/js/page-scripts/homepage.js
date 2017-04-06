@@ -24,7 +24,7 @@
       // Zone info
       zone: {
         id: null,
-        otherUsersHere: [],
+        usersHere: [],
       },
 
       // Weather info
@@ -183,7 +183,7 @@
             var now = new Date().getTime();
             vm.lastIntervalAt = now;
             // Update the time agos for the messages.
-            _.each(vm.zone.otherUsersHere, function(otherUser) {
+            _.each(vm.zone.usersHere, function(otherUser) {
               var updatedAtTimeAgo = moment(otherUser.updatedAt).fromNow();
               otherUser.updatedAtTimeAgo = updatedAtTimeAgo;
             });
@@ -220,7 +220,7 @@
                   });
                   // Update our zone data.
                   vm.zone.id = updatedData.id;
-                  vm.zone.otherUsersHere = updatedData.otherUsersHere;
+                  vm.zone.usersHere = updatedData.otherUsersHere;
                   vm.weather = updatedData.weather;
                 });
               });
@@ -229,7 +229,7 @@
 
           // Update our zone data.
           vm.zone.id = data.id;
-          vm.zone.otherUsersHere = data.otherUsersHere;
+          vm.zone.usersHere = data.otherUsersHere;
           vm.weather = data.weather;
 
 
@@ -282,6 +282,15 @@
           var $mapImg = $('<img src="https://maps.googleapis.com/maps/api/staticmap?center=' + mapCenterLatitude + ',' + mapCenterLongitude + '&zoom='+zoom+'&size=200x200&key=AIzaSyAvbP5k24nkLhiTp2L8ambymkFWCaS2HvI"/>');
           $('#map').append($mapImg);
 
+          // Add our newly-arrived user to the zone's `usersHere`
+          vm.zone.usersHere.unshift({
+            username: window.SAILS_LOCALS.username,
+            avatarColor: window.SAILS_LOCALS.avatarColor,
+            remark: window.SAILS_LOCALS.remark,
+            updatedAt: window.SAILS_LOCALS.updatedAt,
+            updatedAtTimeAgo: moment(window.SAILS_LOCALS.updatedAt).fromNow()
+          });
+
 
           // Every time a "zone" socket event from the server arrives...
           io.socket.on('zone', function(msg){
@@ -295,13 +304,13 @@
               // (This can happen if a user has multiple tabs open.)
               if(msg.username === vm.me.username) { return; }
 
-              console.log('there are '+vm.zone.otherUsersHere.length+'other users here.');
+              console.log('there are '+vm.zone.usersHere.length+'other users here.');
               console.log(msg.username+' left.');
 
 
               // Remove the user from the list of other users in the zone.
               vm.removeUserFromZone(msg.username);
-              console.log('NOW there are '+vm.zone.otherUsersHere.length+'other users here.');
+              console.log('NOW there are '+vm.zone.usersHere.length+'other users here.');
             }
             // If it's about a new user joining the zone, add that user
             // to the UI.
@@ -313,11 +322,11 @@
               // Also, if this notification is about a user who is already here,
               // ignore it.
               // (Also can happen if a user has multiple tabs open.)
-              var userInZone = _.find(vm.zone.otherUsersHere, {username: msg.username});
+              var userInZone = _.find(vm.zone.usersHere, {username: msg.username});
               if(!_.isUndefined(userInZone)) { return; }
 
               // Add the newly-arrived user to our list of `otherUsersHere`.
-              vm.zone.otherUsersHere.unshift({
+              vm.zone.usersHere.unshift({
                 username: msg.username,
                 avatarColor: msg.avatarColor,
                 remark: msg.remark,
@@ -334,13 +343,13 @@
               if(msg.username === vm.me.username) { return; }
 
               // Find the user in the `otherUsersHere` list.
-              var userInZone = _.find(vm.zone.otherUsersHere, {username: msg.username});
+              var userInZone = _.find(vm.zone.usersHere, {username: msg.username});
 
               // FOR NOW:
               // If the user isn't in our list, assume they arrived before us
               // and add them.
               if(_.isUndefined(userInZone)) {
-                vm.zone.otherUsersHere.unshift({
+                vm.zone.usersHere.unshift({
                   username: msg.username,
                   avatarColor: msg.avatarColor,
                   remark: msg.remark,
@@ -353,13 +362,13 @@
                 // Make a shallow copy of the user data.
                 var userData = _.clone(userInZone);
                 // Remove the user data from our list of other users
-                _.remove(vm.zone.otherUsersHere, {username: msg.username});
+                _.remove(vm.zone.usersHere, {username: msg.username});
                 // Update the copy's data
                 userData.remark = msg.remark;
                 userData.updatedAt = new Date().getTime();
                 userData.updatedAtTimeAgo = moment(new Date().getTime()).fromNow();
                 // Add it to the top of the list so the remark shows up first.
-                vm.zone.otherUsersHere.unshift(userData);
+                vm.zone.usersHere.unshift(userData);
               }
 
               // FUTURE:
@@ -405,7 +414,7 @@
 
     methods: {
       removeUserFromZone: function(username){
-        _.remove(vm.zone.otherUsersHere, {username: username});
+        _.remove(vm.zone.usersHere, {username: username});
       },
 
       showMenu: function(menuType){
@@ -438,6 +447,15 @@
             vm.editingMessage = true;
             return;
           }//-•
+          _.remove(vm.zone.usersHere, {username: vm.me.username});
+          var timestamp = new Date().getTime;
+          vm.zone.usersHere.unshift({
+            username: vm.me.username,
+            avatarColor: vm.me.avatarColor,
+            remark: vm.me.message,
+            updatedAt: new Date().getTime(),
+            updatedAtTimeAgo: moment(new Date().getTime()).fromNow(),
+          });
         });
       },//</updateRemark>
 
