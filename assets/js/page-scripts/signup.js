@@ -21,8 +21,7 @@
       username: '',
       password: '',
       passwordConfirmation: '',
-      usernameTaken: false,
-      passwordMatchError: false,
+      errorType: '',//'usernameTaken', 'passwordMatch', catchall', or ''
       randomizedColor: startingColor
     },
 
@@ -37,13 +36,12 @@
       },
 
       submitSignupForm: function() {
-        vm.usernameTaken = false;
-        vm.passwordMatchError = false;
+        vm.errorType = '';
         vm.isSyncing = true;
 
         if(vm.password !== vm.passwordConfirmation) {
           vm.isSyncing = false;
-          vm.passwordMatchError = true;
+          vm.errorType = 'passwordMatch';
           return;
         }
 
@@ -56,16 +54,17 @@
           if(jwr.error) {
             switch(jwr.headers['x-exit']) {
 
-              case 'emailAlreadyInUse':
+              case 'usernameAlreadyInUse':
                 // Note that, if preferred, we could have also
                 // just looked at the response's status code here;
                 // i.e. 409 vs. 500.  In this example, we just use
                 // the X-Exit header to demonstrate that it is available
                 // when using actions2 on the server.
-                vm.usernameTaken = true;
+                vm.errorType = 'usernameTaken';
                 return;
 
               default:
+                vm.errorType = 'catchall';
                 console.error('Server responded with an error.  (Please refresh the page and try again.)');
                 console.error('Error details:');
                 console.error(jwr.error);

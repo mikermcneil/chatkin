@@ -29,11 +29,10 @@
             <a class="btn btn-xs btn-primary" v-on:click="changeColor">Change color</a>
           </div>
         </div>
-        <div v-if="passwordMatchError">
-          <p>Your password confirmation doesn't match the password you entered.</p>
-        </div>
-        <div v-if="usernameTaken">
-          <p>That username is already taken. Please try another.</p>
+        <div v-if="errorType !== ''">
+          <p v-if="errorType === 'passwordMatch'">Your password confirmation doesn't match the password you entered.</p>
+          <p v-if="errorType === 'usernameTaken'">That username is already taken. Please try another.</p>
+          <p v-if="errorType === 'catchall'">Chatkin is experiencing some technical difficulties. Please try again later.</p>
         </div>
         <button class="btn submit btn-lg btn-block btn-success" type="submit">
           <span v-if="isSyncing">Signing up...</span>

@@ -15,25 +15,26 @@
       isSyncing: false,
       username: '',
       password: '',
-      invalidCredentials: false
+      errorType: '',//'invalidCredentials', 'catchall', or ''
     },
 
     methods: {
       submitLoginForm: function() {
-        vm.invalidCredentials = false;
+        vm.errorType = '';
         vm.isSyncing = true;
 
         io.socket.put('/login', {
           username: vm.username,
           password: vm.password,
         }, function(data, jwr) {
-          vm.isSyncing = false;
           if(jwr.error) {
+          vm.isSyncing = false;
             switch(jwr.headers['x-exit']) {
               case 'notFound':
-                vm.invalidCredentials = true;
+                vm.errorType = 'invalidCredentials';
                 return;
               default:
+                vm.errorType = 'catchall';
                 console.error('Server responded with an error.  (Please refresh the page and try again.)');
                 console.error('Error details:');
                 console.error(jwr.error);
