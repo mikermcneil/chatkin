@@ -184,7 +184,7 @@
           });
 
           vm.lastIntervalAt = new Date().getTime();
-          var INTERVAL_TIME = 1000 * 10;
+          var INTERVAL_TIME = 1000 * 60;
           setInterval(function() {
             // Update `lastIntervalAt`
             var now = new Date().getTime();
