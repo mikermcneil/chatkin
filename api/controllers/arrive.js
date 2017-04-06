@@ -321,9 +321,14 @@ module.exports = {
                   });
                 } catch (e) { return exits.error(new Error('Unexpected error parsing tweets: '+e.stack)); }
 
+                var fullListOfOtherUsersHere = otherUsersHere.concat(strangersHere);
+                // List the most recently updated users at the beginning.
+                fullListOfOtherUsersHere = _.sortBy(fullListOfOtherUsersHere, 'updatedAt');
+                fullListOfOtherUsersHere.reverse();
+
                 return exits.success({
                   id: zone.id,
-                  otherUsersHere: otherUsersHere.concat(strangersHere),
+                  otherUsersHere: fullListOfOtherUsersHere,
                   relevancyRadius: relevancyRadius,
                   zoneCenterLatitudeDeg: zoneCenterLatitudeDeg,
                   zoneCenterLongitude: zoneCenterLongitudeDeg,

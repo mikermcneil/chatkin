@@ -41,7 +41,7 @@
       syncing: 'location', // 'location', 'chatkinServer', 'form', or ''
 
       // For error states
-      errorType: '',// 'location' or ''
+      errorType: '',// 'location', 'catchall', or ''
 
       // For showing/hiding popup menus
       visibleMenu: '',// 'zoneDetails', 'weatherDetails', or ''
@@ -183,33 +183,73 @@
             otherUser.updatedAtTimeAgo = updatedAtTimeAgo;
           });
 
-          var INTERVAL_TIME = 1000 * 60;
+          vm.lastIntervalAt = new Date().getTime();
+          var INTERVAL_TIME = 1000 * 10;
           setInterval(function() {
+            // Update `lastIntervalAt`
             var now = new Date().getTime();
-            // If the last interval was 1s+ earlier than our specified interval time,
-            // then the browser window must have been inactive.
-            // (This happens on mobile when you leave the browser app.)
-            // In this case, we'll reload the page to make sure the zone info is still accurate.
-            if(!_.isNull(vm.lastIntervalAt) && now - vm.lastIntervalAt > INTERVAL_TIME + 1000) {
-              location.reload();
-            }
-            // Otherwise, the window has been active.
+            vm.lastIntervalAt = now;
             // Update the time agos for the messages.
             _.each(vm.zone.otherUsersHere, function(otherUser) {
               var updatedAtTimeAgo = moment(otherUser.updatedAt).fromNow();
               otherUser.updatedAtTimeAgo = updatedAtTimeAgo;
             });
-            // Update `lastIntervalAt`
-            vm.lastIntervalAt = now;
+            // If the last interval was 1s+ earlier than our specified interval time,
+            // then the browser window must have been inactive.
+            // On mobile, this means that some socket notifications may have
+            // been missed, so we'll go ahead and re-"arrive"
+            if(!_.isNull(vm.lastIntervalAt) && now - vm.lastIntervalAt > INTERVAL_TIME + 1000) {
+              vm.syncing = 'location';
+              navigator.geolocation.getCurrentPosition(function gotLocation(geoPosition){
+                // Done syncing location.
+                vm.syncing = 'chatkinServer';
+
+                // Communicate w/ server
+                // console.log('communicating with server...');
+                io.socket.put('/user/'+ window.SAILS_LOCALS.username +'/zone', {
+                  lat: geoPosition.coords.latitude,
+                  long: geoPosition.coords.longitude
+                }, function(updatedData, jwr){
+                  if (jwr.error) {
+                    console.error('Server responded with an error.  (Please refresh the page and try again.)');
+                    console.error('Error details:');
+                    console.error(jwr.error);
+                    vm.syncing = '';
+                    vm.errorType = 'catchall';
+                    return;
+                  }//-•
+                  vm.syncing = '';
+
+                  // Add formatted "time ago" to the other users' messages.
+                  _.each(updatedData.otherUsersHere, function(otherUser) {
+                    var updatedAtTimeAgo = moment(otherUser.updatedAt).fromNow();
+                    otherUser.updatedAtTimeAgo = updatedAtTimeAgo;
+                  });
+                  // Update our zone data.
+                  vm.zone.id = updatedData.id;
+                  // Set `otherUsersHere` to be the list of other users sorted by
+                  // when they were last updated.
+                  vm.zone.otherUsersHere = updatedData.otherUsersHere;
+                  vm.weather.kind = updatedData.weather.weather[0].main;
+                  vm.weather.description = updatedData.weather.weather[0].description;
+                  vm.weather.temp = updatedData.weather.main.temp;
+                  vm.weather.temp_min = updatedData.weather.main.temp_min;//eslint-disable-line camelcase
+                  vm.weather.temp_max = updatedData.weather.main.temp_max;//eslint-disable-line camelcase
+                  // Determine the weather icon class.
+                  // (We just named our icons the same thing as the OpenWeatherMap
+                  // icons, but prefixed with 'icon-weather-'.
+                  // See https://openweathermap.org/weather-conditions for the list.)
+                  vm.weather.iconClass = 'icon-weather-'+updatedData.weather.weather[0].icon;
+                });
+              });
+            }
           }, INTERVAL_TIME);
 
           // Update our zone data.
           vm.zone.id = data.id;
           // Set `otherUsersHere` to be the list of other users sorted by
           // when they were last updated.
-          vm.zone.otherUsersHere = _.sortBy(data.otherUsersHere, 'updatedAt');
-          // Now reverse the list, so that the newest messages are at the top.
-          vm.zone.otherUsersHere.reverse();
+          vm.zone.otherUsersHere = data.otherUsersHere;
           vm.weather.kind = data.weather.weather[0].main;
           vm.weather.description = data.weather.weather[0].description;
           vm.weather.temp = data.weather.main.temp;
