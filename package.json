@@ -1,7 +1,7 @@
 {
   "name": "chatkin",
   "private": true,
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
