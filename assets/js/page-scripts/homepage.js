@@ -446,7 +446,7 @@
         // (This will submit the form without leaving it in an odd state.)
         if(bowser.mobile || bowser.tablet) {
           $('#update-remark-field').blur();
-          $('html, body').animate({ scrollTop: 0 });
+          $('body').animate({ scrollTop: 0 });
           return;
         }
         // Otherwise, this isn't a mobile device, so we'll just update it normally.

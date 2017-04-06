@@ -74,7 +74,16 @@
         <!-- <i class="chatkin-icon icon-logo-chatkin" style="color: <%= avatarColor %>"></i> -->
         <i class="chatkin-icon icon-logo-chatkin" style="color: <%= avatarColor %>"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span></i>
       </div>
+      <div class="resting-state" v-show="!editingMessage">
+        <div class="current-remark">
+          <p>{{me.message}}</p>
+          <div class="message-bg" style="background-color: <%= avatarColor %>"></div>
+        </div>
+      </div>
+      <!-- <label for="update-remark-field"
+        v-show="editingMessage">Updating message:</label> -->
       <textarea id="update-remark-field"
+        v-show="editingMessage"
         v-model="me.message"
         v-bind:disabled="!editingMessage"
         v-on:keydown.stop.enter="submitNewRemark"
@@ -82,7 +91,6 @@
         v-on:blur="submitNewRemarkMaybe"
         type="text"
         class="form-control input-lg"
-        :class="!editingMessage ? 'disabled' : ''"
         :placeholder="editingMessage ? '' : 'Update your message.'"></textarea>
     </div>
   </div>
