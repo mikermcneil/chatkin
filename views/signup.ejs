@@ -9,15 +9,15 @@
         <h1>Sign up</h1>
       </div>
       <form class="form" v-on:submit.prevent="submitSignupForm">
-        <div class="form-group">
-          <label for="signup_username">Username</label>
+        <div class="form-group" v-bind:class="errorType === 'usernameTaken' ? 'has-error' : ''">
+          <label for="signup_username" >Username</label>
           <input class="form-control input-lg" id="signup_username" type="text" v-model="username">
         </div>
-        <div class="form-group">
+        <div class="form-group" v-bind:class="errorType === 'passwordMatch' ? 'has-error' : ''">
           <label for="signup_password">Password</label>
           <input class="form-control input-lg" id="signup_password" type="password" v-model="password">
         </div>
-        <div class="form-group">
+        <div class="form-group" v-bind:class="errorType === 'passwordMatch' ? 'has-error' : ''">
           <label for="signup_password-confirmation">Confirm password</label>
           <input class="form-control input-lg" id="signup_password-confirmation" type="password" v-model="passwordConfirmation">
         </div>
@@ -29,7 +29,7 @@
             <a class="btn btn-xs btn-primary" v-on:click="changeColor">Change color</a>
           </div>
         </div>
-        <div v-if="errorType !== ''">
+        <div v-if="errorType !== ''" class="text-danger text-center">
           <p v-if="errorType === 'passwordMatch'">Your password confirmation doesn't match the password you entered.</p>
           <p v-if="errorType === 'usernameTaken'">That username is already taken. Please try another.</p>
           <p v-if="errorType === 'catchall'">Chatkin is experiencing some technical difficulties. Please try again later.</p>
