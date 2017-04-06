@@ -477,9 +477,10 @@
         }
         // Enable editing of the message.
         vm.editingMessage = true;
-        // Focus the field. (We need to manually re-enable it first, because otherwise it will
-        // still be disabled when this code runs.
-        $('#update-remark-field').removeAttr('disabled').focus();
+        // Manually un-hide and enable the textarea and focus it.
+        // (Vue does this anyway when `vm.editingMessage` is truthy,
+        // but we need it back NOW in order to focus the textarea.)
+        $('#update-remark-field').css('display', 'block').removeAttr('disabled').focus();
       },
 
       cancelEditingRemark: function (){

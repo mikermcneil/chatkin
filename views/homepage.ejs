@@ -76,12 +76,9 @@
       </div>
       <div class="resting-state" v-show="!editingMessage">
         <div class="current-remark">
-          <p>{{me.message}}</p>
-          <div class="message-bg" style="background-color: <%= avatarColor %>"></div>
+          <p style="color: <%= avatarColor %>">{{me.message}}</p>
         </div>
       </div>
-      <!-- <label for="update-remark-field"
-        v-show="editingMessage">Updating message:</label> -->
       <textarea id="update-remark-field"
         v-show="editingMessage"
         v-model="me.message"
