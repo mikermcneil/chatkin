@@ -108,44 +108,44 @@ module.exports = {
         // https://github.com/mikermcneil/inabottle/commit/9a38001583d00d8b50fb8938d8f5cbcf7b63da99
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        (function cacheWeatherMaybe(proceed){
+        // (function cacheWeatherMaybe(proceed){
 
-          try {
-            // Use cached weather, if possible -- as long as it's not too old.
-            var rightNow = Date.now();
-            var fourHoursAgo = rightNow - (1000*60*60*4);
-            var notTooStale = fourHoursAgo < zone.lastCachedWeatherAt;
-            if (notTooStale)  {
-              return proceed();
-            }
+        //   try {
+        //     // Use cached weather, if possible -- as long as it's not too old.
+        //     var rightNow = Date.now();
+        //     var fourHoursAgo = rightNow - (1000*60*60*4);
+        //     var notTooStale = fourHoursAgo < zone.lastCachedWeatherAt;
+        //     if (notTooStale)  {
+        //       return proceed();
+        //     }
 
-            OpenWeather.getCurrentConditions({
-              apiKey: sails.config.custom.openWeatherApiKey,
-              latitude: 30,
-              longitude: 97,
-            }).exec(function(err, weather) {
-              if (err) { return proceed(err); }
+        //     OpenWeather.getCurrentConditions({
+        //       apiKey: sails.config.custom.openWeatherApiKey,
+        //       latitude: 30,
+        //       longitude: 97,
+        //     }).exec(function(err, weather) {
+        //       if (err) { return proceed(err); }
 
-              // Cache weather
-              Zone.update({ id: zone.id })
-              .set({ cachedWeather: weather, lastCachedWeatherAt: rightNow })
-              .exec(function(err) {
-                if (err) { return proceed(err); }
+        //       // Cache weather
+        //       Zone.update({ id: zone.id })
+        //       .set({ cachedWeather: weather, lastCachedWeatherAt: rightNow })
+        //       .exec(function(err) {
+        //         if (err) { return proceed(err); }
 
-                // Stick the newly-fetched weather on our zone record
-                // so we have it in the same format as if it was already
-                // cached beforehand; just in case we want it that way
-                // below.  (Makes it easier to think about.)
-                zone.cachedWeather = weather;
+        //         // Stick the newly-fetched weather on our zone record
+        //         // so we have it in the same format as if it was already
+        //         // cached beforehand; just in case we want it that way
+        //         // below.  (Makes it easier to think about.)
+        //         zone.cachedWeather = weather;
 
-                return proceed();
+        //         return proceed();
 
-              }, proceed);//</ Zone.update().exec() >
-            });//</ OpenWeather.getCurrentConditions() >
-          } catch (e) { return proceed(e); }
+        //       }, proceed);//</ Zone.update().exec() >
+        //     });//</ OpenWeather.getCurrentConditions() >
+        //   } catch (e) { return proceed(e); }
 
-        })(function afterCachingWeather(err){
-          if (err) { return exits.error(err); }
+        // })(function afterCachingWeather(err){
+        //   if (err) { return exits.error(err); }
 
           // Compute relevancy radius and adjusted lat/long:
           // > For more about what this is and why we have to compute
@@ -189,61 +189,61 @@ module.exports = {
           // FUTURE: To improve zone load time (esp. for the first load of the day for that zone),
           // use `async.auto` to fetch the weather and search tweets simultaneously.
           // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-          (function cacheTweetsMaybe(proceed){
+          // (function cacheTweetsMaybe(proceed){
 
-            try {
+          //   try {
 
-              // Use cached tweets, if possible -- as long as they're not too old.
-              var rightNow = Date.now();
-              var twoHoursAgo = rightNow - (1000*60*60*2);
-              var notTooStale = twoHoursAgo < zone.lastCachedTweetsAt;
-              if (notTooStale)  {
-                return proceed();
-              }
+          //     // Use cached tweets, if possible -- as long as they're not too old.
+          //     var rightNow = Date.now();
+          //     var twoHoursAgo = rightNow - (1000*60*60*2);
+          //     var notTooStale = twoHoursAgo < zone.lastCachedTweetsAt;
+          //     if (notTooStale)  {
+          //       return proceed();
+          //     }
 
-              // FUTURE: Probably temporarily cache the bearer token, rather than looking it up every time.
-              // (But note that it expires)
-              Twitter.getBearerToken({
-                consumerKey: sails.config.custom.twitterConsumerKey,
-                consumerSecret: sails.config.custom.twitterConsumerSecret,
-              }).exec(function(err, bearerToken) {
-                if (err) { return proceed(err); }
+          //     // FUTURE: Probably temporarily cache the bearer token, rather than looking it up every time.
+          //     // (But note that it expires)
+          //     Twitter.getBearerToken({
+          //       consumerKey: sails.config.custom.twitterConsumerKey,
+          //       consumerSecret: sails.config.custom.twitterConsumerSecret,
+          //     }).exec(function(err, bearerToken) {
+          //       if (err) { return proceed(err); }
 
-                sails.log.verbose('Searching for tweets from ('+30+'° N,'+97+'°)');
-                sails.log.verbose('(Note that adjusted zone center coordinates will be used instead...)');
+          //       sails.log.verbose('Searching for tweets from ('+30+'° N,'+97+'°)');
+          //       sails.log.verbose('(Note that adjusted zone center coordinates will be used instead...)');
 
-                Twitter.searchTweets({
-                  bearerToken: bearerToken,
-                  latitude: zoneCenterLatitudeDeg,
-                  longitude: zoneCenterLongitudeDeg,
-                  radius: relevancyRadius,
-                  q: '-filter:retweets AND -filter:replies AND -filter:links AND filter:safe'
-                }).exec(function(err, matchingTweets){
-                  if (err) { return proceed(err); }
+          //       Twitter.searchTweets({
+          //         bearerToken: bearerToken,
+          //         latitude: zoneCenterLatitudeDeg,
+          //         longitude: zoneCenterLongitudeDeg,
+          //         radius: relevancyRadius,
+          //         q: '-filter:retweets AND -filter:replies AND -filter:links AND filter:safe'
+          //       }).exec(function(err, matchingTweets){
+          //         if (err) { return proceed(err); }
 
-                  sails.log.verbose('Note: This is zone #'+zone.id+'...');
-                  sails.log.verbose('%d matching tweets found:', matchingTweets.length, matchingTweets);
+          //         sails.log.verbose('Note: This is zone #'+zone.id+'...');
+          //         sails.log.verbose('%d matching tweets found:', matchingTweets.length, matchingTweets);
 
-                  // Cache tweets
-                  Zone.update({ id: zone.id })
-                  .set({ cachedTweets: matchingTweets, lastCachedTweetsAt: rightNow })
-                  .exec(function(err) {
-                    if (err) { return proceed(err); }
+          //         // Cache tweets
+          //         Zone.update({ id: zone.id })
+          //         .set({ cachedTweets: matchingTweets, lastCachedTweetsAt: rightNow })
+          //         .exec(function(err) {
+          //           if (err) { return proceed(err); }
 
-                    // Stick the newly-fetched tweets on our zone record
-                    // so we have it in the same format as if it was already
-                    // cached beforehand; just in case we want it that way
-                    // below.  (Makes it easier to think about.)
-                    zone.cachedTweets = matchingTweets;
+          //           // Stick the newly-fetched tweets on our zone record
+          //           // so we have it in the same format as if it was already
+          //           // cached beforehand; just in case we want it that way
+          //           // below.  (Makes it easier to think about.)
+          //           zone.cachedTweets = matchingTweets;
 
-                    return proceed();
-                  }, proceed);//</ Zone.update().exec() >
-                });//</ Twitter.searchTweets() >
-              });//</ Twitter.getBearerToken() >
-            } catch (e) { return proceed(e); }
+          //           return proceed();
+          //         }, proceed);//</ Zone.update().exec() >
+          //       });//</ Twitter.searchTweets() >
+          //     });//</ Twitter.getBearerToken() >
+          //   } catch (e) { return proceed(e); }
 
-          })(function afterCachingTweets(err){
-            if (err) { return exits.error(err); }
+          // })(function afterCachingTweets(err){
+          //   if (err) { return exits.error(err); }
 
             User.update()
             .where({ username: thisUser.username })
@@ -346,8 +346,8 @@ module.exports = {
 
               }, exits.error);//</ User.find().exec() >
             }, exits.error);//</ User.update().exec() >
-          });//</ cacheTweetsMaybe  (self-calling function) >
-        });//</ cacheWeatherMaybe  (self-calling function) >
+          // });//</ cacheTweetsMaybe  (self-calling function) >
+        // });//</ cacheWeatherMaybe  (self-calling function) >
       }, exits.error);//</ Zone.findOne().exec() >
     }, exits.error);//</ User.findOne().exec() >
 
