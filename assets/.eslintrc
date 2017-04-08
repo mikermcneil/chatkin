@@ -32,6 +32,7 @@
     // Additional globals specific to this app's browser JS code:
     "$": true,
     "_": true,
+    "moment": true,
     "Vue": true,
 
     // Allow any other window globals you're relying on here; e.g.
