@@ -11,11 +11,9 @@ Augments content using the [OpenWeatherMap](http://openweathermap.org/) and [Twi
 > Sincerely,
 > [@mikermcneil](https://github.com/mikermcneil) &amp; [@rachaelshaw](https://github.com/rachaelshaw)
 
-<img alt="screenshot of zone chat" src="https://cloud.githubusercontent.com/assets/618009/24832727/aa58edb6-1c7b-11e7-9fe0-753748755399.png" width="175" height="350" style="display: inline!important;"/>
-<img alt="screenshot of zone map" src="https://cloud.githubusercontent.com/assets/618009/24832737/d8a6355c-1c7b-11e7-8cd8-dd629eec37df.png" width="175" height="350" style="display: inline!important;"/>
-<img alt="screenshot of login screen" src="https://cloud.githubusercontent.com/assets/618009/24832755/584032ae-1c7c-11e7-8267-0a593f096261.png" width="175" height="350" style="display: inline!important;"/>
-<img alt="screenshot of zone weather" src="https://cloud.githubusercontent.com/assets/618009/24832742/0aa45700-1c7c-11e7-8d12-5347838c6595.png" width="175" height="350" style="display: inline!important;"/>
-
+![screenshot of zone chat](https://cloud.githubusercontent.com/assets/618009/24832727/aa58edb6-1c7b-11e7-9fe0-753748755399.png)
+![screenshot of zone map](https://cloud.githubusercontent.com/assets/618009/24832737/d8a6355c-1c7b-11e7-8cd8-dd629eec37df.png)
+![screenshot of login screen](https://cloud.githubusercontent.com/assets/618009/24832755/584032ae-1c7c-11e7-8267-0a593f096261.png)
 
 
 ### Compatibility
