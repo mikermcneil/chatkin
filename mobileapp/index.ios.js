@@ -86,7 +86,8 @@ export default class mobileapp extends Component {
 
 
     // Talk to the server.
-    fetch('http://localhost:1337/test', {
+    fetch('http://192.168.1.19:1337/test', {
+    // fetch('http://localhost:1337/test', {
       headers: {
         'Content-Type': 'application/json',
       }
