@@ -33,6 +33,7 @@
     "$": true,
     "_": true,
     "moment": true,
+    "bowser": true,
     "Vue": true,
 
     // Allow any other window globals you're relying on here; e.g.
