@@ -32,6 +32,17 @@ Tested with:
 
 The scheduled jobs for this app live in the `scripts/` directory.  In our example deployment, we're using [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler) as our cron service.
 
+### How it works
+
+Chatkin splits up the globe into ~60,000 "zones", one for each 1° latitude by 1° longitude trapezoid on the surface of the Earth.  (The number of zones is configurable-- see `config/bootstrap.js` for where the config is applied.)
+
+Zones use resourceful pubsub (RPS) to maintain a Socket.io room-- up to one for each zone.  Meanwhile, Chatkin hits the Twitter API to fetch geolocated tweets for the zone, as well as weather information from OpenWeatherMap.  Weather and tweets are cached for between 2-4 hours in the database.
+
+You can chat with other people in your zone by changing your Chatkin "remark".
+Much like the non-augmented, reality world, you can only say one thing at a time.
+
+Login + signup utilizes bcrypt for hashing and comparing passwords.
+
 
 ### Links
 
