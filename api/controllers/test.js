@@ -1,6 +1,6 @@
 module.exports = {
 
-
+  // TODO: get rid of this fake endpoint once done testing
   friendlyName: 'Arrive',
 
 
