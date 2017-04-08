@@ -3,7 +3,7 @@
  */
 
 var _ = require('@sailshq/lodash');
-var doStuff = require('./private/do-stuff');
+var doStuff = require('./utils/do-stuff');
 
 import React, { Component } from 'react';
 import {
@@ -27,12 +27,12 @@ import {
 
 
 /**
- * <Built>
+ * <RotatingSubHeader>
  *
  * Helper component
  *
  */
-class Built extends Component {
+class RotatingSubHeader extends Component {
 
   constructor(props) {
     super(props);
@@ -131,7 +131,7 @@ export default class mobileapp extends Component {
             }
           />
         </View>
-        <Built initialSeaCreature='cuttlefish' />
+        <RotatingSubHeader initialSeaCreature='cuttlefish' />
       </View>
     );
   }
