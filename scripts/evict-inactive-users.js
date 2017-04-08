@@ -16,11 +16,10 @@ require('machine-as-script')({
 
     // Iterate over inactive users with non-null zones.
     User.stream({
-
       lastActiveAt: { '<':  MAX_INACTIVE_TIME }
-
-      // currentZone: { '!=': null } // TODO: put this back once it works
+      // currentZone: { '!=': null } // TODO: put this back once it works w/ our adapter
     })
+    .select(['username, currentZone'])
     .eachBatch(function(theseInactiveUsers, next) {
 
       User.update({
@@ -33,9 +32,9 @@ require('machine-as-script')({
         if(err) { return next(err); }
 
         _.each(theseInactiveUsers, function(inactiveUser) {
-          console.log('inactive user was in zone: '+inactiveUser.currentZone);
           if(_.isNull(inactiveUser.currentZone)) { return; }
 
+          sails.log.info('Publishing that inactive user (@'+inactiveUser.username+') has just left previous zone: '+inactiveUser.currentZone);
           Zone.publish([inactiveUser.currentZone], {
             verb: 'userLeft',
             username: inactiveUser.username
