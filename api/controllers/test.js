@@ -73,6 +73,9 @@ module.exports = {
       if (err) { return exits.error(err); }
       // if (!thisUser) { return exits.error(new Error('The requesting user is logged in as user `'+req.session.userId+'`, but no such user exists in the database.  This should never happen!')); }
 
+      // FAKE HACK: Make fake user:
+      thisUser = { currentZone: null, username: 'rachael' };
+
       if (thisUser.currentZone) {
         // Unsubscribe this user from the old zone, and publish her departure
         // to update other clients' UIs.

@@ -4,7 +4,6 @@
 
 var _ = require('@sailshq/lodash');
 var doStuff = require('./utils/do-stuff');
-
 import React, { Component } from 'react';
 import {
   AppRegistry,
