@@ -41,7 +41,7 @@ class RotatingSubHeader extends Component {
     var self = this;
     setInterval(function() {
       self.setState({
-        seaCreature: _.sample(['sea anemones','mermaids', 'seahorses', 'cuttlefish'])
+        seaCreature: _.sample(['sea anemones', 'mermaids', 'seahorses', 'cuttlefish'])
       });
     }, 4000);
   }
