@@ -12,6 +12,7 @@ import {
   Image,
   View,
   ListView,
+  TextInput,
 } from 'react-native';
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -26,31 +27,29 @@ import {
 
 
 /**
- * <RotatingSubHeader>
+ * <Topbar>
  *
  * Helper component
  *
  */
-class RotatingSubHeader extends Component {
+class Topbar extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      seaCreature: props.initialSeaCreature,
+      // TODO
     };
-    var self = this;
-    setInterval(function() {
-      self.setState({
-        seaCreature: _.sample(['sea anemones', 'mermaids', 'seahorses', 'cuttlefish'])
-      });
-    }, 4000);
   }
 
   render() {
     return (
-      <Text style={STYLES.subheader}>
-        Built for developers by {this.state.seaCreature}
-      </Text>
+      <View style={STYLES.topbar}>
+        <Image style={STYLES.topbarBrand} source={require('./images/chatkin-logo.png')}/>
+        <View style={STYLES.topbarIcons}>
+          <Text>(W)</Text>
+          <Text>(L)</Text>
+        </View>
+      </View>
     );
   }
 
@@ -86,8 +85,8 @@ export default class mobileapp extends Component {
 
 
     // Talk to the server.
-    fetch('http://192.168.1.19:1337/test', {
-    // fetch('http://localhost:1337/test', {
+    // fetch('http://192.168.1.19:1337/test', {
+    fetch('http://localhost:1337/test', {
       headers: {
         'Content-Type': 'application/json',
       }
@@ -116,22 +115,24 @@ export default class mobileapp extends Component {
 
     return (
       <View style={STYLES.container}>
-        <Image source={ {uri: 'https://upload.wikimedia.org/wikipedia/commons/d/dd/Loligo_vulgaris.jpg'} } style={STYLES.brand}/>
-        <Text style={STYLES.welcome}>
-          A Sails.js/React Native App!
-        </Text>
+        <Topbar></Topbar>
         <View style={STYLES.listViewWrapper}>
           <ListView
             dataSource={this.state.dsOtherUsersHere}
             renderRow={
               (rowData) => <View>
-                <Text style={{color: '#FFF', fontWeight: '700', fontSize: 15}}>{rowData.username} says:</Text>
-                <Text style={{color: '#C8D0F3', marginBottom: 10, textAlign: 'justify'}}>{rowData.remark}</Text>
+                <Text style={{color: rowData.avatarColor, fontWeight: '700', fontSize: 15, marginTop: 10}}>{rowData.twitterUsername ? '@'+rowData.twitterUsername : rowData.username }</Text>
+                <Text style={{color: 'rgba(0,0,0,0.7)', marginBottom: 10, textAlign: 'justify'}}>{rowData.remark}</Text>
               </View>
             }
           />
         </View>
-        <RotatingSubHeader initialSeaCreature='cuttlefish' />
+        <View style={STYLES.formWrapper}>
+          <TextInput
+            style={STYLES.textInput}
+            placeholder="Update your message!"
+          />
+        </View>
       </View>
     );
   }
@@ -144,52 +145,64 @@ const STYLES = StyleSheet.create({
     flex: 1,
     // justifyContent: 'center',
     // alignItems: 'center',
-    backgroundColor: '#000',
+    backgroundColor: '#fff',
   },
 
-  brand: {
+  topbar: {
+    paddingTop: 25,
+    paddingLeft: 15,
+    paddingRight: 15,
+    height: 60,
+    backgroundColor: '#fff',
+    // flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomColor: '#dae5eb',
+    borderStyle: 'solid',
+    borderBottomWidth: 1,
+    borderTopWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+  },
+
+  topbarBrand: {
+    width: 120,
+    height: 25
+    // flex: 1,
+    // height: 10
+  },
+
+  topbarIcons: {
     flex: 1,
-    // width: 200,
-    // height: 150,
-    // margin: 10,
-  },
-
-  welcome: {
-    // flex: 1,
-    // width: 100,
-    // margin: 10,
-    //
-    padding: 10,
-    fontSize: 20,
-    textAlign: 'center',
-    color: '#FFFFFF',
-  },
-
-  subheader: {
-    // flex: 1,
-    // width: 50,
-    // margin: 10,
-    padding: 10,
-    fontSize: 10,
-    textAlign: 'center',
-    color: '#FFFFFF',
+    flexDirection: 'row-reverse',
   },
 
   listViewWrapper: {
     flex: 1,
-    width: 300,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    borderColor: '#C8D0F3',
-    borderWidth: 1,
+    // paddingTop: 15,
+    // paddingBottom: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
+  },
+
+  formWrapper: {
+    padding: 15,
+    borderTopColor: '#dae5eb',
     borderStyle: 'solid',
-  }
+    borderTopWidth: 1,
+    borderBottomWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+  },
+
+  textInput: {
+    fontSize: 16,
+    height: 60,
+  },
 
 });
 
 AppRegistry.registerComponent('mobileapp', () => mobileapp);
 
 
-alert(doStuff());
+// alert(doStuff());
