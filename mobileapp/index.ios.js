@@ -144,7 +144,10 @@ class SignupPage extends Component {
     var startingGreen = (Math.floor(Math.random()*255));
     var startingBlue = (Math.floor(Math.random()*255));
     self.state = {
-      avatarColor: 'rgb('+startingRed+','+startingGreen+','+startingBlue+')'
+      avatarColor: 'rgb('+startingRed+','+startingGreen+','+startingBlue+')',
+      username: '',
+      password: '',
+      confirmPassword: '',
     };
 
   }
@@ -185,6 +188,11 @@ class SignupPage extends Component {
                 <TextInput
                   style={STYLES.loginInput}
                   placeholder="Choose a username"
+                  onSubmitEditing={function(event) {
+                    alert(event.nativeEvent.text);
+                    this.setState({ username: event.nativeEvent.text });
+                  }
+                }
                 />
               </View>
               <View style={STYLES.loginInputWrapper}>
