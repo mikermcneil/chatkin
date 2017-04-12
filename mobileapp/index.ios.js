@@ -56,6 +56,8 @@ export default class mobileapp extends Component {
     switch(route.id) {
       case 'login':
         return (<LoginPage navigator={navigator}/>);
+      case 'signup':
+          return (<SignupPage navigator={navigator}/>);
       case 'home':
         return (<HomePage navigator={navigator}/>);
     }
@@ -78,6 +80,10 @@ class LoginPage extends Component {
 
   navigateToHomepage(){
     this.props.navigator.replace({ id: 'home' });
+  }
+
+  navigateToSignup(){
+    this.props.navigator.replace({ id: 'signup' });
   }
 
   render() {
@@ -112,6 +118,76 @@ class LoginPage extends Component {
                   title='Sign in'
                 />
               </View>
+              <Text
+                style={{ textAlign: 'center', color: '#90b63e', fontWeight: 'bold', marginTop: 15 }}
+                onPress={ this.navigateToSignup.bind(this) }>
+                Create an account
+              </Text>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
+    );
+  }
+}
+
+/**
+ * SignupPage
+ */
+class SignupPage extends Component {
+
+  navigateToLogin(){
+    this.props.navigator.replace({ id: 'login' });
+  }
+
+  submitSignupForm() {
+    // TODO
+  }
+
+  render() {
+    return(
+      <View style={{flex: 1}}>
+        <KeyboardAvoidingView
+          behavior='padding'
+          style={STYLES.loginWrapper}>
+          <ScrollView>
+            <View style={STYLES.loginContainer}>
+              <View style={STYLES.loginBrandWrapper}>
+                <Image style={STYLES.loginBrand}
+                  source={require('./images/chatkin-logo-vertical.png')}/>
+              </View>
+              <View style={STYLES.loginInputWrapper}>
+                <TextInput
+                  style={STYLES.loginInput}
+                  placeholder="Choose a username"
+                />
+              </View>
+              <View style={STYLES.loginInputWrapper}>
+                <TextInput
+                  style={STYLES.loginInput}
+                  placeholder="Password"
+                  secureTextEntry={true}
+                />
+              </View>
+              <View style={STYLES.loginInputWrapper}>
+                <TextInput
+                  style={STYLES.loginInput}
+                  placeholder="Confirm password"
+                  secureTextEntry={true}
+                />
+              </View>
+              <View style={STYLES.submitButtonWrapper}>
+                <Button
+                  color="#fff"
+                  onPress={ this.submitSignupForm }
+                  title='Sign up'
+                />
+              </View>
+              <Text
+                style={{ textAlign: 'center', color: '#90b63e', fontWeight: 'bold', marginTop: 15 }}
+                onPress={ this.navigateToLogin.bind(this) }>
+               Log in to existing account
+              </Text>
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
