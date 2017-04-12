@@ -136,6 +136,29 @@ class LoginPage extends Component {
  */
 class SignupPage extends Component {
 
+  constructor(props) {
+    super(props);
+    var self = this;
+    // Get the initial randomized avatar color.
+    var startingRed = (Math.floor(Math.random()*255));
+    var startingGreen = (Math.floor(Math.random()*255));
+    var startingBlue = (Math.floor(Math.random()*255));
+    self.state = {
+      avatarColor: 'rgb('+startingRed+','+startingGreen+','+startingBlue+')'
+    };
+
+  }
+  randomizeAvatarColor() {
+    // Get the initial randomized avatar color.
+    var newRed = (Math.floor(Math.random()*255));
+    var newGreen = (Math.floor(Math.random()*255));
+    var newBlue = (Math.floor(Math.random()*255));
+
+    this.setState({
+      avatarColor: 'rgb('+newRed+','+newGreen+','+newBlue+')'
+    });
+  }
+
   navigateToLogin(){
     this.props.navigator.replace({ id: 'login' });
   }
@@ -144,7 +167,9 @@ class SignupPage extends Component {
     // TODO
   }
 
+
   render() {
+    let backgroundStyle = { backgroundColor: this.state.avatarColor };
     return(
       <View style={{flex: 1}}>
         <KeyboardAvoidingView
@@ -175,6 +200,11 @@ class SignupPage extends Component {
                   placeholder="Confirm password"
                   secureTextEntry={true}
                 />
+              </View>
+              <View style={STYLES.avatarColorPicker}>
+                <Text>Avatar color:</Text>
+                <View style={[{width: 25, height: 25}, backgroundStyle]}/>
+                <Text onPress={ this.randomizeAvatarColor.bind(this) }>change</Text>
               </View>
               <View style={STYLES.submitButtonWrapper}>
                 <Button
