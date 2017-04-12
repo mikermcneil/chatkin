@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Text,
   Image,
+  KeyboardAvoidingView,
   View,
   ListView,
   TextInput,
@@ -83,6 +84,10 @@ export default class mobileapp extends Component {
 
     // TODO: loading state
 
+    // onKeyboardChange = function() {
+    //   self.setState({ behavior: height });
+    // };
+
 
     // Talk to the server.
     // fetch('http://192.168.1.19:1337/test', {
@@ -114,28 +119,45 @@ export default class mobileapp extends Component {
   render() {
 
     return (
-      <View style={STYLES.container}>
-        <Topbar></Topbar>
+      <KeyboardAvoidingView behavior='height' style={STYLES.container}>
         <View style={STYLES.listViewWrapper}>
           <ListView
+            style={{flexGrow: 1}}
             dataSource={this.state.dsOtherUsersHere}
-            renderRow={
-              (rowData) => <View>
-                <Text style={{color: rowData.avatarColor, fontWeight: '700', fontSize: 15, marginTop: 10}}>{rowData.twitterUsername ? '@'+rowData.twitterUsername : rowData.username }</Text>
-                <Text style={{color: 'rgba(0,0,0,0.7)', marginBottom: 10, textAlign: 'justify'}}>{rowData.remark}</Text>
-              </View>
-            }
+            enableEmptySections={true}
+            renderHeader={this._renderHeader}
+            renderFooter={this._renderFooter}
+            renderRow={this._renderRow}
           />
         </View>
-        <View style={STYLES.formWrapper}>
-          <TextInput
-            style={STYLES.textInput}
-            placeholder="Update your message!"
-          />
-        </View>
+      </KeyboardAvoidingView>
+    );
+  }
+
+  _renderHeader = function() {
+    return(<Topbar></Topbar>);
+  };
+
+  _renderRow = function(rowData) {
+
+    return(<View>
+      <Text style={{color: rowData.avatarColor, fontWeight: '700', fontSize: 15, marginTop: 10}}>{rowData.twitterUsername ? '@'+rowData.twitterUsername : rowData.username }</Text>
+      <Text style={{color: 'rgba(0,0,0,0.7)', marginBottom: 10, textAlign: 'justify'}}>{rowData.remark}</Text>
+    </View>
+    );
+  };
+
+  _renderFooter = function() {
+    return(
+      <View style={STYLES.formWrapper}>
+        <TextInput
+          style={STYLES.textInput}
+          placeholder="Update your message!"
+        />
       </View>
     );
   }
+
 }
 
 const STYLES = StyleSheet.create({
@@ -143,16 +165,17 @@ const STYLES = StyleSheet.create({
   container: {
     // height: 400,
     flex: 1,
+    // flexGrow: 1,
     // justifyContent: 'center',
     // alignItems: 'center',
     backgroundColor: '#fff',
   },
 
   topbar: {
-    paddingTop: 25,
+    paddingTop: 30,
     paddingLeft: 15,
     paddingRight: 15,
-    height: 60,
+    height: 64,
     backgroundColor: '#fff',
     // flex: 1,
     flexDirection: 'row',
@@ -166,8 +189,8 @@ const STYLES = StyleSheet.create({
   },
 
   topbarBrand: {
-    width: 120,
-    height: 25
+    width: 135,
+    height: 28
     // flex: 1,
     // height: 10
   },
@@ -179,8 +202,7 @@ const STYLES = StyleSheet.create({
 
   listViewWrapper: {
     flex: 1,
-    // paddingTop: 15,
-    // paddingBottom: 15,
+    flexGrow: 1,
     paddingLeft: 15,
     paddingRight: 15,
   },
