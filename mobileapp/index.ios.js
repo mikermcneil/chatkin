@@ -13,7 +13,10 @@ import {
   KeyboardAvoidingView,
   View,
   ListView,
+  ScrollView,
   TextInput,
+  Navigator,
+  Button,
 } from 'react-native';
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -26,37 +29,6 @@ import {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-
-/**
- * <Topbar>
- *
- * Helper component
- *
- */
-class Topbar extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      // TODO
-    };
-  }
-
-  render() {
-    return (
-      <View style={STYLES.topbar}>
-        <Image style={STYLES.topbarBrand} source={require('./images/chatkin-logo.png')}/>
-        <View style={STYLES.topbarIcons}>
-          <Text>(W)</Text>
-          <Text>(L)</Text>
-        </View>
-      </View>
-    );
-  }
-
-}
-
-
 /**
  * <mobileapp>
  *
@@ -66,6 +38,94 @@ class Topbar extends Component {
  */
 
 export default class mobileapp extends Component {
+  initialRoute = (function(){
+    var isLoggedIn = false;
+
+    var initialRouteId;
+    if(isLoggedIn) {
+      initialRouteId = 'home';
+    }
+    else {
+      initialRouteId = 'login';
+    }
+
+    return { id: initialRouteId };
+  }())
+
+  renderNavigationScene(route, navigator) {
+    switch(route.id) {
+      case 'login':
+        return (<LoginPage navigator={navigator}/>);
+      case 'home':
+        return (<HomePage navigator={navigator}/>);
+    }
+  }
+
+  render() {
+    return(
+      <Navigator
+      initialRoute={ this.initialRoute }
+      renderScene={ this.renderNavigationScene }
+      />
+    );
+  }
+}
+
+/**
+ * LoginPage
+ */
+class LoginPage extends Component {
+
+  navigateToHomepage(){
+    this.props.navigator.replace({ id: 'home' });
+  }
+
+  render() {
+    return(
+      <View style={{flex: 1}}>
+        <KeyboardAvoidingView
+          behavior='padding'
+          style={STYLES.loginWrapper}>
+          <ScrollView>
+            <View style={STYLES.loginContainer}>
+              <View style={STYLES.loginBrandWrapper}>
+                <Image style={STYLES.loginBrand}
+                  source={require('./images/chatkin-logo-vertical.png')}/>
+              </View>
+              <View style={STYLES.loginInputWrapper}>
+                <TextInput
+                  style={STYLES.loginInput}
+                  placeholder="Username"
+                />
+              </View>
+              <View style={STYLES.loginInputWrapper}>
+                <TextInput
+                  style={STYLES.loginInput}
+                  placeholder="Password"
+                  secureTextEntry={true}
+                />
+              </View>
+              <View style={STYLES.submitButtonWrapper}>
+                <Button
+                  color="#fff"
+                  onPress={ this.navigateToHomepage.bind(this) }
+                  title='Sign in'
+                />
+              </View>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
+    );
+  }
+}
+
+
+/**
+ * HomePage
+ */
+class HomePage extends Component {
+
   constructor(props) {
     super(props);
     var self = this;
@@ -120,7 +180,14 @@ export default class mobileapp extends Component {
         behavior='padding'
         style={STYLES.container}
         noScroll={true}>
-        <Topbar></Topbar>
+        <View style={STYLES.topbar}>
+          <Image style={STYLES.topbarBrand}
+            source={require('./images/chatkin-logo.png')}/>
+          <View style={STYLES.topbarIcons}>
+            <Text>(W)</Text>
+            <Text>(L)</Text>
+          </View>
+        </View>
         <View style={STYLES.listViewWrapper}>
           <ListView
             dataSource={this.state.dsOtherUsersHere}
@@ -166,11 +233,73 @@ export default class mobileapp extends Component {
   renderListViewFooter = function(rowData) {
     return(<View style={{height: 25}}/>);
   };
-
-
 }
 
 const STYLES = StyleSheet.create({
+  loginWrapper: {
+    flex: 1,
+    alignContent: 'center',
+    backgroundColor: '#bdcdd5',
+    paddingLeft: 15,
+    paddingRight: 15,
+  },
+
+  loginContainer: {
+    borderStyle: 'solid',
+    borderColor: '#9CA4A6',
+    borderWidth: 1,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 15,
+    paddingBottom: 35,
+    marginTop: 50,
+    marginBottom: 50,
+    backgroundColor: 'rgba(255,255,255,0.75)',
+    borderRadius: 7,
+  },
+
+  loginBrandWrapper: {
+    paddingTop: 35,
+    paddingBottom: 35,
+    borderBottomColor: '#ccc',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderTopWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+    marginBottom: 35,
+  },
+
+  loginBrand: {
+    width: 150,
+    height: 105,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+
+  loginInputWrapper: {
+    borderRadius: 6,
+    borderStyle: 'solid',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginBottom: 15,
+    backgroundColor: '#fff',
+  },
+
+  loginInput: {
+    fontSize: 18,
+    height: 46,
+    paddingLeft: 16,
+    paddingRight: 16,
+  },
+
+  submitButtonWrapper: {
+    borderRadius: 6,
+    backgroundColor: '#90b63e',
+    borderColor: '#81a338',
+    borderWidth: 1,
+    borderStyle: 'solid',
+  },
 
   container: {
     flex: 1,
