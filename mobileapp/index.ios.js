@@ -125,35 +125,45 @@ export default class mobileapp extends Component {
           <ListView
             dataSource={this.state.dsOtherUsersHere}
             enableEmptySections={true}
-            renderHeader={this._renderHeader}
-            renderRow={this._renderRow}
-            renderFooter={this._renderFooter}
+            renderHeader={this.renderListViewHeader}
+            renderRow={this.renderListViewRow}
+            renderFooter={this.renderListViewFooter}
           />
         </View>
         <View style={STYLES.formWrapper}>
           <TextInput
             style={STYLES.textInput}
             placeholder="Update your message!"
-            onBlur={this._asdf}
+            onSubmitEditing={this.updateRemark}
           />
         </View>
       </KeyboardAvoidingView>
     );
   }
 
-  _renderHeader = function(rowData) {
+  updateRemark = function() {
+    // TODO
+  };
+
+  renderListViewHeader = function(rowData) {
     return(<View style={{height: 10}}/>);
   };
 
-  _renderRow = function(rowData) {
+  renderListViewRow = function(rowData) {
     return(<View>
-      <Text style={{color: rowData.avatarColor, fontWeight: '700', fontSize: 15, marginTop: 10}}>{rowData.twitterUsername ? '@'+rowData.twitterUsername : rowData.username }</Text>
-      <Text style={{color: 'rgba(0,0,0,0.7)', marginBottom: 10, textAlign: 'justify'}}>{rowData.remark}</Text>
+      <Text
+        style={[ STYLES.chatHeader, {color: rowData.avatarColor} ]}>
+        { rowData.twitterUsername ? '@'+rowData.twitterUsername : rowData.username }
+      </Text>
+      <Text
+        style={STYLES.chatBody}>
+        { rowData.remark }
+      </Text>
     </View>
     );
   };
 
-  _renderFooter = function(rowData) {
+  renderListViewFooter = function(rowData) {
     return(<View style={{height: 25}}/>);
   };
 
@@ -201,6 +211,18 @@ const STYLES = StyleSheet.create({
     flexGrow: 1,
     paddingLeft: 15,
     paddingRight: 15,
+  },
+
+  chatHeader: {
+    fontWeight: '700',
+    fontSize: 15,
+    marginTop: 10
+  },
+
+  chatBody: {
+    color: 'rgba(0,0,0,0.7)',
+    marginBottom: 10,
+    textAlign: 'justify'
   },
 
   formWrapper: {
