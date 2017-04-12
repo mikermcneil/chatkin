@@ -84,10 +84,6 @@ export default class mobileapp extends Component {
 
     // TODO: loading state
 
-    // onKeyboardChange = function() {
-    //   self.setState({ behavior: height });
-    // };
-
 
     // Talk to the server.
     // fetch('http://192.168.1.19:1337/test', {
@@ -116,30 +112,40 @@ export default class mobileapp extends Component {
 
   }
 
+
   render() {
 
     return (
-      <KeyboardAvoidingView behavior='height' style={STYLES.container}>
+      <KeyboardAvoidingView
+        behavior='padding'
+        style={STYLES.container}
+        noScroll={true}>
+        <Topbar></Topbar>
         <View style={STYLES.listViewWrapper}>
           <ListView
-            style={{flexGrow: 1}}
             dataSource={this.state.dsOtherUsersHere}
             enableEmptySections={true}
             renderHeader={this._renderHeader}
-            renderFooter={this._renderFooter}
             renderRow={this._renderRow}
+            renderFooter={this._renderFooter}
+          />
+        </View>
+        <View style={STYLES.formWrapper}>
+          <TextInput
+            style={STYLES.textInput}
+            placeholder="Update your message!"
+            onBlur={this._asdf}
           />
         </View>
       </KeyboardAvoidingView>
     );
   }
 
-  _renderHeader = function() {
-    return(<Topbar></Topbar>);
+  _renderHeader = function(rowData) {
+    return(<View style={{height: 10}}/>);
   };
 
   _renderRow = function(rowData) {
-
     return(<View>
       <Text style={{color: rowData.avatarColor, fontWeight: '700', fontSize: 15, marginTop: 10}}>{rowData.twitterUsername ? '@'+rowData.twitterUsername : rowData.username }</Text>
       <Text style={{color: 'rgba(0,0,0,0.7)', marginBottom: 10, textAlign: 'justify'}}>{rowData.remark}</Text>
@@ -147,27 +153,17 @@ export default class mobileapp extends Component {
     );
   };
 
-  _renderFooter = function() {
-    return(
-      <View style={STYLES.formWrapper}>
-        <TextInput
-          style={STYLES.textInput}
-          placeholder="Update your message!"
-        />
-      </View>
-    );
-  }
+  _renderFooter = function(rowData) {
+    return(<View style={{height: 25}}/>);
+  };
+
 
 }
 
 const STYLES = StyleSheet.create({
 
   container: {
-    // height: 400,
     flex: 1,
-    // flexGrow: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
     backgroundColor: '#fff',
   },
 
