@@ -317,9 +317,9 @@ class HomePage extends Component {
     return (
       <Drawer
         type="displace"
+        side="right"
         ref={(ref) => this._drawer = ref}
         openDrawerOffset={100}
-        closedDrawerOffset={-3}
         tapToClose={true}
         tweenHandler={Drawer.tweenPresets.parallax}
         content={
