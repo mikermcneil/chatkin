@@ -83,7 +83,24 @@ export default class mobileapp extends Component {
 //
 class LoginPage extends Component {
 
-  navigateToHomepage(){
+  signInToChatkin() {
+    // // Talk to the server.
+    // // fetch('http://192.168.1.19:1337/test', {
+    // fetch('http://localhost:1337/login', {
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   }
+    // })
+    // .then(function (res) {
+    //   // TODO
+
+    // })//</then>
+    // .catch(function(err){
+    //   console.error(err);
+    //   alert(err);
+    // });
+
+
     this.props.navigator.replace({ id: 'home' });
   }
 
@@ -119,7 +136,7 @@ class LoginPage extends Component {
               <View style={STYLES.submitButtonWrapper}>
                 <Button
                   color="#fff"
-                  onPress={ this.navigateToHomepage.bind(this) }
+                  onPress={ this.signInToChatkin.bind(this) }
                   title='Sign in'
                 />
               </View>
