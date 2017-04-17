@@ -19,6 +19,7 @@ import {
   TextInput,
   Navigator,
   Button,
+  AsyncStorage,
 } from 'react-native';
 
 
@@ -41,8 +42,28 @@ import {
  */
 
 export default class mobileapp extends Component {
+
   initialRoute = (function(){
     var isLoggedIn = false;
+    // AsyncStorage.getItem('userSession',
+    //   (rawData) => {
+    //     if(_.isNull(rawData)) {
+    //       isLoggedIn = false;
+    //     }
+    //     else {
+    //       var data = JSON.parse(rawData);
+    //       if(data.userId) {
+    //         isLoggedIn = true;
+    //       }
+    //       else {
+    //         isLoggedIn = false;
+    //       }
+    //     }
+    //   },
+    //   (err) => {
+    //     console.error(err)
+    //   }
+    // );
 
     var initialRouteId;
     if(isLoggedIn) {
@@ -63,6 +84,8 @@ export default class mobileapp extends Component {
           return (<SignupPage navigator={navigator}/>);
       case 'home':
         return (<HomePage navigator={navigator}/>);
+      default:
+        throw new Error('Consitency violation: this is not a route: '+route.id);
     }
   }
 
@@ -109,6 +132,19 @@ class LoginPage extends Component {
       })
     })
     .then(function (res) {
+      console.warn(res.status)
+      console.warn(res.headers.get('x-exit'))
+      if(+res.status >= 300 || +res.status <= 200) {
+        console.warn('You were not logged in.');
+        console.warn('username:',self.state.username);
+        console.warn('password:',self.state.password);
+        // TODO
+        // show error message in UI
+        return;
+      }
+      // AsyncStorage.setItem('userSession', JSON.stringify({
+      //   userId: self.state.username
+      // }));
       self.props.navigator.replace({ id: 'home' });
     })//</then>
     .catch(function(err){
@@ -138,9 +174,11 @@ class LoginPage extends Component {
                   placeholder="Username"
                   onSubmitEditing={
                     (event) => {
+                      var usernameValue = event.nativeEvent.text;
                       this.setState({
-                        username: event.nativeEvent.text
+                        username: usernameValue
                       });
+                      alert(usernameValue);
                     }
                   }
                 />
@@ -155,6 +193,7 @@ class LoginPage extends Component {
                       this.setState({
                         password: event.nativeEvent.text
                       });
+                      alert(this.state.password);
                     }
                   }
                 />
