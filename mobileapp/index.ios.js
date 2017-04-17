@@ -117,6 +117,14 @@ class LoginPage extends Component {
     };
   }
 
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // TODO: replace this with a real test that looks in local storage
+  // for a token.  If it does NOT see one, then this device is
+  // logged in.  If it does see one, it means the device is probably
+  // still logged in.  But we'll check the token by sending it to the
+  // server just to make sure.
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   fakeDumbTest() {
     fetch('http://localhost:1337/test', {
       headers: {
@@ -144,10 +152,10 @@ class LoginPage extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        // username: self.state.username,
-        // password: self.state.password
-        username: 'rachael',
-        password: 'PASSWRD'
+        username: self.state.username,
+        password: self.state.password
+        // username: 'rachael',
+        // password: 'PASSWRD'
       })
     })
     .then(function (res) {
