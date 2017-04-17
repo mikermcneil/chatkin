@@ -4,6 +4,7 @@
 
 var _ = require('@sailshq/lodash');
 var doStuff = require('./utils/do-stuff');
+
 import React, { Component } from 'react';
 import Drawer from 'react-native-drawer'
 import {
@@ -19,6 +20,7 @@ import {
   Navigator,
   Button,
 } from 'react-native';
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // TODO: figure out whether this would expose a global
@@ -307,8 +309,17 @@ class HomePage extends Component {
 
     // Set initial state
     this.state = {
-      dsOtherUsersHere: ds.cloneWithRows([])
+      dsOtherUsersHere: ds.cloneWithRows([]),
+      latitude: 0,
+      longitude: 0,
     };
+
+    navigator.geolocation.getCurrentPosition(function(position) {
+      self.setState({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude
+      });
+    });
 
     // TODO: loading state
 
