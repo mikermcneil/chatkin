@@ -93,23 +93,6 @@ class LoginPage extends Component {
   // still logged in.  But we'll check the token by sending it to the
   // server just to make sure.
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  fakeDumbTest() {
-    fetch(REQUEST_URL + '/test', {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-    .then(function (res) {
-      console.warn('HERE IS THE RESULT:');
-      console.warn('Status code: '+res.status);
-      console.warn('Headers..? ',res.headers.getAll());
-    })//</then>
-    .catch(function(err){
-      console.error(err);
-      alert(err);
-    });
-  }
-
   signInToChatkin() {
     var self = this;
 
@@ -121,6 +104,7 @@ class LoginPage extends Component {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        'X-Wants-Auth-Token': true
       },
       body: JSON.stringify({
         username: username,
@@ -138,7 +122,10 @@ class LoginPage extends Component {
         // show error message in UI
         return;
       }
-      AsyncStorage.setItem('username', self.state.username, function() {
+      AsyncStorage.multiSet([
+        ['username', self.state.username],
+        ['authToken', res.headers.get('X-Set-Auth-Token')],
+      ], function() {
         self.props.navigator.replace({ id: 'home' });
       });
     })//</then>
@@ -339,26 +326,40 @@ class HomePage extends Component {
       dsOtherUsersHere: ds.cloneWithRows([]),
       latitude: 0,
       longitude: 0,
-      loggedInUser: ''
+      username: '',
+      authToken: ''
     };
 
     // TODO: loading state
-    AsyncStorage.getItem('username', function(err, value) {
+    AsyncStorage.multiGet(['username', 'authToken'], function(err, stores) {
       if(err) {
         console.error('AsyncStorage error: ' + error.message);
       }
-      if (!_.isNull(value)){
-        self.setState({loggedInUser: value});
+      if (!_.isNull(stores)){
+
+        // Make our data into a nice, readable dictionary.
+        var updates = {};
+        _.each(stores, function(store) {
+          // The items returned from .multiGet() are arrays that look like:
+          // [key, value]
+          var key = store[0];
+          var value = store[1];
+          updates[key] = value;
+        });
+        self.setState(updates);
+
+        // Get our position.
         navigator.geolocation.getCurrentPosition(function(position) {
           self.setState({
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
           });
 
-          fetch(REQUEST_URL + '/user/' + value + '/zone', {
+          fetch(REQUEST_URL + '/user/' + self.state.username + '/zone', {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
+              'X-Auth-Token': self.state.authToken
             },
             body: JSON.stringify({
               lat: position.coords.latitude,
