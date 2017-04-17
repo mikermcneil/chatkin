@@ -4,6 +4,7 @@
 
 var _ = require('@sailshq/lodash');
 var doStuff = require('./utils/do-stuff');
+var REQUEST_URL   = 'http://localhost:1337';
 
 import React, { Component } from 'react';
 import Drawer from 'react-native-drawer'
@@ -43,39 +44,6 @@ import {
 
 export default class mobileapp extends Component {
 
-  initialRoute = (function(){
-    var isLoggedIn = false;
-    // AsyncStorage.getItem('userSession',
-    //   (rawData) => {
-    //     if(_.isNull(rawData)) {
-    //       isLoggedIn = false;
-    //     }
-    //     else {
-    //       var data = JSON.parse(rawData);
-    //       if(data.userId) {
-    //         isLoggedIn = true;
-    //       }
-    //       else {
-    //         isLoggedIn = false;
-    //       }
-    //     }
-    //   },
-    //   (err) => {
-    //     console.error(err)
-    //   }
-    // );
-
-    var initialRouteId;
-    if(isLoggedIn) {
-      initialRouteId = 'home';
-    }
-    else {
-      initialRouteId = 'login';
-    }
-
-    return { id: initialRouteId };
-  }())
-
   renderNavigationScene(route, navigator) {
     switch(route.id) {
       case 'login':
@@ -92,7 +60,7 @@ export default class mobileapp extends Component {
   render() {
     return(
       <Navigator
-      initialRoute={ this.initialRoute }
+      initialRoute={{ id: 'home' }}
       renderScene={ this.renderNavigationScene }
       />
     );
@@ -126,7 +94,7 @@ class LoginPage extends Component {
   // server just to make sure.
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   fakeDumbTest() {
-    fetch('http://localhost:1337/test', {
+    fetch(REQUEST_URL + '/test', {
       headers: {
         'Content-Type': 'application/json',
       }
@@ -144,18 +112,19 @@ class LoginPage extends Component {
 
   signInToChatkin() {
     var self = this;
+
+    var username = self.state.username;
+    var password = self.state.password;
     // Talk to the server.
     // fetch('http://192.168.1.19:1337/test', {
-    fetch('http://localhost:1337/login', {
+    fetch(REQUEST_URL + '/login', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        username: self.state.username,
-        password: self.state.password
-        // username: 'rachael',
-        // password: 'PASSWRD'
+        username: username,
+        password: password
       })
     })
     .then(function (res) {
@@ -163,16 +132,15 @@ class LoginPage extends Component {
       console.warn(res.headers.get('x-exit'))
       if(+res.status >= 300 || +res.status < 200) {
         console.warn('You were not logged in.');
-        console.warn('username:',self.state.username);
-        console.warn('password:',self.state.password);
+        console.warn('username:',username);
+        console.warn('password:',password);
         // TODO
         // show error message in UI
         return;
       }
-      // AsyncStorage.setItem('userSession', JSON.stringify({
-      //   userId: self.state.username
-      // }));
-      self.props.navigator.replace({ id: 'home' });
+      AsyncStorage.setItem('username', self.state.username, function() {
+        self.props.navigator.replace({ id: 'home' });
+      });
     })//</then>
     .catch(function(err){
       console.error(err);
@@ -199,13 +167,11 @@ class LoginPage extends Component {
                 <TextInput
                   style={STYLES.loginInput}
                   placeholder="Username"
-                  onSubmitEditing={
-                    (event) => {
-                      var usernameValue = event.nativeEvent.text;
+                  onChangeText={
+                    (text) => {
                       this.setState({
-                        username: usernameValue
+                        username: text
                       });
-                      // alert(usernameValue);
                     }
                   }
                 />
@@ -215,12 +181,11 @@ class LoginPage extends Component {
                   style={STYLES.loginInput}
                   placeholder="Password"
                   secureTextEntry={true}
-                  onSubmitEditing={
-                    (event) => {
+                  onChangeText={
+                    (text) => {
                       this.setState({
-                        password: event.nativeEvent.text
+                        password: text
                       });
-                      alert(this.state.password);
                     }
                   }
                 />
@@ -230,13 +195,6 @@ class LoginPage extends Component {
                   color="#fff"
                   onPress={ this.signInToChatkin.bind(this) }
                   title='Sign in'
-                />
-              </View>
-              <View style={STYLES.submitButtonWrapper}>
-                <Button
-                  color="red"
-                  onPress={ this.fakeDumbTest.bind(this) }
-                  title='Test is logged in?'
                 />
               </View>
               <Text
@@ -275,10 +233,6 @@ class SignupPage extends Component {
       confirmPassword: '',
     };
 
-  }
-
-  updateUsername() {
-    alert(event);
   }
 
   randomizeAvatarColor() {
@@ -381,47 +335,73 @@ class HomePage extends Component {
     });
 
     // Set initial state
-    this.state = {
+    self.state = {
       dsOtherUsersHere: ds.cloneWithRows([]),
       latitude: 0,
       longitude: 0,
+      loggedInUser: ''
     };
 
-    navigator.geolocation.getCurrentPosition(function(position) {
-      self.setState({
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude
-      });
-    });
-
     // TODO: loading state
-
-
-    // Talk to the server.
-    // fetch('http://192.168.1.19:1337/test', {
-    fetch('http://localhost:1337/test', {
-      headers: {
-        'Content-Type': 'application/json',
+    AsyncStorage.getItem('username', function(err, value) {
+      if(err) {
+        console.error('AsyncStorage error: ' + error.message);
       }
-    })
-    .then(function (res) {
-      res.json().then(function(data){
-        // alert(JSON.stringify(data.otherUsersHere));
-        self.setState({
-          dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere)
-        });
-      })
-      .catch(function(err) {
-        console.error(err);
-        alert(err);
-      });
+      if (!_.isNull(value)){
+        self.setState({loggedInUser: value});
+        navigator.geolocation.getCurrentPosition(function(position) {
+          self.setState({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          });
 
-    })//</then>
-    .catch(function(err){
-      console.error(err);
-      alert(err);
+          fetch(REQUEST_URL + '/user/' + value + '/zone', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              lat: position.coords.latitude,
+              long: position.coords.longitude
+            })
+          })
+          .then(function (res) {
+            if(res.status >= 300 || res.status < 200) {
+              // If we got a 403 response, redirect to the login page.
+              if(res.status === 403) {
+                self.props.navigator.replace({ id: 'login' });
+              }
+              else {
+                console.error(res)
+              }
+              return;
+            }
+            res.json().then(function(data){
+              // alert(JSON.stringify(data.otherUsersHere));
+              self.setState({
+                dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere)
+              });
+            })
+            .catch(function(err) {
+              console.error(err);
+              // alert(err);
+            });
+
+          })//</then>
+          .catch(function(err){
+            console.error(err);
+            // alert(err);
+          });
+
+        });//</get position>
+      }
+      else {
+        // If we don't have a username stored,
+        // redirect to the login screen.
+        self.props.navigator.replace({ id: 'login' });
+      }
+
     });
-
   }
 
   closePanel = () => {

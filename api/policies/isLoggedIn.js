@@ -16,7 +16,7 @@ module.exports = function isLoggedIn(req, res, next) {
 
   //--•
   // Otherwise, this request did not come from a logged-in user.
-  if (!req.wantsJson) {
+  if (!req.wantsJSON) {
     return res.redirect('/login');
   }
   else {
