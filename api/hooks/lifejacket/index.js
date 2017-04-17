@@ -42,7 +42,7 @@ module.exports = function defineLifejacketHook(sails) {
 
         // Validate it.
         if (!_.isBoolean(sails.config.lifejacket.ensureHttps)) {
-          throw flaverr({ name: 'Configuration Error' }, new Error('If provided, `sails.config.lifejacket.ensureHttps` must be set to either `true` or `false`.  But instead got: '+util.inspect(sails.config.lifejacket.ensureHttps, {depth:null})));
+          throw flaverr({ name: 'ConfigurationError' }, new Error('If provided, `sails.config.lifejacket.ensureHttps` must be set to either `true` or `false`.  But instead got: '+util.inspect(sails.config.lifejacket.ensureHttps, {depth:null})));
         }
 
       }//>-•
@@ -53,7 +53,7 @@ module.exports = function defineLifejacketHook(sails) {
 
         // Validate it.
         if (!_.isString(sails.config.lifejacket.host)) {
-          throw flaverr({ name: 'Configuration Error' }, new Error('`sails.config.lifejacket.host` must be configured as a string (like `foo.example.com`).  But instead got: '+util.inspect(sails.config.lifejacket.host, {depth:null})));
+          throw flaverr({ name: 'ConfigurationError' }, new Error('`sails.config.lifejacket.host` must be configured as a string (like `foo.example.com`).  But instead got: '+util.inspect(sails.config.lifejacket.host, {depth:null})));
         }
 
         // Coerce it.
@@ -66,7 +66,7 @@ module.exports = function defineLifejacketHook(sails) {
       else {
 
         if (sails.config.lifejacket.ensureHttps) {
-          throw flaverr({ name: 'Configuration Error' }, new Error('Since `sails.config.lifejacket.ensureHttps` is enabled, a valid `sails.config.lifejacket.host` must be configured as a string (like `foo.example.com`).  But instead got: '+util.inspect(sails.config.lifejacket.host, {depth:null})));
+          throw flaverr({ name: 'ConfigurationError' }, new Error('Since `sails.config.lifejacket.ensureHttps` is enabled, a valid `sails.config.lifejacket.host` must be configured as a string (like `foo.example.com`).  But instead got: '+util.inspect(sails.config.lifejacket.host, {depth:null})));
         }
 
       }//>-•
