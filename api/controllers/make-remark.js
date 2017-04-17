@@ -15,7 +15,6 @@ module.exports = {
 
   exits: {
     notAuthenticated: { statusCode: 401, description: 'Must be logged in.' },
-    userNotFound: { statusCode: 400, description: 'No such user.' },
   },
 
 
@@ -40,7 +39,7 @@ module.exports = {
           if (users.length > 1) { return exits.error(new Error('Consistency violation: Somehow, more than one user exists with the same username.  This should be impossible!')); }
 
           var thisUser = users[0];
-          if (!thisUser) { return exits.userNotFound(); }
+          if (!thisUser) { return exits.error(new Error('Consistency violation: The logged-in user has gone missing!  (Corresponding user record no longer exists in the database.)')); }
 
           try {
             // Publish this user's new remark to his or her zone.
