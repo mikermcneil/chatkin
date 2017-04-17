@@ -327,7 +327,8 @@ class HomePage extends Component {
       latitude: 0,
       longitude: 0,
       username: '',
-      authToken: ''
+      authToken: '',
+      pendingRemark: '',
     };
 
     // TODO: loading state
@@ -417,6 +418,40 @@ class HomePage extends Component {
     this._drawer.open();
   };
 
+  updateRemark = function() {
+    fetch(REQUEST_URL + '/user/' + self.state.username + '/remark', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-Token': self.state.authToken
+      },
+      body: JSON.stringify({
+        username: self.state.username,
+        remark: self.state.pendingRemark
+      })
+    })
+    .then(function (res) {
+      if(res.status >= 300 || res.status < 200) {
+        console.error(res)
+        return;
+      }
+      res.json().then(function(data){
+        // TODO
+      })
+      .catch(function(err) {
+        console.error(err);
+        // alert(err);
+      });
+
+
+
+    })//</then>
+    .catch(function(err){
+      console.error(err);
+      // alert(err);
+    });
+  };
+
 
   render() {
 
@@ -456,7 +491,14 @@ class HomePage extends Component {
             <TextInput
               style={STYLES.textInput}
               placeholder="Update your message!"
-              onSubmitEditing={this.updateRemark}
+              onChangeText={
+                (text) => {
+                  this.setState({
+                    pendingRemark: text
+                  });
+                }
+              }
+              onSubmitEditing={ this.updateRemark }
             />
           </View>
         </KeyboardAvoidingView>
