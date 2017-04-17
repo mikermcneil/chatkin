@@ -117,6 +117,23 @@ class LoginPage extends Component {
     };
   }
 
+  fakeDumbTest() {
+    fetch('http://localhost:1337/test', {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(function (res) {
+      console.warn('HERE IS THE RESULT:');
+      console.warn('Status code: '+res.status);
+      console.warn('Headers..? ',res.headers.getAll());
+    })//</then>
+    .catch(function(err){
+      console.error(err);
+      alert(err);
+    });
+  }
+
   signInToChatkin() {
     var self = this;
     // Talk to the server.
@@ -127,14 +144,16 @@ class LoginPage extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        username: self.state.username,
-        password: self.state.password
+        // username: self.state.username,
+        // password: self.state.password
+        username: 'rachael',
+        password: 'PASSWRD'
       })
     })
     .then(function (res) {
       console.warn(res.status)
       console.warn(res.headers.get('x-exit'))
-      if(+res.status >= 300 || +res.status <= 200) {
+      if(+res.status >= 300 || +res.status < 200) {
         console.warn('You were not logged in.');
         console.warn('username:',self.state.username);
         console.warn('password:',self.state.password);
@@ -178,7 +197,7 @@ class LoginPage extends Component {
                       this.setState({
                         username: usernameValue
                       });
-                      alert(usernameValue);
+                      // alert(usernameValue);
                     }
                   }
                 />
@@ -203,6 +222,13 @@ class LoginPage extends Component {
                   color="#fff"
                   onPress={ this.signInToChatkin.bind(this) }
                   title='Sign in'
+                />
+              </View>
+              <View style={STYLES.submitButtonWrapper}>
+                <Button
+                  color="red"
+                  onPress={ this.fakeDumbTest.bind(this) }
+                  title='Test is logged in?'
                 />
               </View>
               <Text

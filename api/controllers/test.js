@@ -16,6 +16,11 @@ module.exports = {
 
 
   fn: function (inputs, exits, env) {
+    // Check if the requesting user is logged in.
+    // If not, then bail.
+    if (!env.req.session.userId) {
+      return exits.error(new Error('Not logged in.'));
+    }// --•
 
     return exits.success({
       id:148192,
