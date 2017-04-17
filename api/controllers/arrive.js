@@ -14,12 +14,7 @@ module.exports = {
 
 
   exits: {
-    success: { description: 'It worked.', outputFriendlyName: 'Zone info' },
-    notLoggedIn: {
-      statusCode: 401,
-      description: 'Requesting user was not authenticated.',
-      extendedDescription: 'You must be logged in to be allowed to arrive in a zone.'
-    }
+    success: { description: 'It worked.', outputFriendlyName: 'Zone info' }
   },
 
 
@@ -32,15 +27,12 @@ module.exports = {
     // (We'll use this for accessing the session and subscribing/publishing around the socket.)
     var req = env.req;
 
-    if (!req.isSocket) {
-      return exits.error(new Error('This is not a socket request.  (In order to arrive in a zone, you must use VR over socket.io -- i.e. `io.socket`)'));
-    }
-
-    // Check if the requesting user is logged in.
-    // If not, then bail.
-    if (!req.session.userId) {
-      return exits.notLoggedIn();
-    }// --•
+    // Temporarily allow non-socket requests for flexiblity during development:
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // if (!req.isSocket) {
+    //   return exits.error(new Error('This is not a socket request.  (In order to arrive in a zone, you must use VR over socket.io -- i.e. `io.socket`)'));
+    // }
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 
