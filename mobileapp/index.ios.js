@@ -4,6 +4,7 @@
 
 var _ = require('@sailshq/lodash');
 var doStuff = require('./utils/do-stuff');
+
 import React, { Component } from 'react';
 import Drawer from 'react-native-drawer'
 import {
@@ -18,7 +19,9 @@ import {
   TextInput,
   Navigator,
   Button,
+  AsyncStorage,
 } from 'react-native';
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // TODO: figure out whether this would expose a global
@@ -39,8 +42,28 @@ import {
  */
 
 export default class mobileapp extends Component {
+
   initialRoute = (function(){
     var isLoggedIn = false;
+    // AsyncStorage.getItem('userSession',
+    //   (rawData) => {
+    //     if(_.isNull(rawData)) {
+    //       isLoggedIn = false;
+    //     }
+    //     else {
+    //       var data = JSON.parse(rawData);
+    //       if(data.userId) {
+    //         isLoggedIn = true;
+    //       }
+    //       else {
+    //         isLoggedIn = false;
+    //       }
+    //     }
+    //   },
+    //   (err) => {
+    //     console.error(err)
+    //   }
+    // );
 
     var initialRouteId;
     if(isLoggedIn) {
@@ -61,6 +84,8 @@ export default class mobileapp extends Component {
           return (<SignupPage navigator={navigator}/>);
       case 'home':
         return (<HomePage navigator={navigator}/>);
+      default:
+        throw new Error('Consitency violation: this is not a route: '+route.id);
     }
   }
 
@@ -83,25 +108,75 @@ export default class mobileapp extends Component {
 //
 class LoginPage extends Component {
 
+  constructor(props) {
+    super(props);
+    var self = this;
+    self.state = {
+      username: '',
+      password: ''
+    };
+  }
+
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // TODO: replace this with a real test that looks in local storage
+  // for a token.  If it does NOT see one, then this device is
+  // logged in.  If it does see one, it means the device is probably
+  // still logged in.  But we'll check the token by sending it to the
+  // server just to make sure.
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  fakeDumbTest() {
+    fetch('http://localhost:1337/test', {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(function (res) {
+      console.warn('HERE IS THE RESULT:');
+      console.warn('Status code: '+res.status);
+      console.warn('Headers..? ',res.headers.getAll());
+    })//</then>
+    .catch(function(err){
+      console.error(err);
+      alert(err);
+    });
+  }
+
   signInToChatkin() {
-    // // Talk to the server.
-    // // fetch('http://192.168.1.19:1337/test', {
-    // fetch('http://localhost:1337/login', {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   }
-    // })
-    // .then(function (res) {
-    //   // TODO
-
-    // })//</then>
-    // .catch(function(err){
-    //   console.error(err);
-    //   alert(err);
-    // });
-
-
-    this.props.navigator.replace({ id: 'home' });
+    var self = this;
+    // Talk to the server.
+    // fetch('http://192.168.1.19:1337/test', {
+    fetch('http://localhost:1337/login', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: self.state.username,
+        password: self.state.password
+        // username: 'rachael',
+        // password: 'PASSWRD'
+      })
+    })
+    .then(function (res) {
+      console.warn(res.status)
+      console.warn(res.headers.get('x-exit'))
+      if(+res.status >= 300 || +res.status < 200) {
+        console.warn('You were not logged in.');
+        console.warn('username:',self.state.username);
+        console.warn('password:',self.state.password);
+        // TODO
+        // show error message in UI
+        return;
+      }
+      // AsyncStorage.setItem('userSession', JSON.stringify({
+      //   userId: self.state.username
+      // }));
+      self.props.navigator.replace({ id: 'home' });
+    })//</then>
+    .catch(function(err){
+      console.error(err);
+    });
   }
 
   navigateToSignup(){
@@ -124,6 +199,15 @@ class LoginPage extends Component {
                 <TextInput
                   style={STYLES.loginInput}
                   placeholder="Username"
+                  onSubmitEditing={
+                    (event) => {
+                      var usernameValue = event.nativeEvent.text;
+                      this.setState({
+                        username: usernameValue
+                      });
+                      // alert(usernameValue);
+                    }
+                  }
                 />
               </View>
               <View style={STYLES.loginInputWrapper}>
@@ -131,6 +215,14 @@ class LoginPage extends Component {
                   style={STYLES.loginInput}
                   placeholder="Password"
                   secureTextEntry={true}
+                  onSubmitEditing={
+                    (event) => {
+                      this.setState({
+                        password: event.nativeEvent.text
+                      });
+                      alert(this.state.password);
+                    }
+                  }
                 />
               </View>
               <View style={STYLES.submitButtonWrapper}>
@@ -138,6 +230,13 @@ class LoginPage extends Component {
                   color="#fff"
                   onPress={ this.signInToChatkin.bind(this) }
                   title='Sign in'
+                />
+              </View>
+              <View style={STYLES.submitButtonWrapper}>
+                <Button
+                  color="red"
+                  onPress={ this.fakeDumbTest.bind(this) }
+                  title='Test is logged in?'
                 />
               </View>
               <Text
@@ -283,8 +382,17 @@ class HomePage extends Component {
 
     // Set initial state
     this.state = {
-      dsOtherUsersHere: ds.cloneWithRows([])
+      dsOtherUsersHere: ds.cloneWithRows([]),
+      latitude: 0,
+      longitude: 0,
     };
+
+    navigator.geolocation.getCurrentPosition(function(position) {
+      self.setState({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude
+      });
+    });
 
     // TODO: loading state
 
