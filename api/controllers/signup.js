@@ -63,10 +63,15 @@ module.exports = {
         // If we made it here, the user record was successfully created.
         // console.log('NEW USER RECORD:'+newUserRecord);
 
-        // Store the user id in the session
-        env.req.session.userId = newUserRecord.id;
-
-        return exits.success();
+        // Mark the requesting agent as being logged in as this user.
+        sails.helpers.setLoggedIn({
+          req: env.req,
+          res: env.res,
+          userId: newUserRecord.id
+        }).exec(function (err){
+          if (err){ return exits.error(err); }
+          return exits.success();
+        });
 
       }, exits.error);// </ User.create().exec() >
     });// </ passwords.encryptPassword().exec() >

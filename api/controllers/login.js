@@ -52,9 +52,15 @@ module.exports = {
         },
         success: function (){
 
-          // Set the user ID in the session.
-          env.req.session.userId = userRecord.id;
-          return exits.success();
+          // Mark the requesting agent as being logged in as this user.
+          sails.helpers.setLoggedIn({
+            req: env.req,
+            res: env.res,
+            userId: userRecord.id
+          }).exec(function (err){
+            if (err){ return exits.error(err); }
+            return exits.success();
+          });
 
         }//</on success>
       });//</checkPassword().exec()>
