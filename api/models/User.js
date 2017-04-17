@@ -8,18 +8,17 @@
 module.exports = {
 
   attributes: {
-
     username: { type: 'string', unique: true, required: true },
     password: { type: 'string', required: true },
     avatarColor: { type: 'string', required: true },
     remark: { type: 'string' },
     lastActiveAt: { type: 'number' },
     currentZone: { model: 'Zone' },
-
+    authTokens: { collection: 'AuthToken', via: 'forUser' },
   },
 
   customToJSON: function (record){
-    return _.omit(record, 'password');
+    return _.omit(record, ['password', 'authTokens']);
   }
 
 };

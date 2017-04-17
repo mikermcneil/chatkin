@@ -33,9 +33,11 @@ module.exports = {
 
     // Otherwise, we'll generate an auth token, save it to the database,
     // and then set it as the X-Set-Auth-Token header in the response.
-    var authToken = 'foo';//TODO
-    User.update({ id: inputs.userId })
-    .set({ authToken: authToken })
+    var authToken = 'foo:'+Math.floor(Math.random()*10000);//TODO: make a proper token
+    AuthToken.create({
+      value: authToken,
+      forUser: inputs.userId
+    })
     .exec(function(err){
       if (err) { return exits.error(err); }
       res.set('X-Set-Auth-Token', authToken);

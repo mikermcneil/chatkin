@@ -8,7 +8,6 @@
 module.exports = {
 
   attributes: {
-
     x: { type: 'number', required: true },
     y: { type: 'number', required: true },
     lastCachedTweetsAt: { type: 'number' },
@@ -16,7 +15,6 @@ module.exports = {
     cachedTweets: { type: 'json' },
     cachedWeather: { type: 'json' },
     nearbyUsers: { collection: 'User', via: 'currentZone' },
-
   },
 
 };
