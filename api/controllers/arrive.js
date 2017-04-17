@@ -27,6 +27,7 @@ module.exports = {
     // (We'll use this for accessing the session and subscribing/publishing around the socket.)
     var req = env.req;
 
+
     // Temporarily allow non-socket requests for flexiblity during development:
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // if (!req.isSocket) {
@@ -69,7 +70,23 @@ module.exports = {
     var x = Math.floor(xDegrees * sails.config.custom.numZonesPerDegreeSquare);
     var y = Math.floor(yDegrees * sails.config.custom.numZonesPerDegreeSquare);
 
-    User.findOne({ id: req.session.userId }).exec(function(err, thisUser){
+    // Build up the criteria to find the user who is arriving in the zone.
+    // (This is different between the web app and the mobile app.)
+    var findCriteria;
+    // Check for an authToken.
+    var authToken = req.get('X-Auth-Token');
+    if(authToken) {
+      findCriteria = {
+        authToken: authToken
+      };
+    }
+    else {
+      findCriteria = {
+        id: req.session.userId
+      }
+    }
+
+    User.findOne(findCriteria).exec(function(err, thisUser){
       if (err) { return exits.error(err); }
       if (!thisUser) { return exits.error(new Error('The requesting user is logged in as user `'+req.session.userId+'`, but no such user exists in the database.  This should never happen!')); }
 
