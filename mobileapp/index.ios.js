@@ -128,9 +128,9 @@ class LoginPage extends Component {
       })
     })
     .then(function (res) {
-      console.warn(res.status)
-      console.warn(res.headers.get('x-exit'))
       if(+res.status >= 300 || +res.status < 200) {
+        console.warn(res.status)
+        console.warn(res.headers.get('x-exit'))
         console.warn('You were not logged in.');
         console.warn('username:',username);
         console.warn('password:',password);
