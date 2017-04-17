@@ -16,6 +16,7 @@ module.exports.routes = {
   'GET /signup': { view: 'signup' },
   'PUT /login': { action: 'login' },
   'PUT /signup': { action: 'signup' },
+  'PUT /logout': { action: 'logout' },
   'PUT /user/:username/zone': { action: 'arrive' },
   'PUT /user/:username/remark': { action: 'make-remark' },
   'GET /test': { action: 'test' },
