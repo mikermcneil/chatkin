@@ -83,25 +83,35 @@ export default class mobileapp extends Component {
 //
 class LoginPage extends Component {
 
+  constructor(props) {
+    super(props);
+    var self = this;
+    self.state = {
+      username: '',
+      password: ''
+    };
+  }
+
   signInToChatkin() {
-    // // Talk to the server.
-    // // fetch('http://192.168.1.19:1337/test', {
-    // fetch('http://localhost:1337/login', {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   }
-    // })
-    // .then(function (res) {
-    //   // TODO
-
-    // })//</then>
-    // .catch(function(err){
-    //   console.error(err);
-    //   alert(err);
-    // });
-
-
-    this.props.navigator.replace({ id: 'home' });
+    var self = this;
+    // Talk to the server.
+    // fetch('http://192.168.1.19:1337/test', {
+    fetch('http://localhost:1337/login', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: self.state.username,
+        password: self.state.password
+      })
+    })
+    .then(function (res) {
+      self.props.navigator.replace({ id: 'home' });
+    })//</then>
+    .catch(function(err){
+      console.error(err);
+    });
   }
 
   navigateToSignup(){
@@ -124,6 +134,13 @@ class LoginPage extends Component {
                 <TextInput
                   style={STYLES.loginInput}
                   placeholder="Username"
+                  onSubmitEditing={
+                    (event) => {
+                      this.setState({
+                        username: event.nativeEvent.text
+                      });
+                    }
+                  }
                 />
               </View>
               <View style={STYLES.loginInputWrapper}>
@@ -131,6 +148,13 @@ class LoginPage extends Component {
                   style={STYLES.loginInput}
                   placeholder="Password"
                   secureTextEntry={true}
+                  onSubmitEditing={
+                    (event) => {
+                      this.setState({
+                        password: event.nativeEvent.text
+                      });
+                    }
+                  }
                 />
               </View>
               <View style={STYLES.submitButtonWrapper}>
