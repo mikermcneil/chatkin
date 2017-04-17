@@ -93,23 +93,6 @@ class LoginPage extends Component {
   // still logged in.  But we'll check the token by sending it to the
   // server just to make sure.
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  fakeDumbTest() {
-    fetch(REQUEST_URL + '/test', {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-    .then(function (res) {
-      console.warn('HERE IS THE RESULT:');
-      console.warn('Status code: '+res.status);
-      console.warn('Headers..? ',res.headers.getAll());
-    })//</then>
-    .catch(function(err){
-      console.error(err);
-      alert(err);
-    });
-  }
-
   signInToChatkin() {
     var self = this;
 
