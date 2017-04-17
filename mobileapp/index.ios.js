@@ -366,13 +366,9 @@ class HomePage extends Component {
             })
           })
           .then(function (res) {
-            if(+res.status >= 300 || +res.status < 200) {
-              // If the URL for this request was actually '/login',
-              // that means that the 'isLoggedIn' policy intercepted
-              // the request and tried to redirect us.
-              // In that case, we need to go to the login page.
-              // (TODO: we should catch this before this point)
-              if(res.url === REQUEST_URL + '/login') {
+            if(res.status >= 300 || res.status < 200) {
+              // If we got a 403 response, redirect to the login page.
+              if(res.status === 403) {
                 self.props.navigator.replace({ id: 'login' });
               }
               else {
