@@ -32,7 +32,6 @@ module.exports = {
       statusCode: 409,
       description: 'The provided username is already in use.',
     }
-
   },
 
   fn: function(inputs, exits, env) {
