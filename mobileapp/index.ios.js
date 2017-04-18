@@ -6,8 +6,9 @@ var _ = require('@sailshq/lodash');
 var doStuff = require('./utils/do-stuff');
 var REQUEST_URL   = 'http://localhost:1337';
 
+
 import React, { Component } from 'react';
-import Drawer from 'react-native-drawer'
+import Drawer from 'react-native-drawer';
 import {
   AppRegistry,
   StyleSheet,
@@ -329,6 +330,7 @@ class HomePage extends Component {
       username: '',
       authToken: '',
       pendingRemark: '',
+      weather: {}
     };
 
     // TODO: loading state
@@ -381,7 +383,8 @@ class HomePage extends Component {
             res.json().then(function(data){
               // alert(JSON.stringify(data.otherUsersHere));
               self.setState({
-                dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere)
+                dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere),
+                weather: data.weather
               });
             })
             .catch(function(err) {
@@ -404,6 +407,40 @@ class HomePage extends Component {
       }
 
     });
+
+    updateRemark = function() {
+      fetch(REQUEST_URL + '/user/' + self.state.username + '/remark', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': self.state.authToken
+        },
+        body: JSON.stringify({
+          username: self.state.username,
+          remark: self.state.pendingRemark
+        })
+      })
+      .then(function (res) {
+        if(res.status >= 300 || res.status < 200) {
+          console.error(res)
+          return;
+        }
+        res.json().then(function(data){
+          // TODO: should we show it up top so it's not confusing?
+        })
+        .catch(function(err) {
+          console.error(err);
+          // alert(err);
+        });
+
+
+
+      })//</then>
+      .catch(function(err){
+        console.error(err);
+        // alert(err);
+      });
+    };
   }
 
   closePanel = () => {
@@ -418,39 +455,6 @@ class HomePage extends Component {
     this._drawer.open();
   };
 
-  updateRemark = function() {
-    fetch(REQUEST_URL + '/user/' + self.state.username + '/remark', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Auth-Token': self.state.authToken
-      },
-      body: JSON.stringify({
-        username: self.state.username,
-        remark: self.state.pendingRemark
-      })
-    })
-    .then(function (res) {
-      if(res.status >= 300 || res.status < 200) {
-        console.error(res)
-        return;
-      }
-      res.json().then(function(data){
-        // TODO
-      })
-      .catch(function(err) {
-        console.error(err);
-        // alert(err);
-      });
-
-
-
-    })//</then>
-    .catch(function(err){
-      console.error(err);
-      // alert(err);
-    });
-  };
 
 
   render() {
@@ -464,7 +468,7 @@ class HomePage extends Component {
         tapToClose={true}
         tweenHandler={Drawer.tweenPresets.parallax}
         content={
-          this.state.drawerContent === 'weather' ? <WeatherPanel/> : <LocationPanel/>
+          this.state.drawerContent === 'weather' ? <WeatherPanel weather={this.state.weather}/> : <LocationPanel lat={this.state.latitude} long={this.state.longitude}/>
         }>
         <KeyboardAvoidingView
           behavior='padding'
@@ -506,9 +510,6 @@ class HomePage extends Component {
     );
   }
 
-  updateRemark = function() {
-    // TODO
-  };
 
   renderListViewHeader = function(rowData) {
     return(<View style={{height: 10}}/>);
@@ -537,12 +538,17 @@ class WeatherPanel extends Component {
   render() {
     return(
       <View style={STYLES.panelWrapper}>
-        <Text style={STYLES.panelHeader}>Weather Info</Text>
+        <Text style={STYLES.panelHeader}>Weather: {this.props.weather.description}</Text>
+        <Text style={{fontSize: 16, marginBottom: 10}}>{ this.props.weather.temp } &deg; Kelvin</Text>
+        <Text><Text style={{fontWeight:'bold'}}>High:</Text> { this.props.weather.temp_max } &deg; K</Text>
+        <Text><Text style={{fontWeight:'bold'}}>Low:</Text> { this.props.weather.temp_min } &deg; K</Text>
       </View>
     );
   }
 }
 
+// TODO: get the coordinates in here:
+// <Image source={{ uri: 'https://maps.googleapis.com/maps/api/staticmap?center='+this.props.lat + ',' + this.props.long + '&zoom=7&size=200x200&key=AIzaSyAvbP5k24nkLhiTp2L8ambymkFWCaS2HvI'}}/>
 class LocationPanel extends Component {
   render() {
     return(
@@ -706,13 +712,14 @@ const STYLES = StyleSheet.create({
     backgroundColor: '#bdcdd5',
     paddingLeft: 15,
     paddingRight: 15,
-    paddingTop: 25,
+    paddingTop: 55,
     paddingBottom: 25,
    },
 
    panelHeader: {
     color: '#000',
-    fontSize: 24
+    fontSize: 24,
+    marginBottom: 10,
    },
 
   }
