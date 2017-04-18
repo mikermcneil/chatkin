@@ -20,7 +20,7 @@ module.exports.bootstrap = function(cb) {
   // Check mandatory config & warn about it if necessary.
   var isMissingMandatoryCustomConfig;
   if (_.isUndefined(sails.config.custom.openWeatherApiKey)) {
-    sails.log.warn('No `sails.config.custom.twitterConsumerKey` was configured.');
+    sails.log.warn('No `sails.config.custom.openWeatherApiKey` was configured.');
     isMissingMandatoryCustomConfig = true;
   }
   if (_.isUndefined(sails.config.custom.twitterConsumerSecret)) {
