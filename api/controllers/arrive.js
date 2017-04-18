@@ -157,7 +157,15 @@ module.exports = {
               } catch (e) { return proceed(e); }
 
             })(function afterCachingWeather(err){
-              if (err) { return exits.error(err); }
+              if (err) {
+                return exits.error(new Error(
+                  'Unable to get/cache weather data!  (Be sure to check your configuration, and/or the details below.)\n'+
+                  'Error details:\n'+
+                  '-- -- -- -- -- -- -- -- --\n'+
+                  err.stack+'\n'+
+                  '-- -- -- -- -- -- -- -- --'
+                ));
+              }//-•
 
               // Compute relevancy radius and adjusted lat/long:
               // > For more about what this is and why we have to compute
@@ -255,7 +263,15 @@ module.exports = {
                 } catch (e) { return proceed(e); }
 
               })(function afterCachingTweets(err){
-                if (err) { return exits.error(err); }
+                if (err) {
+                  return exits.error(new Error(
+                    'Unable to get/cache relevant tweets!  (Be sure to check your configuration, and/or the details below.)\n'+
+                    'Error details:\n'+
+                    '-- -- -- -- -- -- -- -- --\n'+
+                    err.stack+'\n'+
+                    '-- -- -- -- -- -- -- -- --'
+                  ));
+                }//-•
 
                 User.update()
                 .where({ username: thisUser.username })
