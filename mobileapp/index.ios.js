@@ -549,6 +549,7 @@ class WeatherPanel extends Component {
 
 // TODO: get the coordinates in here:
 // <Image source={{ uri: 'https://maps.googleapis.com/maps/api/staticmap?center='+this.props.lat + ',' + this.props.long + '&zoom=7&size=200x200&key=AIzaSyAvbP5k24nkLhiTp2L8ambymkFWCaS2HvI'}}/>
+// see https://developers.google.com/maps/documentation/static-maps/intro for more info
 class LocationPanel extends Component {
   render() {
     return(
