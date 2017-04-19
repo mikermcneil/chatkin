@@ -29,6 +29,8 @@ module.exports = {
 
     var authToken = req.get('X-Auth-Token');
 
+    console.log('Auth token:',authToken);
+
     // If no auth token was provided, then we'll assume the standard
     // session cookie approach is in use -- so we'll just check the session.
     if (!authToken) {
@@ -46,6 +48,11 @@ module.exports = {
 
       return exits.success(matchingUsers[0].id);
     });
+
+    // AuthToken.findOne({ value: authToken })
+    // .exec(function(err, matchingAuthToken) {
+    //     if (err) { return exits.error(err); }
+    // })
 
   }
 

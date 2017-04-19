@@ -7,6 +7,30 @@ var doStuff = require('./utils/do-stuff');
 var REQUEST_URL   = 'http://localhost:1337';
 
 
+
+
+// Hack to help catch bugs during development:
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(function(){
+  var _originalAlert = window.alert;
+  alert = window.alert = function (){
+    if (arguments.length > 1) { throw new Error('alert() only takes one argument!'); }
+    _originalAlert.apply(this, Array.prototype.slice.call(arguments));
+  }
+
+
+  // FUTURE: maybe do this too:
+  // var _originalError = window.Error;
+  // Error = window.Error = function FakeErrorConstructor(){
+  //   if (arguments.length > 1) { throw new Error('new Error() only takes one argument!  At least in our app.'); }
+  //   _originalError.apply(this, Array.prototype.slice.call(arguments));
+  // }
+
+})();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
 import React, { Component } from 'react';
 import Drawer from 'react-native-drawer';
 import {
@@ -123,11 +147,20 @@ class LoginPage extends Component {
         // show error message in UI
         return;
       }
-      AsyncStorage.multiSet([
-        ['username', self.state.username],
-        ['authToken', res.headers.get('X-Set-Auth-Token')],
-      ], function() {
-        self.props.navigator.replace({ id: 'home' });
+      res.json().then(function(data){
+        AsyncStorage.multiSet([
+          ['username', data.username],
+          ['avatarColor', data.avatarColor],
+          ['remark', data.remark],
+          ['authToken', res.headers.get('X-Set-Auth-Token')],
+        ], function() {
+          // alert(res.headers.get('X-Set-Auth-Token'));
+          self.props.navigator.replace({ id: 'home' });
+        });
+      })
+      .catch(function(err) {
+        console.error(err);
+        // alert(err);
       });
     })//</then>
     .catch(function(err){
@@ -155,6 +188,7 @@ class LoginPage extends Component {
                 <TextInput
                   style={STYLES.loginInput}
                   placeholder="Username"
+                  autoCapitalize="none"
                   onChangeText={
                     (text) => {
                       this.setState({
@@ -328,129 +362,153 @@ class HomePage extends Component {
       latitude: 0,
       longitude: 0,
       username: '',
+      remark: '',
+      avatarColor: '',
       authToken: '',
       pendingRemark: '',
       weather: {}
     };
 
     // TODO: loading state
-    AsyncStorage.multiGet(['username', 'authToken'], function(err, stores) {
+    AsyncStorage.multiGet(['username', 'remark', 'avatarColor', 'authToken'], function(err, stores) {
       if(err) {
         console.error('AsyncStorage error: ' + error.message);
+        return;
       }
-      if (!_.isNull(stores)){
 
-        // Make our data into a nice, readable dictionary.
-        var updates = {};
-        _.each(stores, function(store) {
-          // The items returned from .multiGet() are arrays that look like:
-          // [key, value]
-          var key = store[0];
-          var value = store[1];
-          updates[key] = value;
+      // NOTE:
+      // `stores` is either `null`, or a 2-dimensional array like:
+      // [ ['username','billy'], ['remark', 'hey guys'], .... ]
+
+      // If we don't have any of this stuff already stored,
+      // redirect to the login screen.
+      if (_.isNull(stores)){
+        self.props.navigator.replace({ id: 'login' });
+        return;
+      }
+
+      // Otherwise we've already got this user's data stored so we can proceed
+      // with slapping it on the page.
+
+      // Make our data into a nice, readable dictionary.
+      var userData = {};
+      _.each(stores, function(store) {
+        // The items returned from .multiGet() are ALSO arrays that look like:
+        // [key, value]
+        var key = store[0];
+        var value = store[1];
+        userData[key] = value;
+      });
+      self.setState(userData);
+      // alert(JSON.stringify(userData));
+      // alert('token: '+userData.authToken);
+
+      // Get our position.
+      navigator.geolocation.getCurrentPosition(function(position) {
+        self.setState({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
         });
-        self.setState(updates);
 
-        // Get our position.
-        navigator.geolocation.getCurrentPosition(function(position) {
-          self.setState({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          });
 
-          fetch(REQUEST_URL + '/user/' + self.state.username + '/zone', {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Auth-Token': self.state.authToken
-            },
-            body: JSON.stringify({
-              lat: position.coords.latitude,
-              long: position.coords.longitude
-            })
+        console.warn('request body', JSON.stringify({
+          lat: position.coords.latitude,
+          long: position.coords.longitude
+        }));
+        fetch(REQUEST_URL + '/user/' + userData.username + '/zone', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Auth-Token': userData.authToken
+          },
+          body: JSON.stringify({
+            lat: position.coords.latitude,
+            long: position.coords.longitude
           })
-          .then(function (res) {
-            if(res.status >= 300 || res.status < 200) {
-              // If we got a 403 response, redirect to the login page.
-              if(res.status === 403) {
-                self.props.navigator.replace({ id: 'login' });
-              }
-              else {
-                console.error(res)
-              }
-              return;
-            }
-            res.json().then(function(data){
-              // alert(JSON.stringify(data.otherUsersHere));
-              self.setState({
-                dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere),
-                weather: data.weather
-              });
-            })
-            .catch(function(err) {
-              console.error(err);
-              // alert(err);
-            });
+        })
+        .then(function (res) {
 
-          })//</then>
-          .catch(function(err){
+
+          if(res.status >= 300 || res.status < 200) {
+            // If we got a 403 response, redirect to the login page.
+            if(res.headers.get('x-exit') === 'notAuthenticated') {
+              console.warn('You are not logged in!');
+              console.warn(JSON.stringify(res));
+              // self.props.navigator.replace({ id: 'login' });
+            }
+            else {
+              console.error(res)
+            }
+            return;
+          }
+          res.json().then(function(data){
+            // alert(JSON.stringify(data.otherUsersHere));
+            self.setState({
+              dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere),
+              weather: data.weather
+            });
+          })
+          .catch(function(err) {
             console.error(err);
             // alert(err);
           });
 
-        });//</get position>
-      }
-      else {
-        // If we don't have a username stored,
-        // redirect to the login screen.
-        self.props.navigator.replace({ id: 'login' });
-      }
-
-    });
-
-    updateRemark = function() {
-      fetch(REQUEST_URL + '/user/' + self.state.username + '/remark', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': self.state.authToken
-        },
-        body: JSON.stringify({
-          username: self.state.username,
-          remark: self.state.pendingRemark
-        })
-      })
-      .then(function (res) {
-        if(res.status >= 300 || res.status < 200) {
-          console.error(res)
-          return;
-        }
-        res.json().then(function(data){
-          // TODO: should we show it up top so it's not confusing?
-        })
-        .catch(function(err) {
+        })//</then>
+        .catch(function(err){
           console.error(err);
           // alert(err);
         });
 
+      });//</get position>
+
+    });//</ AsyncStorage.multiGet() >
+
+  }
 
 
-      })//</then>
-      .catch(function(err){
+  updateRemark = function() {
+
+    fetch(REQUEST_URL + '/user/' + self.state.username + '/remark', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-Token': self.state.authToken
+      },
+      body: JSON.stringify({
+        username: self.state.username,
+        remark: self.state.pendingRemark
+      })
+    })
+    .then(function (res) {
+      if(res.status >= 300 || res.status < 200) {
+        console.error(res)
+        return;
+      }
+      res.json().then(function(data){
+        // TODO: should we show it up top so it's not confusing?
+      })
+      .catch(function(err) {
         console.error(err);
         // alert(err);
       });
-    };
-  }
 
-  closePanel = () => {
+
+
+    })//</then>
+    .catch(function(err){
+      console.error(err);
+      // alert(err);
+    });
+  };
+
+  closePanel = function() {
     this._drawer.close()
   };
-  openWeatherPanel = () => {
+  openWeatherPanel = function() {
     this.setState({drawerContent: 'weather'})
     this._drawer.open();
   };
-  openLocationPanel = () => {
+  openLocationPanel = function() {
     this.setState({drawerContent: 'location'})
     this._drawer.open();
   };
@@ -495,6 +553,7 @@ class HomePage extends Component {
             <TextInput
               style={STYLES.textInput}
               placeholder="Update your message!"
+              value={ this.state.remark }
               onChangeText={
                 (text) => {
                   this.setState({

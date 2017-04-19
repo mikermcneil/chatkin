@@ -66,7 +66,11 @@ module.exports = {
             userId: userRecord.id
           }).exec(function (err){
             if (err){ return exits.error(err); }
-            return exits.success();
+            return exits.success({
+              username: userRecord.username,
+              remark: userRecord.remark,
+              avatarColor: userRecord.avatarColor
+            });
           });
 
         }//</on success>
