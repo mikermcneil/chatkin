@@ -3,7 +3,7 @@
  */
 
 var _ = require('@sailshq/lodash');
-var sendRequest = require('./utils/send-request');
+var sendHttpRequest = require('./utils/send-http-request');
 
 
 
@@ -418,7 +418,7 @@ class HomePage extends Component {
           longitude: position.coords.longitude
         });
 
-        sendRequest({
+        sendHttpRequest({
           method: 'PUT',
           url: '/arrive',
           headers: { 'X-Auth-Token': userData.authToken },
@@ -452,7 +452,7 @@ class HomePage extends Component {
             pendingRemark: data.myRemark,
             remark: data.myRemark
           });
-        });//</ sendRequest >
+        });//</ sendHttpRequest() >
 
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
