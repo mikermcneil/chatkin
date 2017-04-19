@@ -171,6 +171,9 @@
           // Clear the loading state.
           vm.syncing = '';
 
+          // Update this user's current remark (just in case it was changed on another device)
+          vm.me.message = data.myRemark;
+
           window.DATA = data;//todo: remove this-- it's just for debugging
 
           // Add formatted "time ago" to the other users' messages.
@@ -223,6 +226,9 @@
                   return;
                 }//-•
                 vm.syncing = '';
+
+                // Update this user's current remark (just in case it was changed on another device)
+                vm.me.message = data.myRemark;
 
                 // Add formatted "time ago" to the other users' messages.
                 _.each(updatedData.otherUsersHere, function(otherUser) {
