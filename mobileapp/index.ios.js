@@ -46,6 +46,7 @@ import {
   Navigator,
   Button,
   AsyncStorage,
+  TouchableHighlight,
 } from 'react-native';
 
 
@@ -366,6 +367,7 @@ class HomePage extends Component {
       avatarColor: '',
       authToken: '',
       pendingRemark: '',
+      editingRemark: false,
       weather: {}
     };
 
@@ -456,7 +458,45 @@ class HomePage extends Component {
   }
 
 
+  renderUserRemarkSection = function() {
+    var self = this;
+
+    if(self.state.editingRemark) {
+      return (
+        <TextInput
+          style={STYLES.textInput}
+          placeholder="Update your message!"
+          onChangeText={
+            (text) => {
+              this.setState({
+                pendingRemark: text
+              });
+            }
+          }
+          onSubmitEditing={ this.updateRemark.bind(this) }
+        />
+      );
+    }
+    else {
+      return (
+        <TouchableHighlight onPress={ this.enableEditRemark.bind(this) }>
+          <View>
+            <Text style={{fontWeight: 'bold'}}>You say:</Text>
+            <Text>{ this.state.remark }</Text>
+          </View>
+        </TouchableHighlight>
+      );
+    }
+  };
+
+  enableEditRemark = function() {
+    var self = this;
+    self.setState({editingRemark: true})
+  };
+
+
   updateRemark = function() {
+    var self = this;
 
     fetch(REQUEST_URL + '/user/' + self.state.username + '/remark', {
       method: 'PUT',
@@ -474,22 +514,18 @@ class HomePage extends Component {
         console.error(res)
         return;
       }
-      res.json().then(function(data){
-        // TODO: should we show it up top so it's not confusing?
-      })
-      .catch(function(err) {
-        console.error(err);
-        // alert(err);
+      // Otherwise, set the remark section to its inactive state.
+      self.setState({
+        remark: self.state.pendingRemark,
+        editingRemark: false
       });
-
-
-
     })//</then>
     .catch(function(err){
       console.error(err);
       // alert(err);
     });
   };
+
 
   closePanel = () => {
     this._drawer.close()
@@ -540,19 +576,7 @@ class HomePage extends Component {
             />
           </View>
           <View style={STYLES.formWrapper}>
-            <TextInput
-              style={STYLES.textInput}
-              placeholder="Update your message!"
-              value={ this.state.remark }
-              onChangeText={
-                (text) => {
-                  this.setState({
-                    pendingRemark: text
-                  });
-                }
-              }
-              onSubmitEditing={ this.updateRemark }
-            />
+            { this.renderUserRemarkSection() }
           </View>
         </KeyboardAvoidingView>
       </Drawer>
