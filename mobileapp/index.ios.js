@@ -4,7 +4,7 @@
 
 var _ = require('@sailshq/lodash');
 var doStuff = require('./utils/do-stuff');
-var REQUEST_URL   = 'http://localhost:1337';
+var CHATKIN_URL   = 'http://localhost:1337';
 
 
 
@@ -47,6 +47,7 @@ import {
   Button,
   AsyncStorage,
   TouchableHighlight,
+  WebView,
 } from 'react-native';
 
 
@@ -126,7 +127,7 @@ class LoginPage extends Component {
     var password = self.state.password;
     // Talk to the server.
     // fetch('http://192.168.1.19:1337/test', {
-    fetch(REQUEST_URL + '/login', {
+    fetch(CHATKIN_URL + '/login', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -277,6 +278,16 @@ class SignupPage extends Component {
     //...
   }
 
+  // If we want you to just go to chatkin.com to signup, could try something like:
+  // ```
+  // render() {
+  //   return (
+  //     <WebView
+  //       source={{uri: CHATKIN_URL+'/signup'}}
+  //     />
+  //   );
+  // }
+  // ```
 
   render() {
     let backgroundStyle = { backgroundColor: this.state.avatarColor };
@@ -364,7 +375,7 @@ class HomePage extends Component {
       longitude: 0,
       username: '',
       remark: '',
-      avatarColor: '',
+      avatarColor: '#000',
       authToken: '',
       pendingRemark: '',
       editingRemark: false,
@@ -411,7 +422,7 @@ class HomePage extends Component {
           longitude: position.coords.longitude
         });
 
-        fetch(REQUEST_URL + '/user/' + userData.username + '/zone', {
+        fetch(CHATKIN_URL + '/user/' + userData.username + '/zone', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -483,7 +494,7 @@ class HomePage extends Component {
       return (
         <TouchableHighlight onPress={ this.enableEditRemark.bind(this) }>
           <View>
-            <Text style={{fontWeight: 'bold'}}>You say:</Text>
+            <Text style={{ fontWeight: 'bold', color: this.state.avatarColor }}>You say:</Text>
             <Text>{ this.state.remark }</Text>
           </View>
         </TouchableHighlight>
@@ -500,7 +511,7 @@ class HomePage extends Component {
   updateRemark = function() {
     var self = this;
 
-    fetch(REQUEST_URL + '/user/' + self.state.username + '/remark', {
+    fetch(CHATKIN_URL + '/user/' + self.state.username + '/remark', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
