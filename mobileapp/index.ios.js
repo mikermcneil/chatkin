@@ -7,7 +7,6 @@ var sendRequest = require('./utils/send-request');
 
 
 
-
 // Hack to help catch bugs during development:
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (function(){
@@ -126,7 +125,7 @@ class LoginPage extends Component {
     var password = self.state.password;
     // Talk to the server.
     // fetch('http://192.168.1.19:1337/test', {
-    fetch(CHATKIN_URL + '/login', {
+    fetch('http://localhost:1337' + '/login', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -281,7 +280,7 @@ class SignupPage extends Component {
   // render() {
   //   return (
   //     <WebView
-  //       source={{uri: CHATKIN_URL+'/signup'}}
+  //       source={{uri: 'http://localhost:1337'+'/signup'}}
   //     />
   //   );
   // }
@@ -419,48 +418,108 @@ class HomePage extends Component {
           longitude: position.coords.longitude
         });
 
-        fetch(CHATKIN_URL+'/arrive', {
+        // fetch('http://localhost:1337'+'/arrive', {
+        //   method: 'PUT',
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //     'X-Auth-Token': userData.authToken
+        //   },
+        //   body: JSON.stringify({
+        //     lat: position.coords.latitude,
+        //     long: position.coords.longitude
+        //   })
+        // })
+        // .then(function (res) {
+
+        sendRequest({
+          url: '/arrive',
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             'X-Auth-Token': userData.authToken
           },
-          body: JSON.stringify({
+          body: {
             lat: position.coords.latitude,
             long: position.coords.longitude
-          })
-        })
-        .then(function (res) {
+          }
+        }, function (err, resInfo) {
 
+          // console.warn('got response. error:',err,'\nresInfo:',resInfo);
+          // console.warn('typeof err',typeof err);
+          // console.warn('err instanceof Error',err instanceof Error);
+          // console.warn('err.stack',err.stack);
 
-          if(res.status >= 300 || res.status < 200) {
-            // If we got a 403 response, redirect to the login page.
-            if(res.headers.get('x-exit') === 'notAuthenticated') {
+          if (err) {
+            // console.warn('!!!!');
+            // console.warn(err);
+
+            // If the user is not authenticated, redirect to the login page.
+            if (err.code === 'E_NON_200_RESPONSE' && err.headers['x-exit'] === 'notAuthenticated') {
               self.props.navigator.replace({ id: 'login' });
             }
             else {
-              console.error(res)
+              console.error(err);
             }
             return;
-          }
-          res.json().then(function(data){
-            self.setState({
-              dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere),
-              weather: data.weather,
-              pendingRemark: data.myRemark,
-              remark: data.myRemark
-            });
-          })
-          .catch(function(err) {
-            console.error(err);
-            // alert(err);
+          }//-•
+
+          var data = resInfo.data;
+          self.setState({
+            dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere),
+            weather: data.weather,
+            pendingRemark: data.myRemark,
+            remark: data.myRemark
           });
 
-        })//</then>
-        .catch(function(err){
-          console.error(err);
-          // alert(err);
-        });
+
+          // if(res.status >= 300 || res.status < 200) {
+          //   if(res.headers.get('x-exit') === 'notAuthenticated') {
+          //   }
+          //   else {
+          //     console.error(res)
+          //   }
+          //   return;
+          // }
+          // res.json().then(function(data){
+          // })
+          // .catch(function(err) {
+          //   console.error(err);
+          //   // alert(err);
+          // });
+        });//</ sendRequest >
+
+        // })//</then>
+        // .catch(function(err){
+        //   console.error(err);
+        //   // alert(err);
+        // });
+
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // FUTURE: Set up cloud sdk implementation for react native:
+        // ```
+        // Cloud.arrive({
+        //   lat: position.coords.latitude,
+        //   long: position.coords.longitude
+        // }).exec({
+        //   error: function(err) {
+        //     console.error(err);
+        //   },
+        //   notAuthenticated: function (err){
+        //     self.props.navigator.replace({ id: 'login' });
+        //   },
+        //   success: function (data){
+        //     self.setState({
+        //       dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere),
+        //       weather: data.weather,
+        //       pendingRemark: data.myRemark,
+        //       remark: data.myRemark
+        //     });
+        //   }
+        // });
+        // ```
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 
       });//</get position>
 
@@ -510,7 +569,7 @@ class HomePage extends Component {
   updateRemark = function() {
     var self = this;
 
-    fetch(CHATKIN_URL+'/make-remark', {
+    fetch('http://localhost:1337'+'/make-remark', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

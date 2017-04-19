@@ -23,6 +23,14 @@ var DEFAULT_API_SERVER_BASE_URL = 'http://localhost:1337';
  *
  * @optional {String} baseUrl
  * @optional {Ref} body
+ *
+ * @callback {Function}
+ *           @param {Error?}
+ *           @param {Dictionary} resInfo
+ *                  @property {String?} body
+ *                  @property {JSON?} data
+ *                  @property {Number} statusCode
+ *                  @property {Dictionary} headers
  */
 
 module.exports = function sendRequest(options, done){
@@ -77,22 +85,34 @@ module.exports = function sendRequest(options, done){
     // give it a special error code so it's easily digested by
     // our friends up in userland.
     if(resInfo.status >= 300 || resInfo.status < 200) {
-      return done(flaverr({
-        code: 'E_NON_200_RESPONSE',
-        body: resInfo.body,
-        statusCode: resInfo.statusCode,
-        headers: resInfo.headers,
-      }, new Error(
-        'Server responded with an error'+(_.isUndefined(resInfo.body) ? '.' : 'Server responded with an error: '+resInfo.body)
-      )));
+      try {
+        return done(flaverr({
+          code: 'E_NON_200_RESPONSE',
+          body: resInfo.body,
+          statusCode: resInfo.statusCode,
+          headers: resInfo.headers,
+        }, new Error(
+          'Server responded with an error'+(_.isUndefined(resInfo.body) ? '.' : 'Server responded with an error: '+resInfo.body)
+        )));
+      } catch (e) {
+        console.warn('Unhandled error was thrown in an asynchronous callback! (see error log)');
+        console.error(e);
+        return;
+      }
     }//-•
 
     // Otherwise we'll consider it a success.
 
     // If there was no body, we're done.
     if (_.isUndefined(resInfo.body)) {
-      return done(undefined, resInfo);
-    }
+      try {
+        return done(undefined, resInfo);
+      } catch (e) {
+        console.warn('Unhandled error was thrown in an asynchronous callback! (see error log)');
+        console.error(e);
+        return;
+      }
+    }//-•
 
 
     // But otherwise, we'll attempt to parse the raw response body as JSON.
@@ -109,11 +129,25 @@ module.exports = function sendRequest(options, done){
       parsedResponseBody = resInfo.body;
     }
 
-    resInfo.body = parsedResponseBody;
+    resInfo.data = parsedResponseBody;
 
-    return done(undefined, resInfo);
+    try {
+      return done(undefined, resInfo);
+    } catch (e) {
+      console.warn('Unhandled error was thrown in an asynchronous callback! (see error log)');
+      console.error(e);
+      return;
+    }
 
   })//</then>
-  .catch(function(err){ return done(err); });
+  .catch(function(err){
+    try {
+      return done(err);
+    } catch (e) {
+      console.warn('Unhandled error was thrown in an asynchronous callback! (see error log)');
+      console.error(e);
+      return;
+    }
+  });
 
 };
