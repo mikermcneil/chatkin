@@ -432,12 +432,9 @@ class HomePage extends Component {
         // .then(function (res) {
 
         sendRequest({
-          url: '/arrive',
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Auth-Token': userData.authToken
-          },
+          url: '/arrive',
+          headers: { 'X-Auth-Token': userData.authToken },
           body: {
             lat: position.coords.latitude,
             long: position.coords.longitude
@@ -450,11 +447,9 @@ class HomePage extends Component {
           // console.warn('err.stack',err.stack);
 
           if (err) {
-            // console.warn('!!!!');
-            // console.warn(err);
 
             // If the user is not authenticated, redirect to the login page.
-            if (err.code === 'E_NON_200_RESPONSE' && err.headers['x-exit'] === 'notAuthenticated') {
+            if (err.code === 'E_NON_200_RESPONSE' && err.headers.get('x-exit') === 'notAuthenticated') {
               self.props.navigator.replace({ id: 'login' });
             }
             else {
@@ -463,6 +458,7 @@ class HomePage extends Component {
             return;
           }//-•
 
+
           var data = resInfo.data;
           self.setState({
             dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere),
@@ -470,6 +466,7 @@ class HomePage extends Component {
             pendingRemark: data.myRemark,
             remark: data.myRemark
           });
+        });//</ sendRequest >
 
 
           // if(res.status >= 300 || res.status < 200) {
@@ -486,7 +483,6 @@ class HomePage extends Component {
           //   console.error(err);
           //   // alert(err);
           // });
-        });//</ sendRequest >
 
         // })//</then>
         // .catch(function(err){
