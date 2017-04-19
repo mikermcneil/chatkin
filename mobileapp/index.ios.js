@@ -402,6 +402,7 @@ class HomePage extends Component {
         userData[key] = value;
       });
       self.setState(userData);
+      self.setState({pendingRemark: userData.remark});
 
       // Get our position.
       navigator.geolocation.getCurrentPosition(function(position) {
@@ -464,7 +465,8 @@ class HomePage extends Component {
     if(self.state.editingRemark) {
       return (
         <TextInput
-          style={STYLES.textInput}
+          style={ STYLES.textInput }
+          value={ this.state.pendingRemark }
           placeholder="Update your message!"
           onChangeText={
             (text) => {
