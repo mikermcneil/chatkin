@@ -3,8 +3,7 @@
  */
 
 var _ = require('@sailshq/lodash');
-var doStuff = require('./utils/do-stuff');
-var CHATKIN_URL   = 'http://localhost:1337';
+var sendRequest = require('./utils/send-request');
 
 
 
@@ -16,7 +15,7 @@ var CHATKIN_URL   = 'http://localhost:1337';
   alert = window.alert = function (){
     if (arguments.length > 1) { throw new Error('alert() only takes one argument!'); }
     _originalAlert.apply(this, Array.prototype.slice.call(arguments));
-  }
+  };
 
 
   // FUTURE: maybe do this too:
@@ -814,5 +813,3 @@ const STYLES = StyleSheet.create({
 
 AppRegistry.registerComponent('mobileapp', () => mobileapp);
 
-
-// alert(doStuff());
