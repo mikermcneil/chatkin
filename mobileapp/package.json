@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@sailshq/lodash": "^3.10.2",
+    "flaverr": "^1.1.1",
     "react": "16.0.0-alpha.6",
     "react-native": "0.43.2",
     "react-native-drawer": "^2.3.0"
