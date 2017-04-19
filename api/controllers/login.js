@@ -17,6 +17,10 @@ module.exports = {
     notFound: {
       statusCode: 404,
       description: 'The provided username and password combination doesn\'t match any known user.'
+    },
+    success: {
+      outputFriendlyName: 'Profile data',
+      outputDescription: 'A dictionary of data about the logged-in user.'
     }
   },
 
