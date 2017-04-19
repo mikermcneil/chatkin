@@ -420,7 +420,7 @@ class HomePage extends Component {
           longitude: position.coords.longitude
         });
 
-        fetch(CHATKIN_URL + '/arrive', {
+        fetch(CHATKIN_URL+'/arrive', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -511,7 +511,7 @@ class HomePage extends Component {
   updateRemark = function() {
     var self = this;
 
-    fetch(CHATKIN_URL + '/user/' + self.state.username + '/remark', {
+    fetch(CHATKIN_URL+'/make-remark', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
