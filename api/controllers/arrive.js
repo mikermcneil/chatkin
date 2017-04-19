@@ -124,8 +124,11 @@ module.exports = {
 
             (function cacheWeatherMaybe(proceed){
 
-              zone.cachedWeather = { weather: [{}], main: {} };// TODO: remove, this is a hack
-              return proceed();// TODO: remove, this is a hack
+              if (!sails.config.custom.openWeatherApiKey) {
+                sails.log.verbose('Using fake weather data...\n(To resolve, finish setting up relevant custom config.)');
+                zone.cachedWeather = { weather: [{}], main: {} };
+                return proceed();
+              }
 
               try {
                 // Use cached weather, if possible -- as long as it's not too old.
@@ -216,8 +219,11 @@ module.exports = {
               // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
               (function cacheTweetsMaybe(proceed){
 
-                zone.cachedTweets = [];// TODO: remove, this is a hack
-                return proceed();// TODO: remove, this is a hack
+                if (!sails.config.custom.twitterConsumerKey || !sails.config.custom.twitterConsumerSecret) {
+                  sails.log.verbose('Using fake Twitter data...\n(To resolve, finish setting up relevant custom config.)');
+                  zone.cachedTweets = [];
+                  return proceed();
+                }
 
                 try {
 
