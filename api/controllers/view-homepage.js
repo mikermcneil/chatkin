@@ -19,6 +19,7 @@ module.exports = {
       description: 'Requesting user was not authenticated.',
       extendedDescription: 'You must be logged in to be allowed to view a zone page.'
     }
+
   },
 
 

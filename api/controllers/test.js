@@ -11,7 +11,7 @@ module.exports = {
 
 
   exits: {
-    success: { description: 'It worked.', outputFriendlyName: 'Zone info' },
+    success: { outputFriendlyName: 'Zone info', outputDescription: 'A dictionary of info about the zone' },
   },
 
 

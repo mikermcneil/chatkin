@@ -14,12 +14,14 @@ module.exports = {
 
 
   exits: {
-    notAuthenticated: { statusCode: 401, description: 'Must be logged in.' },
+
     success: {
-      description: 'It worked.',
       outputFriendlyName: 'Zone info',
       outputDescription: 'A dictionary of metadata about the zone this user has just wandered into.'
     },
+
+    notAuthenticated: { statusCode: 401, description: 'Must be logged in.' },
+
   },
 
 
@@ -122,6 +124,9 @@ module.exports = {
 
             (function cacheWeatherMaybe(proceed){
 
+              zone.cachedWeather = { weather: [{}], main: {} };// TODO: remove, this is a hack
+              return proceed();// TODO: remove, this is a hack
+
               try {
                 // Use cached weather, if possible -- as long as it's not too old.
                 var rightNow = Date.now();
@@ -210,6 +215,9 @@ module.exports = {
               // use `async.auto` to fetch the weather and search tweets simultaneously.
               // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
               (function cacheTweetsMaybe(proceed){
+
+                zone.cachedTweets = [];// TODO: remove, this is a hack
+                return proceed();// TODO: remove, this is a hack
 
                 try {
 
