@@ -3,7 +3,7 @@
  */
 
 var _ = require('@sailshq/lodash');
-var flaverr = require('flaverr');
+var flaverr = require('./flaverr');
 
 
 /**
