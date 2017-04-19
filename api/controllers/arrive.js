@@ -383,6 +383,7 @@ module.exports = {
                       zoneCenterLatitudeDeg: zoneCenterLatitudeDeg,
                       zoneCenterLongitudeDeg: zoneCenterLongitudeDeg,
                       weather: weatherData,
+                      myRemark: thisUser.remark
                     });
 
                   }, exits.error);//</ User.find().exec() >

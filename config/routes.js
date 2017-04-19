@@ -18,6 +18,11 @@ module.exports.routes = {
   'PUT /signup': { action: 'signup' },
   'PUT /logout': { action: 'logout' },
   'PUT /user/:username/zone': { action: 'arrive' },
+  // Since the 'arrive' action doesn't actually need a username anymore,
+  // we can use it without including that parameter.
+  // (TODO: probably don't duplicate it like this, but I don't want to break the web app
+  // right now so am leaving both.)
+  'PUT /arrive': { action: 'arrive' },
   'PUT /user/:username/remark': { action: 'make-remark' },
   'GET /test': { action: 'test' },
 };

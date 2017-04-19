@@ -390,19 +390,29 @@ class HomePage extends Component {
         return;
       }
 
-      // Fetch the data for our logged-in user.
-      fetch(CHATKIN_URL + '/me', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': userData.authToken
-        }
-      })
-      .then(function (res) {
-        res.json().then(function(userData) {
+      // Get our position.
+      navigator.geolocation.getCurrentPosition(function(position) {
+        self.setState({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        });
+
+        fetch(CHATKIN_URL + '/arrive', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Auth-Token': userData.authToken
+          },
+          body: JSON.stringify({
+            lat: position.coords.latitude,
+            long: position.coords.longitude
+          })
+        })
+        .then(function (res) {
+
 
           if(res.status >= 300 || res.status < 200) {
-            // If we got a 'notAuthenticated' response, redirect to the login page.
+            // If we got a 403 response, redirect to the login page.
             if(res.headers.get('x-exit') === 'notAuthenticated') {
               self.props.navigator.replace({ id: 'login' });
             }
@@ -411,70 +421,32 @@ class HomePage extends Component {
             }
             return;
           }
-
-          self.setState(userData);
-          self.setState({pendingRemark: userData.remark});
-
-          // Get our position.
-          navigator.geolocation.getCurrentPosition(function(position) {
+          res.json().then(function(data){
+            // TODO: clean this up possibly.
+            // Add the logged-in user data (`me`) to our state info.
+            self.setState(data.me);
+            // Add the pending remark (a working copy of the stored remark),
+            // other users here, and weather info.
             self.setState({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude
+              pendingRemark: data.me.remark
+              dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere),
+              weather: data.weather
             });
+          })
+          .catch(function(err) {
+            console.error(err);
+            // alert(err);
+          });
 
-            fetch(CHATKIN_URL + '/user/' + userData.username + '/zone', {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                'X-Auth-Token': userData.authToken
-              },
-              body: JSON.stringify({
-                lat: position.coords.latitude,
-                long: position.coords.longitude
-              })
-            })
-            .then(function (res) {
-              if(res.status >= 300 || res.status < 200) {
-                // If we got a 'notAuthenticated' response, throw an error --
-                // this should have been caught when we got the logged-in user data.
-                if(res.headers.get('x-exit') === 'notAuthenticated') {
-                  console.error('Consistency violation! Should not have gotten the chance to arrive in a zone, because the user is not logged in!');
-                }
-                else {
-                  console.error(res)
-                }
-                return;
-              }
-              res.json().then(function(data){
-                self.setState({
-                  dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere),
-                  weather: data.weather
-                });
-              })
-              .catch(function(err) {
-                console.error(err);
-                // alert(err);
-              });
-
-            })//</then>
-            .catch(function(err){
-              console.error(err);
-              // alert(err);
-            });
-
-          });//</get position>
-        })//</parse user data>
-        .catch(function(err) {
+        })//</then>
+        .catch(function(err){
           console.error(err);
-        });//</parse user data .catch()>
-      })// </fetch user data .then()>
-      .catch(function(err){
-        console.error(err);
-      });// </fetch user data .catch()>
+          // alert(err);
+        });
 
+      });//</get position>
 
-
-    });//</ AsyncStorage.getItem() >
+    });//</ AsyncStorage.multiGet() >
 
   }
 
