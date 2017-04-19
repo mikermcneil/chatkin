@@ -418,19 +418,6 @@ class HomePage extends Component {
           longitude: position.coords.longitude
         });
 
-        // fetch('http://localhost:1337'+'/arrive', {
-        //   method: 'PUT',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //     'X-Auth-Token': userData.authToken
-        //   },
-        //   body: JSON.stringify({
-        //     lat: position.coords.latitude,
-        //     long: position.coords.longitude
-        //   })
-        // })
-        // .then(function (res) {
-
         sendRequest({
           method: 'PUT',
           url: '/arrive',
@@ -440,18 +427,17 @@ class HomePage extends Component {
             long: position.coords.longitude
           }
         }, function (err, resInfo) {
-
-          // console.warn('got response. error:',err,'\nresInfo:',resInfo);
-          // console.warn('typeof err',typeof err);
-          // console.warn('err instanceof Error',err instanceof Error);
-          // console.warn('err.stack',err.stack);
-
           if (err) {
-
             // If the user is not authenticated, redirect to the login page.
             if (err.code === 'E_NON_200_RESPONSE' && err.headers.get('x-exit') === 'notAuthenticated') {
               self.props.navigator.replace({ id: 'login' });
             }
+            // If online, show a custom state in the user interface.
+            else if (err.code === 'E_OFFLINE') {
+              // TODO: offline state (for now just log warning)
+              console.warn(err);
+            }
+            // Some other unexpected error (i.e. prbly bug)
             else {
               console.error(err);
             }
@@ -467,28 +453,6 @@ class HomePage extends Component {
             remark: data.myRemark
           });
         });//</ sendRequest >
-
-
-          // if(res.status >= 300 || res.status < 200) {
-          //   if(res.headers.get('x-exit') === 'notAuthenticated') {
-          //   }
-          //   else {
-          //     console.error(res)
-          //   }
-          //   return;
-          // }
-          // res.json().then(function(data){
-          // })
-          // .catch(function(err) {
-          //   console.error(err);
-          //   // alert(err);
-          // });
-
-        // })//</then>
-        // .catch(function(err){
-        //   console.error(err);
-        //   // alert(err);
-        // });
 
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

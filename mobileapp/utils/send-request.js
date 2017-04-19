@@ -164,8 +164,22 @@ module.exports = function sendRequest(options, done){
 
   })//</then>
   .catch(function(err){
+
+    // Negotiate network / "request failed" error:
+    var isRequestFailedError = (err.name === 'TypeError');
+    // ```
+    // > "A fetch() promise rejects with a TypeError when a network error is encountered"
+    // > (https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch)
+    // ```
+
     try {
-      return done(err);
+      if (!isRequestFailedError) { return done(err); }
+      else {
+        return done(flaverr({code: 'E_OFFLINE'}, new Error(
+          'Cannot communicate with server.  Are you sure you\'re connected to the internet?  '+
+          'If you\'re sure you are, then there is probably a proxy issue, or our server is down.'
+        )));
+      }
     } catch (e) {
       console.warn('Unhandled error was thrown in an asynchronous callback! (see error log)');
       console.error(e);
