@@ -16,7 +16,7 @@ var DEFAULT_API_SERVER_BASE_URL = 'http://localhost:1337';
 
 
 /**
- * sendRequest()
+ * sendHttpRequest()
  *
  * @required {String} url
  * @required {String} method
@@ -33,7 +33,7 @@ var DEFAULT_API_SERVER_BASE_URL = 'http://localhost:1337';
  *                  @property {Dictionary} headers
  */
 
-module.exports = function sendRequest(options, done){
+module.exports = function sendHttpRequest(options, done){
 
   if (_.isUndefined(options)) {
     options = {};

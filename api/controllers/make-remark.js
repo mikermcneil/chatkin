@@ -8,7 +8,6 @@ module.exports = {
 
 
   inputs: {
-    username: { type: 'string', required: true },
     remark: { type: 'string', required: true },
   },
 
@@ -31,7 +30,7 @@ module.exports = {
       success: function(loggedInUserId) {
 
         User.update()
-        .where({ username: inputs.username })
+        .where({ id: loggedInUserId })
         .set({ remark: inputs.remark })
         .meta({ fetch: true })
         .exec(function (err, users) {
@@ -45,7 +44,7 @@ module.exports = {
             // Publish this user's new remark to his or her zone.
             Zone.publish([thisUser.currentZone], {
               verb: 'userRemarked',
-              username: inputs.username,
+              username: thisUser.username,
               remark: thisUser.remark,
               avatarColor: thisUser.avatarColor
             }, req);

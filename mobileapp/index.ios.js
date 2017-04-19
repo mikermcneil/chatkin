@@ -4,6 +4,40 @@
 
 var _ = require('@sailshq/lodash');
 var sendHttpRequest = require('./utils/send-http-request');
+var sendSocketRequest = require('./utils/send-socket-request');
+
+
+// ============================================================================================
+// For sockets to work:
+// ============================================================================================
+// Instead of:
+// - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// import SocketIOClient from 'socket.io-client';
+// - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// ...
+// ...we have to do:
+// - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// You need to set `window.navigator` to something in order to use the socket.io
+// client. You have to do it like this in order to use the debugger because the
+// debugger in React Native runs in a webworker and only has a getter method for
+// `window.navigator`.
+window.navigator.userAgent = 'ReactNative';
+
+// Need to require instead of import so we can set the user agent first
+// This must be below your `window.navigator` hack above
+var SocketIOClient = require('socket.io-client');
+var SailsIOClient = require('sails.io.js');
+// - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// Instantiate the socket client (`io`)
+// (for now, you must explicitly pass in the socket.io client when using this library from Node.js)
+io = window.io = SailsIOClient(SocketIOClient);
+
+// Set some options:
+// (you have to specify the host and port of the Sails backend when using this library from Node.js)
+io.sails.url = 'http://localhost:1337';
+io.sails.query = 'nosession=true';
+// ============================================================================================
 
 
 
@@ -418,7 +452,7 @@ class HomePage extends Component {
           longitude: position.coords.longitude
         });
 
-        sendHttpRequest({
+        sendSocketRequest({
           method: 'PUT',
           url: '/arrive',
           headers: { 'X-Auth-Token': userData.authToken },
@@ -443,7 +477,6 @@ class HomePage extends Component {
             }
             return;
           }//-•
-
 
           var data = resInfo.data;
           self.setState({
@@ -485,6 +518,111 @@ class HomePage extends Component {
 
     });//</ AsyncStorage.multiGet() >
 
+  }
+
+
+  componentDidMount() {
+
+    var self = this;
+
+    // Every time a "zone" socket event from the server arrives...
+    io.socket.on('zone', function(msg){
+      // console.warn('* * Received zone notification from server with message:', msg);
+
+      // If this notification is about a user leaving the zone, remove the user
+      // from the user interface.
+      if (msg.verb === 'userLeft') {
+        // TODO
+
+        // // If this notification is about the currently logged-in user,
+        // // just ignore it.
+        // // (This can happen if a user has multiple tabs open.)
+        // if(msg.username === self.state.username) { return; }
+
+        // console.log('there are '+vm.zone.otherUsersHere.length+'other users here.');
+        // console.log(msg.username+' left.');
+
+
+        // // Remove the user from the list of other users in the zone.
+        // vm.removeUserFromZone(msg.username);
+        // console.log('NOW there are '+vm.zone.otherUsersHere.length+'other users here.');
+      }
+      // If it's about a new user joining the zone, add that user
+      // to the UI.
+      else if (msg.verb === 'userArrived') {
+        // TODO
+
+        // // If this notification is about the currently logged-in user,
+        // // just ignore it.
+        // // (This can happen if a user has multiple tabs open.)
+        // if(msg.username === self.state.username) { return; }
+        // // Also, if this notification is about a user who is already here,
+        // // ignore it.
+        // // (Also can happen if a user has multiple tabs open.)
+        // var userInZone = _.find(vm.zone.otherUsersHere, {username: msg.username});
+        // if(!_.isUndefined(userInZone)) { return; }
+
+        // // Add the newly-arrived user to our list of `otherUsersHere`.
+        // vm.zone.otherUsersHere.unshift({
+        //   username: msg.username,
+        //   avatarColor: msg.avatarColor,
+        //   remark: msg.remark,
+        //   updatedAt: Date.now(),
+        //   updatedAtTimeAgo: moment(Date.now()).fromNow(),
+        // });
+      }
+      // If this is about a user in this zone updating their remark,
+      // update the remark in the UI.
+      else if(msg.verb === 'userRemarked') {
+        // If this notification is about the currently logged-in user,
+        // just ignore it.
+        // (This can happen if a user has multiple tabs open.)
+        if(msg.username === self.state.username) { return; }
+
+        console.warn('@'+msg.username+':', msg.remark);
+
+        // // Find the user in the `otherUsersHere` list.
+        // var userInZone = _.find(vm.zone.otherUsersHere, {username: msg.username});
+
+        // // FOR NOW:
+        // // If the user isn't in our list, assume they arrived before us
+        // // and add them.
+        // if(_.isUndefined(userInZone)) {
+        //   vm.zone.otherUsersHere.unshift({
+        //     username: msg.username,
+        //     avatarColor: msg.avatarColor,
+        //     remark: msg.remark,
+        //     updatedAt: Date.now(),
+        //     updatedAtTimeAgo: moment(Date.now()).fromNow(),
+        //   });
+        // }
+        // // Otherwise, update the existing user's remark and 'time ago'.
+        // else {
+        //   // Make a shallow copy of the user data.
+        //   var userData = _.clone(userInZone);
+        //   // Remove the user data from our list of other users
+        //   _.remove(vm.zone.otherUsersHere, {username: msg.username});
+        //   // Update the copy's data
+        //   userData.remark = msg.remark;
+        //   userData.updatedAt = Date.now();
+        //   userData.updatedAtTimeAgo = moment(Date.now()).fromNow();
+        //   // Add it to the top of the list so the remark shows up first.
+        //   vm.zone.otherUsersHere.unshift(userData);
+        // }
+
+        // // FUTURE:
+        // // if(!_.isUndefined(userInZone)) { throw new Error('Consistency violation: received a `userRemarked` notification for a user who is not in this zone.');}
+        // // // Update the user's remark.
+        // // userInZone.remark = msg.remark;
+      }
+      // Otherwise, we don't know wtf it is.
+      else { throw new Error('Consistency violation: Unrecognized message received in "zone" socket event handler: '+JSON.stringify(msg)); }
+    });//</ .on('zone') >
+  }
+
+  componentWillUnmount() {
+    // console.warn('componentWillUnmount LC fired for home screen')
+    io.socket.off('zone');
   }
 
 
