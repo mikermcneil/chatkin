@@ -40,19 +40,13 @@ module.exports = {
     }//-•
 
     // Otherwise, we'll check on the provided auth token.
-    User.find({ authToken: authToken })
-    .exec(function(err, matchingUsers){
+    AuthToken.findOne({ value: authToken })
+    .exec(function(err, matchingToken){
       if (err) { return exits.error(err); }
-      if (matchingUsers.length > 1) { return exits.error(new Error('Consistency violation: The database is corrupted!  No two user records should ever share the same `authToken`-- but at least 2 users have `authToken: '+authToken+'`')); }
-      if (matchingUsers.length === 0) { return exits.notAuthenticated(); }
+      if (!matchingToken) { return exits.notAuthenticated(); }
 
-      return exits.success(matchingUsers[0].id);
+      return exits.success(matchingToken.forUser);
     });
-
-    // AuthToken.findOne({ value: authToken })
-    // .exec(function(err, matchingAuthToken) {
-    //     if (err) { return exits.error(err); }
-    // })
 
   }
 

@@ -400,8 +400,6 @@ class HomePage extends Component {
         userData[key] = value;
       });
       self.setState(userData);
-      // alert(JSON.stringify(userData));
-      // alert('token: '+userData.authToken);
 
       // Get our position.
       navigator.geolocation.getCurrentPosition(function(position) {
@@ -410,11 +408,6 @@ class HomePage extends Component {
           longitude: position.coords.longitude
         });
 
-
-        console.warn('request body', JSON.stringify({
-          lat: position.coords.latitude,
-          long: position.coords.longitude
-        }));
         fetch(REQUEST_URL + '/user/' + userData.username + '/zone', {
           method: 'PUT',
           headers: {
@@ -432,9 +425,7 @@ class HomePage extends Component {
           if(res.status >= 300 || res.status < 200) {
             // If we got a 403 response, redirect to the login page.
             if(res.headers.get('x-exit') === 'notAuthenticated') {
-              console.warn('You are not logged in!');
-              console.warn(JSON.stringify(res));
-              // self.props.navigator.replace({ id: 'login' });
+              self.props.navigator.replace({ id: 'login' });
             }
             else {
               console.error(res)
@@ -442,7 +433,6 @@ class HomePage extends Component {
             return;
           }
           res.json().then(function(data){
-            // alert(JSON.stringify(data.otherUsersHere));
             self.setState({
               dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere),
               weather: data.weather
@@ -501,14 +491,14 @@ class HomePage extends Component {
     });
   };
 
-  closePanel = function() {
+  closePanel = () => {
     this._drawer.close()
   };
-  openWeatherPanel = function() {
+  openWeatherPanel = () => {
     this.setState({drawerContent: 'weather'})
     this._drawer.open();
   };
-  openLocationPanel = function() {
+  openLocationPanel = () => {
     this.setState({drawerContent: 'location'})
     this._drawer.open();
   };
