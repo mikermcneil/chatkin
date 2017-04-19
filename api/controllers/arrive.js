@@ -119,7 +119,7 @@ module.exports = {
             // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             // Note: The kind of caching logic below (for weather and tweets) could be extrapolated
             // into a generic "fetchAndCache" helper.  For an example of that, check out this commit:
-            // https://github.com/mikermcneil/inabottle/commit/9a38001583d00d8b50fb8938d8f5cbcf7b63da99
+            // https://github.com/mikermcneil/chatkin/commit/9a38001583d00d8b50fb8938d8f5cbcf7b63da99
             // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
             (function cacheWeatherMaybe(proceed){
