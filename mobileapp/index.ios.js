@@ -150,7 +150,12 @@ class LoginPage extends Component {
         return;
       }
       res.json().then(function(data){
-        AsyncStorage.setItem('authToken', res.headers.get('X-Set-Auth-Token'), function() {
+        AsyncStorage.multiSet([
+          ['username', data.username],
+          ['avatarColor', data.avatarColor],
+          ['authToken', res.headers.get('X-Set-Auth-Token')],
+        ], function() {
+          // alert(res.headers.get('X-Set-Auth-Token'));
           self.props.navigator.replace({ id: 'home' });
         });
       })
@@ -377,18 +382,36 @@ class HomePage extends Component {
     };
 
     // TODO: loading state
-    AsyncStorage.getItem('authToken', function(err, storedToken) {
+    AsyncStorage.multiGet(['username', 'avatarColor', 'authToken'], function(err, stores) {
       if(err) {
         console.error('AsyncStorage error: ' + error.message);
         return;
       }
 
-      // If we don't have an authToken already stored,
+      // NOTE:
+      // `stores` is either `null`, or a 2-dimensional array like:
+      // [ ['username','billy'], ['remark', 'hey guys'], .... ]
+
+      // If we don't have any of this stuff already stored,
       // redirect to the login screen.
-      if (_.isNull(storedToken)){
+      if (_.isNull(stores)){
         self.props.navigator.replace({ id: 'login' });
         return;
       }
+
+      // Otherwise we've already got this user's data stored so we can proceed
+      // with slapping it on the page.
+
+      // Make our data into a nice, readable dictionary.
+      var userData = {};
+      _.each(stores, function(store) {
+        // The items returned from .multiGet() are ALSO arrays that look like:
+        // [key, value]
+        var key = store[0];
+        var value = store[1];
+        userData[key] = value;
+      });
+      self.setState(userData);
 
       // Get our position.
       navigator.geolocation.getCurrentPosition(function(position) {
@@ -422,15 +445,11 @@ class HomePage extends Component {
             return;
           }
           res.json().then(function(data){
-            // TODO: clean this up possibly.
-            // Add the logged-in user data (`me`) to our state info.
-            self.setState(data.me);
-            // Add the pending remark (a working copy of the stored remark),
-            // other users here, and weather info.
             self.setState({
-              pendingRemark: data.me.remark
               dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere),
-              weather: data.weather
+              weather: data.weather,
+              pendingRemark: data.myRemark,
+              remark: data.myRemark
             });
           })
           .catch(function(err) {
@@ -504,7 +523,6 @@ class HomePage extends Component {
       })
     })
     .then(function (res) {
-      alert(JSON.stringify(res));
       if(res.status >= 300 || res.status < 200) {
         console.error(res)
         return;
