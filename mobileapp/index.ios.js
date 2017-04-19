@@ -150,13 +150,7 @@ class LoginPage extends Component {
         return;
       }
       res.json().then(function(data){
-        AsyncStorage.multiSet([
-          ['username', data.username],
-          ['avatarColor', data.avatarColor],
-          ['remark', data.remark],
-          ['authToken', res.headers.get('X-Set-Auth-Token')],
-        ], function() {
-          // alert(res.headers.get('X-Set-Auth-Token'));
+        AsyncStorage.setItem('authToken', res.headers.get('X-Set-Auth-Token'), function() {
           self.props.navigator.replace({ id: 'home' });
         });
       })
@@ -383,61 +377,32 @@ class HomePage extends Component {
     };
 
     // TODO: loading state
-    AsyncStorage.multiGet(['username', 'remark', 'avatarColor', 'authToken'], function(err, stores) {
+    AsyncStorage.getItem('authToken', function(err, storedToken) {
       if(err) {
         console.error('AsyncStorage error: ' + error.message);
         return;
       }
 
-      // NOTE:
-      // `stores` is either `null`, or a 2-dimensional array like:
-      // [ ['username','billy'], ['remark', 'hey guys'], .... ]
-
-      // If we don't have any of this stuff already stored,
+      // If we don't have an authToken already stored,
       // redirect to the login screen.
-      if (_.isNull(stores)){
+      if (_.isNull(storedToken)){
         self.props.navigator.replace({ id: 'login' });
         return;
       }
 
-      // Otherwise we've already got this user's data stored so we can proceed
-      // with slapping it on the page.
-
-      // Make our data into a nice, readable dictionary.
-      var userData = {};
-      _.each(stores, function(store) {
-        // The items returned from .multiGet() are ALSO arrays that look like:
-        // [key, value]
-        var key = store[0];
-        var value = store[1];
-        userData[key] = value;
-      });
-      self.setState(userData);
-      self.setState({pendingRemark: userData.remark});
-
-      // Get our position.
-      navigator.geolocation.getCurrentPosition(function(position) {
-        self.setState({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude
-        });
-
-        fetch(CHATKIN_URL + '/user/' + userData.username + '/zone', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Auth-Token': userData.authToken
-          },
-          body: JSON.stringify({
-            lat: position.coords.latitude,
-            long: position.coords.longitude
-          })
-        })
-        .then(function (res) {
-
+      // Fetch the data for our logged-in user.
+      fetch(CHATKIN_URL + '/me', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': userData.authToken
+        }
+      })
+      .then(function (res) {
+        res.json().then(function(userData) {
 
           if(res.status >= 300 || res.status < 200) {
-            // If we got a 403 response, redirect to the login page.
+            // If we got a 'notAuthenticated' response, redirect to the login page.
             if(res.headers.get('x-exit') === 'notAuthenticated') {
               self.props.navigator.replace({ id: 'login' });
             }
@@ -446,26 +411,70 @@ class HomePage extends Component {
             }
             return;
           }
-          res.json().then(function(data){
+
+          self.setState(userData);
+          self.setState({pendingRemark: userData.remark});
+
+          // Get our position.
+          navigator.geolocation.getCurrentPosition(function(position) {
             self.setState({
-              dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere),
-              weather: data.weather
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude
             });
-          })
-          .catch(function(err) {
-            console.error(err);
-            // alert(err);
-          });
 
-        })//</then>
-        .catch(function(err){
+            fetch(CHATKIN_URL + '/user/' + userData.username + '/zone', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-Auth-Token': userData.authToken
+              },
+              body: JSON.stringify({
+                lat: position.coords.latitude,
+                long: position.coords.longitude
+              })
+            })
+            .then(function (res) {
+              if(res.status >= 300 || res.status < 200) {
+                // If we got a 'notAuthenticated' response, throw an error --
+                // this should have been caught when we got the logged-in user data.
+                if(res.headers.get('x-exit') === 'notAuthenticated') {
+                  console.error('Consistency violation! Should not have gotten the chance to arrive in a zone, because the user is not logged in!');
+                }
+                else {
+                  console.error(res)
+                }
+                return;
+              }
+              res.json().then(function(data){
+                self.setState({
+                  dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere),
+                  weather: data.weather
+                });
+              })
+              .catch(function(err) {
+                console.error(err);
+                // alert(err);
+              });
+
+            })//</then>
+            .catch(function(err){
+              console.error(err);
+              // alert(err);
+            });
+
+          });//</get position>
+        })//</parse user data>
+        .catch(function(err) {
           console.error(err);
-          // alert(err);
-        });
+        });//</parse user data .catch()>
+      })// </fetch user data .then()>
+      .catch(function(err){
+        console.error(err);
+      });// </fetch user data .catch()>
 
-      });//</get position>
 
-    });//</ AsyncStorage.multiGet() >
+
+    });//</ AsyncStorage.getItem() >
 
   }
 
@@ -523,6 +532,7 @@ class HomePage extends Component {
       })
     })
     .then(function (res) {
+      alert(JSON.stringify(res));
       if(res.status >= 300 || res.status < 200) {
         console.error(res)
         return;
