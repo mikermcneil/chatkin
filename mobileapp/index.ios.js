@@ -405,7 +405,9 @@ class HomePage extends Component {
 
     // Set initial state
     self.state = {
+      ds: ds,
       dsOtherUsersHere: ds.cloneWithRows([]),
+      otherUsersHere: [],
       latitude: 0,
       longitude: 0,
       username: '',
@@ -485,6 +487,7 @@ class HomePage extends Component {
           var data = resInfo.data;
           self.setState({
             dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere),
+            otherUsersHere: _.clone(data.otherUsersHere),
             weather: data.weather,
             pendingRemark: data.myRemark,
             remark: data.myRemark
@@ -507,7 +510,7 @@ class HomePage extends Component {
         //   },
         //   success: function (data){
         //     self.setState({
-        //       dsOtherUsersHere: ds.cloneWithRows(data.otherUsersHere),
+        //       otherUsersHere: ds.cloneWithRows(data.otherUsersHere),
         //       weather: data.weather,
         //       pendingRemark: data.myRemark,
         //       remark: data.myRemark
@@ -556,24 +559,21 @@ class HomePage extends Component {
       else if (msg.verb === 'userArrived') {
         // TODO
 
-        // // If this notification is about the currently logged-in user,
-        // // just ignore it.
-        // // (This can happen if a user has multiple tabs open.)
-        // if(msg.username === self.state.username) { return; }
-        // // Also, if this notification is about a user who is already here,
-        // // ignore it.
-        // // (Also can happen if a user has multiple tabs open.)
-        // var userInZone = _.find(vm.zone.otherUsersHere, {username: msg.username});
-        // if(!_.isUndefined(userInZone)) { return; }
+        // If this notification is about the currently logged-in user,
+        // just ignore it.
+        if(msg.username === self.state.username) { return; }
+        // Also, if this notification is about a user who is already here,
+        // ignore it.
+        var userInZone = _.find(self.state.otherUsersHere, {username: msg.username});
+        // alert('USER ARRIVED:'+JSON.stringify(userInZone));
+        if(!_.isUndefined(userInZone)) { return; }
 
-        // // Add the newly-arrived user to our list of `otherUsersHere`.
-        // vm.zone.otherUsersHere.unshift({
-        //   username: msg.username,
-        //   avatarColor: msg.avatarColor,
-        //   remark: msg.remark,
-        //   updatedAt: Date.now(),
-        //   updatedAtTimeAgo: moment(Date.now()).fromNow(),
-        // });
+        // Add the newly-arrived user to our list of `otherUsersHere`.
+        data = [msg].concat(self.state.otherUsersHere)
+        self.setState({
+          dsOtherUsersHere: self.state.ds.cloneWithRows(data),
+          otherUsersHere: data
+        });
       }
       // If this is about a user in this zone updating their remark,
       // update the remark in the UI.
@@ -583,41 +583,20 @@ class HomePage extends Component {
         // (This can happen if a user has multiple tabs open.)
         if(msg.username === self.state.username) { return; }
 
-        console.warn('@'+msg.username+':', msg.remark);
+        // Make a shallow copy of the user data.
+        var userDataCopy = _.clone(self.state.otherUsersHere);
+        // Find the user in the copied list and update the remark.
+        var userInZone = _.clone(_.find(userDataCopy, {username: msg.username}));
+        userInZone.remark = msg.remark;
 
-        // // Find the user in the `otherUsersHere` list.
-        // var userInZone = _.find(vm.zone.otherUsersHere, {username: msg.username});
+        _.remove(userDataCopy, {username: msg.username});
+        userDataCopy.unshift(userInZone);
 
-        // // FOR NOW:
-        // // If the user isn't in our list, assume they arrived before us
-        // // and add them.
-        // if(_.isUndefined(userInZone)) {
-        //   vm.zone.otherUsersHere.unshift({
-        //     username: msg.username,
-        //     avatarColor: msg.avatarColor,
-        //     remark: msg.remark,
-        //     updatedAt: Date.now(),
-        //     updatedAtTimeAgo: moment(Date.now()).fromNow(),
-        //   });
-        // }
-        // // Otherwise, update the existing user's remark and 'time ago'.
-        // else {
-        //   // Make a shallow copy of the user data.
-        //   var userData = _.clone(userInZone);
-        //   // Remove the user data from our list of other users
-        //   _.remove(vm.zone.otherUsersHere, {username: msg.username});
-        //   // Update the copy's data
-        //   userData.remark = msg.remark;
-        //   userData.updatedAt = Date.now();
-        //   userData.updatedAtTimeAgo = moment(Date.now()).fromNow();
-        //   // Add it to the top of the list so the remark shows up first.
-        //   vm.zone.otherUsersHere.unshift(userData);
-        // }
-
-        // // FUTURE:
-        // // if(!_.isUndefined(userInZone)) { throw new Error('Consistency violation: received a `userRemarked` notification for a user who is not in this zone.');}
-        // // // Update the user's remark.
-        // // userInZone.remark = msg.remark;
+        // Update the listview data source + readable data
+        self.setState({
+          dsOtherUsersHere: self.state.ds.cloneWithRows(userDataCopy),
+          otherUsersHere: userDataCopy
+        });
       }
       // Otherwise, we don't know wtf it is.
       else { throw new Error('Consistency violation: Unrecognized message received in "zone" socket event handler: '+JSON.stringify(msg)); }
