@@ -6,7 +6,6 @@ var _ = require('@sailshq/lodash');
 var sendHttpRequest = require('./utils/send-http-request');
 var sendSocketRequest = require('./utils/send-socket-request');
 
-
 // ============================================================================================
 // For sockets to work:
 // ============================================================================================
@@ -81,6 +80,11 @@ import {
   TouchableHighlight,
   WebView,
 } from 'react-native';
+
+import { createIconSetFromIcoMoon } from 'react-native-vector-icons';
+import icoMoonConfig from './utils/icomoon-config.json';
+const Icon = createIconSetFromIcoMoon(icoMoonConfig);
+
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -728,11 +732,18 @@ class HomePage extends Component {
           style={STYLES.container}
           noScroll={true}>
           <View style={STYLES.topbar}>
-            <Image style={STYLES.topbarBrand}
-              source={require('./images/chatkin-logo.png')}/>
+            <Text style={STYLES.topbarBrand}>chatkin</Text>
             <View style={STYLES.topbarIcons}>
-              <Text onPress={this.openWeatherPanel}>(W)</Text>
-              <Text onPress={this.openLocationPanel}>(L)</Text>
+              <Icon
+                onPress={this.openWeatherPanel}
+                name={this.state.weather.iconClass ? this.state.weather.iconClass : 'weather-03d'}
+                size={22}
+                color={this.state.weather.iconClass ? '#90B63E' : '#fff'} />
+              <Icon
+                onPress={this.openLocationPanel}
+                name="location"
+                size={20}
+                color="#90B63E" />
             </View>
           </View>
           <View style={STYLES.listViewWrapper}>
@@ -758,16 +769,29 @@ class HomePage extends Component {
   };
 
   renderListViewRow = function(rowData) {
-    return(<View>
-      <Text
-        style={[ STYLES.chatHeader, {color: rowData.avatarColor} ]}>
-        { rowData.twitterUsername ? '@'+rowData.twitterUsername : rowData.username }
-      </Text>
-      <Text
-        style={STYLES.chatBody}>
-        { rowData.remark }
-      </Text>
-    </View>
+    return(
+      <View style={{flex: 1, flexDirection: 'row'}}>
+        <View style={{width: 45, paddingTop: 10}}>
+          <Icon
+            name="logo-chatkin"
+            size={30}
+            color={rowData.avatarColor} />
+        </View>
+        <View style={{flex: 1}}>
+          <Text
+            style={[ STYLES.chatHeader, {color: rowData.avatarColor} ]}>
+            <Icon
+              name="social-twitter"
+              size={16}
+              color={rowData.avatarColor} />
+            <Text style={{paddingLeft: 5}}>{ rowData.twitterUsername ? '@'+rowData.twitterUsername : rowData.username }</Text>
+          </Text>
+          <Text
+            style={STYLES.chatBody}>
+            { rowData.remark }
+          </Text>
+        </View>
+      </View>
     );
   };
 
@@ -899,10 +923,10 @@ const STYLES = StyleSheet.create({
     },
 
     topbarBrand: {
-      width: 135,
-      height: 28
-      // flex: 1,
-      // height: 10
+      fontFamily: 'Comfortaa',
+      color: '#90B63E',
+      fontSize: 26,
+      fontWeight: 'bold',
     },
 
     topbarIcons: {

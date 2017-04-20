@@ -374,7 +374,7 @@ module.exports = {
                     // > (We just named our icons the same thing as the OpenWeatherMap
                     // > icons, but prefixed with 'icon-weather-'.
                     // > See https://openweathermap.org/weather-conditions for the list.)
-                    weatherData.iconClass = 'icon-weather-'+zone.cachedWeather.weather[0].icon;
+                    weatherData.iconClass = 'weather-'+zone.cachedWeather.weather[0].icon;
 
                     return exits.success({
                       id: zone.id,
