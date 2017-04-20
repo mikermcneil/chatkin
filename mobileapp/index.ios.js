@@ -759,10 +759,16 @@ class HomePage extends Component {
         <View style={{flex: 1}}>
           <Text
             style={[ STYLES.chatHeader, {color: rowData.avatarColor} ]}>
-            <Icon
-              name="social-twitter"
-              size={16}
-              color={rowData.avatarColor} />
+            {(function(twitterUsername) {
+              if(twitterUsername) {
+                return(
+                  <Icon
+                    name="social-twitter"
+                    size={16}
+                    color={rowData.avatarColor} />
+                );
+              }
+            })(rowData.twitterUsername)}
             <Text style={{paddingLeft: 5}}>{ rowData.twitterUsername ? '@'+rowData.twitterUsername : rowData.username }</Text>
           </Text>
           <Text
