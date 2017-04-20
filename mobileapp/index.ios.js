@@ -63,7 +63,6 @@ io.sails.query = 'nosession=true';
 
 
 import React, { Component } from 'react';
-import Drawer from 'react-native-drawer';
 import {
   AppRegistry,
   StyleSheet,
@@ -81,9 +80,13 @@ import {
   WebView,
 } from 'react-native';
 
+import Drawer from 'react-native-drawer';
+import MapView from 'react-native-maps';
+
 import { createIconSetFromIcoMoon } from 'react-native-vector-icons';
 import icoMoonConfig from './utils/icomoon-config.json';
 const Icon = createIconSetFromIcoMoon(icoMoonConfig);
+
 
 
 
@@ -806,6 +809,19 @@ class LocationPanel extends Component {
     return(
       <View style={STYLES.panelWrapper}>
         <Text style={STYLES.panelHeader}>Location Info</Text>
+        <View style={{flex: 1}}>
+          <View style={STYLES.mapWrapper}>
+            <MapView
+              style={STYLES.map}
+              initialRegion={{
+                latitude: 37.78825,
+                longitude: -122.4324,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }}
+            />
+          </View>
+        </View>
       </View>
     );
   }
@@ -819,6 +835,15 @@ class LocationPanel extends Component {
 //  ╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚══════╝╚══════╝
 //
 const STYLES = StyleSheet.create({
+
+    mapWrapper: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: '#fff',
+    },
+
+    map: {
+      ...StyleSheet.absoluteFillObject,
+    },
 
     loginWrapper: {
       flex: 1,
