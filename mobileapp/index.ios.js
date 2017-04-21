@@ -81,7 +81,7 @@ import {
 } from 'react-native';
 
 import Drawer from 'react-native-drawer';
-import MapView from 'react-native-maps';
+var MapView = require('react-native-maps');
 
 import { createIconSetFromIcoMoon } from 'react-native-vector-icons';
 import icoMoonConfig from './utils/icomoon-config.json';
@@ -165,7 +165,6 @@ class LoginPage extends Component {
     var username = self.state.username;
     var password = self.state.password;
     // Talk to the server.
-    // fetch('http://192.168.1.19:1337/test', {
     fetch('http://localhost:1337' + '/login', {
       method: 'PUT',
       headers: {
@@ -495,7 +494,7 @@ class HomePage extends Component {
             pendingRemark: data.myRemark,
             remark: data.myRemark
           });
-        });//</ sendHttpRequest() >
+        });//</ sendSocketRequest() >
 
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -693,6 +692,31 @@ class HomePage extends Component {
     this.setState({drawerContent: 'location'})
     this._drawer.open();
   };
+  openSettingsPanel = () => {
+    this.setState({drawerContent: 'settings'})
+    this._drawer.open();
+  };
+
+  // scrollPanelRight = () => {
+  //   switch this.state.drawerContent {
+  //     case 'weather':
+  //       this.setState({drawerContent: 'location'});
+  //       break;
+  //     case 'location':
+  //       this.setState({drawerContent: 'settings'});
+  //       break;
+  //   }
+  // };
+  // scrollPanelLeft = () => {
+  //   switch this.state.drawerContent {
+  //     case 'settings':
+  //       this.setState({drawerContent: 'location'});
+  //       break;
+  //     case 'location':
+  //       this.setState({drawerContent: 'weather'});
+  //       break;
+  //   }
+  // };
 
 
 
@@ -707,7 +731,7 @@ class HomePage extends Component {
         tapToClose={true}
         tweenHandler={Drawer.tweenPresets.parallax}
         content={
-          this.state.drawerContent === 'weather' ? <WeatherPanel weather={this.state.weather}/> : <LocationPanel lat={this.state.latitude} long={this.state.longitude}/>
+          this.state.drawerContent === 'weather' ? <WeatherPanel weather={this.state.weather}/> : this.state.drawerContent === 'location' ? <LocationPanel lat={this.state.latitude} long={this.state.longitude}/> : <SettingsPanel username={this.state.username} avatarColor={this.state.avatarColor} navigator={this.props.navigator}/>
         }>
         <KeyboardAvoidingView
           behavior='padding'
@@ -716,6 +740,11 @@ class HomePage extends Component {
           <View style={STYLES.topbar}>
             <Text style={STYLES.topbarBrand}>chatkin</Text>
             <View style={STYLES.topbarIcons}>
+              <Icon
+                onPress={this.openSettingsPanel}
+                name="gear"
+                size={22}
+                color="#90B63E"/>
               <Icon
                 onPress={this.openWeatherPanel}
                 name={this.state.weather.iconClass ? this.state.weather.iconClass : 'weather-03d'}
@@ -826,6 +855,48 @@ class LocationPanel extends Component {
     );
   }
 }
+
+class SettingsPanel extends Component {
+  constructor(props) {
+    super(props);
+    var self = this;
+    self.state = {
+      username: '',
+      password: ''
+    };
+
+  }
+
+  signOut = () => {
+    var self = this;
+    alert('signing out');
+    AsyncStorage.removeItem('authToken', function() {
+      self.props.navigator.replace({id: 'login'});
+    });
+  };
+
+  render() {
+    return(
+      <View style={STYLES.panelWrapper}>
+        <Text style={{textAlign: 'center'}}>
+          <Icon
+            name="logo-chatkin"
+            size={42}
+            color={this.props.avatarColor} />
+        </Text>
+        <Text style={{textAlign: 'center', marginBottom: 20}}>Logged in as {this.props.username}</Text>
+        <TouchableHighlight onPress={function() {
+            AsyncStorage.removeItem('authToken', function() {
+              this.props.navigator.replace({id: 'login'});
+            });
+          }}>
+          <Text style={{textAlign: 'center'}}>Sign out</Text>
+        </TouchableHighlight>
+      </View>
+    );
+  }
+}
+// <Image source={{ uri: 'http://maps.googleapis.com/maps/api/staticmap?center='+this.props.lat + ',' + this.props.long + '&zoom=7&size=200x200&key=AIzaSyAvbP5k24nkLhiTp2L8ambymkFWCaS2HvI'}}/>
 
 //  ███████╗████████╗██╗   ██╗██╗     ███████╗███████╗
 //  ██╔════╝╚══██╔══╝╚██╗ ██╔╝██║     ██╔════╝██╔════╝
