@@ -81,7 +81,7 @@ import {
 } from 'react-native';
 
 import Drawer from 'react-native-drawer';
-var MapView = require('react-native-maps');
+// var MapView = require('react-native-maps');
 
 import { createIconSetFromIcoMoon } from 'react-native-vector-icons';
 import icoMoonConfig from './utils/icomoon-config.json';
@@ -840,21 +840,21 @@ class LocationPanel extends Component {
         <Text style={STYLES.panelHeader}>Location Info</Text>
         <View style={{flex: 1}}>
           <View style={STYLES.mapWrapper}>
-            <MapView
-              style={STYLES.map}
-              initialRegion={{
-                latitude: 37.78825,
-                longitude: -122.4324,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}
-            />
           </View>
         </View>
       </View>
     );
   }
 }
+            // <MapView
+            //   style={STYLES.map}
+            //   initialRegion={{
+            //     latitude: 37.78825,
+            //     longitude: -122.4324,
+            //     latitudeDelta: 0.0922,
+            //     longitudeDelta: 0.0421,
+            //   }}
+            // />
 
 class SettingsPanel extends Component {
   // constructor(props) {
