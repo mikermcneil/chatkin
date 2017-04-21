@@ -857,23 +857,10 @@ class LocationPanel extends Component {
 }
 
 class SettingsPanel extends Component {
-  constructor(props) {
-    super(props);
-    var self = this;
-    self.state = {
-      username: '',
-      password: ''
-    };
-
-  }
-
-  signOut = () => {
-    var self = this;
-    alert('signing out');
-    AsyncStorage.removeItem('authToken', function() {
-      self.props.navigator.replace({id: 'login'});
-    });
-  };
+  // constructor(props) {
+  //   super(props);
+  //   var self = this;
+  // }
 
   render() {
     return(
@@ -887,7 +874,7 @@ class SettingsPanel extends Component {
         <Text style={{textAlign: 'center', marginBottom: 20}}>Logged in as {this.props.username}</Text>
         <TouchableHighlight onPress={function() {
             AsyncStorage.removeItem('authToken', function() {
-              this.props.navigator.replace({id: 'login'});
+              // this.props.navigator.replace({id: 'login'});
             });
           }}>
           <Text style={{textAlign: 'center'}}>Sign out</Text>
