@@ -207,10 +207,23 @@
             // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             // TODO: extrapolate this shared code into a separate file (see other TODO above)
             // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-            vm.syncing = 'location';
+
+            // - - - - - - - - - - - - - - - - - - - -
+            // Note that we don't set the syncing state this time!
+            // vm.syncing = 'location';
+            // - - - - - - - - - - - - - - - - - - - -
             navigator.geolocation.getCurrentPosition(function gotLocation(geoPosition){
               // Done syncing location.
-              vm.syncing = 'chatkinServer';
+
+              // - - - - - - - - - - - - - - - - - - - -
+              // (And we don't set it here either!)
+              // vm.syncing = 'chatkinServer';
+              // - - - - - - - - - - - - - - - - - - - -
+
+              // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+              // FUTURE: As an optimization, don't send this VR if the lat/long hasn't
+              // changed enough to merit the server spending its time taking a look.
+              // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
               // Communicate w/ server
               io.socket.put('/arrive', {
