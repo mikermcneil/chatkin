@@ -37,7 +37,6 @@
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		CF50C6F51EA81B5400933FC5 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CF50C6F41EA81B5400933FC5 /* Comfortaa-Bold.ttf */; };
-		CF661F031EA9EF32008747D5 /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CF661EE91EA9EF01008747D5 /* libAirMaps.a */; };
 		CFFCEF641EA9F99C00F29045 /* chatkin-icons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CFFCEF631EA9F99C00F29045 /* chatkin-icons.ttf */; };
 /* End PBXBuildFile section */
 
@@ -231,13 +230,6 @@
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
 		};
-		CF661EE81EA9EF01008747D5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CF661EE41EA9EF01008747D5 /* AirMaps.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 11FA5C511C4A1296003AC2EE;
-			remoteInfo = AirMaps;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -266,7 +258,6 @@
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		CF50C6F41EA81B5400933FC5 /* Comfortaa-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Comfortaa-Bold.ttf"; path = "../../../../Downloads/Comfortaa/Comfortaa-Bold.ttf"; sourceTree = "<group>"; };
-		CF661EE41EA9EF01008747D5 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AirMaps.xcodeproj; path = "../node_modules/react-native-maps/lib/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; };
 		CFFCEF631EA9F99C00F29045 /* chatkin-icons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "chatkin-icons.ttf"; path = "../../../../Downloads/chatkin-icons (2)/fonts/chatkin-icons.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -283,7 +274,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CF661F031EA9EF32008747D5 /* libAirMaps.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
@@ -450,7 +440,6 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				CF661EE41EA9EF01008747D5 /* AirMaps.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -496,14 +485,6 @@
 				00E356EE1AD99517003FC87E /* mobileappTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* mobileapp-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* mobileapp-tvOSTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		CF661EE51EA9EF01008747D5 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				CF661EE91EA9EF01008747D5 /* libAirMaps.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -622,10 +603,6 @@
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
-				{
-					ProductGroup = CF661EE51EA9EF01008747D5 /* Products */;
-					ProjectRef = CF661EE41EA9EF01008747D5 /* AirMaps.xcodeproj */;
-				},
 				{
 					ProductGroup = 00C302A81ABCB8CE00DB3ED1 /* Products */;
 					ProjectRef = 00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */;
@@ -855,13 +832,6 @@
 			fileType = archive.ar;
 			path = libRCTText.a;
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		CF661EE91EA9EF01008747D5 /* libAirMaps.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libAirMaps.a;
-			remoteRef = CF661EE81EA9EF01008747D5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

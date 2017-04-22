@@ -64,6 +64,7 @@ module.exports = function sendSocketRequest(options, done){
 
     var socket = window.io.socket;
 
+    setTimeout(function(){
 
     // Determine if the socket has been disconnected, or if it
     // has NEVER BEEN connected and is not CURRENTLY TRYING to
@@ -84,6 +85,13 @@ module.exports = function sendSocketRequest(options, done){
     );
 
 
+
+    // console.warn('io.socket.isConnected()',io.socket.isConnected());
+    // console.warn('io.socket.isConnecting()',io.socket.isConnecting());
+    // console.warn('io.socket._isConnecting',io.socket._isConnecting);
+    // console.warn('io.socket.mightBeAboutToAutoConnect()',io.socket.mightBeAboutToAutoConnect());
+
+
     // If none of the above were true, then emulate a normal
     // offline AJAX response from jQuery.
     if (disconnectedOrWasNeverConnectedAndUnlikelyToTry) {
@@ -99,12 +107,15 @@ module.exports = function sendSocketRequest(options, done){
     //
     // In any of these cases, thanks largely to queuing, it is safe to continue
     // onwards, and to send the request!
+    // console.warn('CALLING io.socket.request()');
+    // console.warn('io.sails is:',JSON.stringify(io.sails));
     io.socket.request({
       method: options.method,
       url: options.url,
       headers: options.headers,
       data: options.body
     }, function (unused, jwr) {
+      // console.warn('CALLBACK FROM SOCKET REQUEST');
 
       // We'll treat a non-2xx status code as an error, but we'll
       // give it a special error code so it's easily digested by
@@ -137,6 +148,8 @@ module.exports = function sendSocketRequest(options, done){
         }
       });
     });//</ io.socket.request() method >
+
+    }, 50);
 
   })(function (err, resInfo){
 
