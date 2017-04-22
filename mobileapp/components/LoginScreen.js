@@ -49,7 +49,7 @@ module.exports = class LoginScreen extends Component {
     var username = self.state.username;
     var password = self.state.password;
     // Talk to the server.
-    fetch('http://localhost:1337' + '/login', {
+    fetch(DEFAULT_API_SERVER_BASE_URL + '/login', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

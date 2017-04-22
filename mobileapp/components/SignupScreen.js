@@ -66,7 +66,7 @@ module.exports = class SignupScreen extends Component {
   // render() {
   //   return (
   //     <WebView
-  //       source={{uri: 'http://localhost:1337'+'/signup'}}
+  //       source={{uri: DEFAULT_API_SERVER_BASE_URL+'/signup'}}
   //     />
   //   );
   // }

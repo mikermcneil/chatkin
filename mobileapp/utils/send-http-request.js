@@ -6,13 +6,6 @@ var _ = require('@sailshq/lodash');
 var flaverr = require('./flaverr');
 
 
-/**
- * Module constants
- */
-
-var DEFAULT_API_SERVER_BASE_URL = 'http://localhost:1337';
-
-
 
 
 /**

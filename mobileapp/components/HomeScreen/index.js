@@ -291,7 +291,7 @@ module.exports = class HomeScreen extends Component {
   updateRemark = function() {
     var self = this;
 
-    fetch('http://localhost:1337'+'/make-remark', {
+    fetch(DEFAULT_API_SERVER_BASE_URL+'/make-remark', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

@@ -100,7 +100,7 @@ io = window.io = SailsIOClient(SocketIOClient);
 
 // Set some options:
 // (you have to specify the host and port of the Sails backend when using this library from Node.js)
-io.sails.url = 'http://localhost:1337';
+io.sails.url = DEFAULT_API_SERVER_BASE_URL;
 io.sails.query = 'nosession=true';
 // ============================================================================================
 
@@ -124,6 +124,13 @@ io.sails.query = 'nosession=true';
   // }
 
 })();
+
+
+
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+global.DEFAULT_API_SERVER_BASE_URL = 'https://chatkin.com';
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 //    ██╗    ██╗██╗  ██╗ █████╗  ██████╗██╗  ██╗    ███████╗██╗  ██╗ █████╗  ██████╗██╗  ██╗██╗
