@@ -28,7 +28,7 @@
           password: vm.password,
         }, function(data, jwr) {
           if(jwr.error) {
-          vm.isSyncing = false;
+            vm.isSyncing = false;
             switch(jwr.headers['x-exit']) {
               case 'notFound':
                 vm.errorType = 'invalidCredentials';

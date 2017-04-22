@@ -16,9 +16,39 @@ module.exports.bootstrap = function(cb) {
   }
 
   sails.config.custom = sails.config.custom || {};
+
+  // Check mandatory config & warn about it if necessary.
+  var isMissingMandatoryCustomConfig;
+  if (_.isUndefined(sails.config.custom.openWeatherApiKey)) {
+    sails.log.warn('No `sails.config.custom.openWeatherApiKey` was configured.');
+    isMissingMandatoryCustomConfig = true;
+  }
+  if (_.isUndefined(sails.config.custom.twitterConsumerSecret)) {
+    sails.log.warn('No `sails.config.custom.twitterConsumerSecret` was configured.');
+    isMissingMandatoryCustomConfig = true;
+  }
+  if (_.isUndefined(sails.config.custom.twitterConsumerKey)) {
+    sails.log.warn('No `sails.config.custom.twitterConsumerKey` was configured.');
+    isMissingMandatoryCustomConfig = true;
+  }//>-
+
+
+  if (isMissingMandatoryCustomConfig) {
+    sails.log.warn('(Until this is resolved, some aspects of Chatkin will not work properly!)');
+    sails.log.warn();
+    sails.log.warn('> Tip: In development, use `config/locals.js`.  For production, use environment variables.');
+    sails.log.warn('> Or, if you want to check them in to source control, use:');
+    sails.log.warn('> • config/custom.js  (for development)');
+    sails.log.warn('> • config/env/production.js  (for production)');
+    sails.log.warn('>');
+    sails.log.warn('> (See https://sailsjs.com/docs/concepts/configuration for more help configuring Sails.)');
+    sails.log.warn();
+  }
+
+
+  // Apply defaults for optional config.
   sails.config.custom.numZonesPerDegreeSquare = sails.config.custom.numZonesPerDegreeSquare || 1;
   sails.config.custom.numZonesPerDegreeSquare = Math.floor(sails.config.custom.numZonesPerDegreeSquare);
-
 
   // Quick forward about zone dimensions:
   // ----------------------------------------------------------------

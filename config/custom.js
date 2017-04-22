@@ -12,12 +12,15 @@ module.exports.custom = {
 
   /**************************************************************************
   *                                                                          *
-  * Default settings for custom configuration used in your app.              *
-  * (these may also be overridden in config/env/production.js)               *
+  * Default settings for custom configuration.                               *
+  * (in production, some of these should be overridden in                    *
+  * config/env/production.js.  To avoid checking in development credentials, *
+  * consider setting some of these in `config/local.js`.)                    *
   *                                                                          *
   ***************************************************************************/
-  // mailgunDomain: 'transactional-mail.example.com',
-  // mailgunApiKey: 'key-testkeyb183848139913858e8abd9a3',
-  // stripeSecret: 'sk_test_Zzd814nldl91104qor5911gjald',
+  numZonesPerDegreeSquare: 1,
+  openWeatherApiKey: undefined,// TODO: include your openweather api key (or do it in local.js)
+  twitterConsumerKey: undefined,// TODO: include your twitter app's consumer key (or do it in local.js)
+  twitterConsumerSecret: undefined,// TODO: include your twitter app's consumer secret (or do it in local.js)
 
 };

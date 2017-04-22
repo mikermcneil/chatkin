@@ -18,7 +18,7 @@
       me: {
         username: window.SAILS_LOCALS.username,
         avatarColor: window.SAILS_LOCALS.avatarColor,
-        message: window.SAILS_LOCALS.remark,
+        message: '',//<< will be fetched upon arrival in zone
       },
 
       // Zone info
@@ -51,7 +51,7 @@
       // For tracking when our last interval ran, (see setInterval() in the mounted finction below)
       // so we'll know whether we may have missed some activity on mobile devices.
       // (Because the socket notifications aren't received if you leave the window.)
-      lastIntervalAt: null,
+      lastIntervalAt: Date.now(),
     },
 
 
@@ -138,8 +138,12 @@
         }
 
 
-      });
+      });//</ on keydown >
 
+
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+      // TODO: extrapolate this shared code into a separate file (see other TODO below)
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
       // Otherwise, we have a username, so attempt to fetch the location.
       // console.log('getting location from browser...');
@@ -152,8 +156,7 @@
         vm.syncing = 'chatkinServer';
 
         // Communicate w/ server
-        // console.log('communicating with server...');
-        io.socket.put('/user/'+ window.SAILS_LOCALS.username +'/zone', {
+        io.socket.put('/arrive', {
           lat: geoPosition.coords.latitude,
           long: geoPosition.coords.longitude
         }, function(data, jwr){
@@ -168,6 +171,9 @@
           // Clear the loading state.
           vm.syncing = '';
 
+          // Update this user's current remark (just in case it was changed on another device)
+          vm.me.message = data.myRemark;
+
           window.DATA = data;//todo: remove this-- it's just for debugging
 
           // Add formatted "time ago" to the other users' messages.
@@ -176,55 +182,65 @@
             otherUser.updatedAtTimeAgo = updatedAtTimeAgo;
           });
 
-          vm.lastIntervalAt = new Date().getTime();
           var INTERVAL_TIME = 1000 * 60;
           setInterval(function() {
             // Update `lastIntervalAt`
-            var now = new Date().getTime();
+            var now = Date.now();
             vm.lastIntervalAt = now;
             // Update the time agos for the messages.
             _.each(vm.zone.otherUsersHere, function(otherUser) {
               var updatedAtTimeAgo = moment(otherUser.updatedAt).fromNow();
               otherUser.updatedAtTimeAgo = updatedAtTimeAgo;
             });
+
+            if (_.isNull(vm.lastIntervalAt)) { throw new Error('Consistency violation: `lastIntervalAt` should never be null.'); }
+
             // If the last interval was 1s+ earlier than our specified interval time,
             // then the browser window must have been inactive.
             // On mobile, this means that some socket notifications may have
             // been missed, so we'll go ahead and re-"arrive"
-            if(!_.isNull(vm.lastIntervalAt) && now - vm.lastIntervalAt > INTERVAL_TIME + 1000) {
-              vm.syncing = 'location';
-              navigator.geolocation.getCurrentPosition(function gotLocation(geoPosition){
-                // Done syncing location.
-                vm.syncing = 'chatkinServer';
-
-                // Communicate w/ server
-                // console.log('communicating with server...');
-                io.socket.put('/user/'+ window.SAILS_LOCALS.username +'/zone', {
-                  lat: geoPosition.coords.latitude,
-                  long: geoPosition.coords.longitude
-                }, function(updatedData, jwr){
-                  if (jwr.error) {
-                    console.error('Server responded with an error.  (Please refresh the page and try again.)');
-                    console.error('Error details:');
-                    console.error(jwr.error);
-                    vm.syncing = '';
-                    vm.errorType = 'catchall';
-                    return;
-                  }//-•
-                  vm.syncing = '';
-
-                  // Add formatted "time ago" to the other users' messages.
-                  _.each(updatedData.otherUsersHere, function(otherUser) {
-                    var updatedAtTimeAgo = moment(otherUser.updatedAt).fromNow();
-                    otherUser.updatedAtTimeAgo = updatedAtTimeAgo;
-                  });
-                  // Update our zone data.
-                  vm.zone.id = updatedData.id;
-                  vm.zone.otherUsersHere = updatedData.otherUsersHere;
-                  vm.weather = updatedData.weather;
-                });
-              });
+            var wasDOMInactive = (now - vm.lastIntervalAt) <= (INTERVAL_TIME + 1000);
+            if(!wasDOMInactive) {
+              return;
             }
+
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            // TODO: extrapolate this shared code into a separate file (see other TODO above)
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            vm.syncing = 'location';
+            navigator.geolocation.getCurrentPosition(function gotLocation(geoPosition){
+              // Done syncing location.
+              vm.syncing = 'chatkinServer';
+
+              // Communicate w/ server
+              io.socket.put('/arrive', {
+                lat: geoPosition.coords.latitude,
+                long: geoPosition.coords.longitude
+              }, function(updatedData, jwr){
+                if (jwr.error) {
+                  console.error('Server responded with an error.  (Please refresh the page and try again.)');
+                  console.error('Error details:');
+                  console.error(jwr.error);
+                  vm.syncing = '';
+                  vm.errorType = 'catchall';
+                  return;
+                }//-•
+                vm.syncing = '';
+
+                // Update this user's current remark (just in case it was changed on another device)
+                vm.me.message = data.myRemark;
+
+                // Add formatted "time ago" to the other users' messages.
+                _.each(updatedData.otherUsersHere, function(otherUser) {
+                  var updatedAtTimeAgo = moment(otherUser.updatedAt).fromNow();
+                  otherUser.updatedAtTimeAgo = updatedAtTimeAgo;
+                });
+                // Update our zone data.
+                vm.zone.id = updatedData.id;
+                vm.zone.otherUsersHere = updatedData.otherUsersHere;
+                vm.weather = updatedData.weather;
+              });//</ io.socket.put() >
+            });//</ navigator.geolocation.getCurrentPosition() >
           }, INTERVAL_TIME);
 
           // Update our zone data.
@@ -321,8 +337,8 @@
                 username: msg.username,
                 avatarColor: msg.avatarColor,
                 remark: msg.remark,
-                updatedAt: new Date().getTime(),
-                updatedAtTimeAgo: moment(new Date().getTime()).fromNow(),
+                updatedAt: Date.now(),
+                updatedAtTimeAgo: moment(Date.now()).fromNow(),
               });
             }
             // If this is about a user in this zone updating their remark,
@@ -344,8 +360,8 @@
                   username: msg.username,
                   avatarColor: msg.avatarColor,
                   remark: msg.remark,
-                  updatedAt: new Date().getTime(),
-                  updatedAtTimeAgo: moment(new Date().getTime()).fromNow(),
+                  updatedAt: Date.now(),
+                  updatedAtTimeAgo: moment(Date.now()).fromNow(),
                 });
               }
               // Otherwise, update the existing user's remark and 'time ago'.
@@ -356,8 +372,8 @@
                 _.remove(vm.zone.otherUsersHere, {username: msg.username});
                 // Update the copy's data
                 userData.remark = msg.remark;
-                userData.updatedAt = new Date().getTime();
-                userData.updatedAtTimeAgo = moment(new Date().getTime()).fromNow();
+                userData.updatedAt = Date.now();
+                userData.updatedAtTimeAgo = moment(Date.now()).fromNow();
                 // Add it to the top of the list so the remark shows up first.
                 vm.zone.otherUsersHere.unshift(userData);
               }
@@ -427,7 +443,7 @@
           vm.me.message = newMsg;
         }
 
-        io.socket.put('/user/'+vm.me.username+'/remark', {
+        io.socket.put('/make-remark', {
           remark: vm.me.message
         }, function(data, jwr) {
           if (jwr.error) {

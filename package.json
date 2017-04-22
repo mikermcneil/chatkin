@@ -7,7 +7,6 @@
   "dependencies": {
     "async": "2.0.1",
     "connect-redis": "^3.2.0",
-    "flaverr": "^1.1.1",
     "grunt": "1.0.1",
     "lodash": "3.10.1",
     "machine-as-script": "^4.1.0",
@@ -16,6 +15,7 @@
     "machinepack-twitter": "^1.2.1",
     "sails": "^1.0.0-33",
     "sails-hook-grunt": "^1.0.4",
+    "sails-hook-lifejacket": "^1.0.2",
     "sails-hook-orm": "^2.0.0-0",
     "sails-hook-sockets": "^1.0.1",
     "sails-mongo": "^1.0.0-5",
@@ -28,6 +28,9 @@
   },
   "scripts": {
     "start": "NODE_ENV=production node app.js",
+    "ios": "echo 'Note: You should already have the backend online (sails lift) before running this command.' && echo && echo 'Previewing mobile app for iOS...  (using React Native CLI)' && cd mobileapp && react-native run-ios && cd ..",
+    "android": "echo 'Note: You should already have the backend online (sails lift) before running this command.' && echo && echo 'Previewing mobile app for Android...  (using React Native CLI)' && cd mobileapp && react-native run-android && cd ..",
+    "browser": "echo 'Note: You should already have the backend online (sails lift) before running this command.' && echo && echo 'Previewing web front-end assets...  (using browser)' && open http://localhost:1337",
     "test": "npm run lint && npm run custom-tests && echo 'Done.'",
     "lint": "node ./node_modules/eslint/bin/eslint . --max-warnings=0 && echo '✔  Your code looks good.'",
     "custom-tests": "echo \"(No other custom tests yet.)\" && echo",

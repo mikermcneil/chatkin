@@ -35,6 +35,7 @@
 
     "User": true,
     "Zone": true,
+    "AuthToken": true,
     // ...and any other backend globals (e.g. `"Zebra": true`)
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   },

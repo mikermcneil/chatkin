@@ -5,7 +5,7 @@
         <span class="branding">chatkin</span>
         <span class="menu-icon weather-info" v-if="typeof weather === 'object'">
           <i class="chatkin-icon"
-          v-bind:class="[visibleMenu === 'weatherDetails' ? 'active' : '', weather.iconClass]"
+          v-bind:class="[visibleMenu === 'weatherDetails' ? 'active' : '', 'icon-'+weather.iconClass]"
           v-on:click.stop="showMenu('weatherDetails')"></i>
           <div class="popup-menu weather-details"
             v-bind:class="[visibleMenu === 'weatherDetails' && !(syncing || errorType) ? 'visible' : '', animateMenu ? 'animate' : '']"

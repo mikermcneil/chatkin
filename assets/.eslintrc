@@ -32,6 +32,8 @@
     // Additional globals specific to this app's browser JS code:
     "$": true,
     "_": true,
+    "moment": true,
+    "bowser": true,
     "Vue": true,
 
     // Allow any other window globals you're relying on here; e.g.
@@ -46,6 +48,7 @@
     "async": false,
     "User": false,
     "Zone": false,
+    "AuthToken": false,
     // ...and any other backend globals (e.g. `"Zebra": false`)
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   },
