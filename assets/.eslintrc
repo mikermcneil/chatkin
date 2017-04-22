@@ -48,6 +48,7 @@
     "async": false,
     "User": false,
     "Zone": false,
+    "AuthToken": false,
     // ...and any other backend globals (e.g. `"Zebra": false`)
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   },
