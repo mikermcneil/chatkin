@@ -15,7 +15,7 @@
     "machinepack-twitter": "^1.2.1",
     "sails": "^1.0.0-33",
     "sails-hook-grunt": "^1.0.4",
-    "sails-hook-lifejacket": "^1.0.2",
+    "sails-hook-lifejacket": "^1.0.3",
     "sails-hook-orm": "^2.0.0-0",
     "sails-hook-sockets": "^1.0.1",
     "sails-mongo": "^1.0.0-5",
