@@ -90,8 +90,7 @@ module.exports = function sendSocketRequest(options, done){
     // console.warn('io.socket.mightBeAboutToAutoConnect()',io.socket.mightBeAboutToAutoConnect());
 
 
-    // If none of the above were true, then emulate a normal
-    // offline AJAX response from jQuery.
+    // If none of the above were true, then do a special error.
     if (disconnectedOrWasNeverConnectedAndUnlikelyToTry) {
       return proceed(flaverr({code: 'E_OFFLINE'}, new Error(
         'Cannot communicate with server.  Are you sure you\'re connected to the internet?  '+
