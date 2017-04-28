@@ -64,8 +64,6 @@ module.exports = function sendSocketRequest(options, done){
 
     var socket = window.io.socket;
 
-    setTimeout(function(){
-
     // Determine if the socket has been disconnected, or if it
     // has NEVER BEEN connected and is not CURRENTLY TRYING to
     // connect.
@@ -148,8 +146,6 @@ module.exports = function sendSocketRequest(options, done){
         }
       });
     });//</ io.socket.request() method >
-
-    }, 50);
 
   })(function (err, resInfo){
 
