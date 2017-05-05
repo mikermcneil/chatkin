@@ -4,12 +4,6 @@ module.exports = {
   description: 'Remove users who haven\'t been active for a few hours from their zones.',
 
 
-  habitat: 'sails',
-
-
-  sails: require('sails'),
-
-
   fn: function(inputs, exits) {
 
     var MAX_INACTIVE_TIME =  Date.now()-(1000*60*60*4);
