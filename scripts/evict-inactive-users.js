@@ -1,4 +1,4 @@
-require('machine-as-script')({
+module.exports = {
 
 
   description: 'Remove users who haven\'t been active for a few hours from their zones.',
@@ -14,12 +14,18 @@ require('machine-as-script')({
 
     var MAX_INACTIVE_TIME =  Date.now()-(1000*60*60*4);
 
+    // Track how many users got evicted.
+    var numEvicted = 0;
+
     // Iterate over inactive users with non-null zones.
     User.stream({
-      lastActiveAt: { '<':  MAX_INACTIVE_TIME }
-      // currentZone: { '!=': null } // TODO: put this back once it works w/ our adapter
+      where: {
+        lastActiveAt: { '<':  MAX_INACTIVE_TIME },
+        currentZone: { '!=': null }
+      },
+      select: User.hasSchema ? ['username', 'currentZone'] : undefined
+      //^^ conditional to allow compatibility with sails-disk (i.e. during development)
     })
-    .select(['username, currentZone'])
     .eachBatch(function(theseInactiveUsers, next) {
 
       User.update({
@@ -41,7 +47,7 @@ require('machine-as-script')({
           });
         });
 
-        sails.log('Finished evicting %d inactive users.', theseInactiveUsers.length);
+        numEvicted += theseInactiveUsers.length;
 
         return next();
 
@@ -50,10 +56,13 @@ require('machine-as-script')({
     })
     .exec(function(err){
       if(err) { return exits.error(err); }
+
+      sails.log('Finished evicting %d inactive users.', numEvicted);
       return exits.success();
+
     }, exits.error);//</ User.find().exec() >
 
   }
 
 
-}).exec();
+};

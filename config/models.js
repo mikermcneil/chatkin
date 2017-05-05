@@ -34,6 +34,17 @@ module.exports.models = {
   migrate: 'alter',
 
 
+
+  /***************************************************************************
+  *                                                                          *
+  * Enable "schema-ful-ness" so that models are not permitted to store       *
+  * attributes unless they are pre-defined in the model definition.          *
+  *                                                                          *
+  ***************************************************************************/
+  schema: true,
+
+
+
   /***************************************************************************
   *                                                                          *
   * Base attributes that are included in all of your models by default.      *
