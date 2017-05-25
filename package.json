@@ -30,9 +30,9 @@
     "ios": "echo 'Note: You should already have the backend online (sails lift) before running this command.' && echo && echo 'Previewing mobile app for iOS...  (using React Native CLI)' && cd mobileapp && react-native run-ios && cd ..",
     "android": "echo 'Note: You should already have the backend online (sails lift) before running this command.' && echo && echo 'Previewing mobile app for Android...  (using React Native CLI)' && cd mobileapp && react-native run-android && cd ..",
     "browser": "echo 'Note: You should already have the backend online (sails lift) before running this command.' && echo && echo 'Previewing web front-end assets...  (using browser)' && open http://localhost:1337",
-    "test": "npm run lint && npm run custom-tests && echo 'Done.'",
+    "test": "sails run lint && sails run custom-tests && echo 'Done.'",
     "lint": "node ./node_modules/eslint/bin/eslint . --max-warnings=0 && echo '✔  Your code looks good.'",
-    "custom-tests": "echo \"(No other custom tests yet.)\" && echo",
+    "custom-tests": "echo \"(No other custom tests yet.)\"",
     "debug": "node debug app.js",
     "deploy": "echo '' && echo '' && echo 'Let us see if you are ready to deploy...' && echo '--' && git status && echo '' && echo '--' && echo 'I hope you are on the master branch and have everything pulled and stuff.' && echo 'Press CTRL+C to cancel.' && echo '(you have five seconds)' && sleep 5 && echo '' && echo 'Alright, here we go.  No turning back now!' && echo 'Deploying as version:' && npm version patch && echo '' && git push origin master && git push --tags && git push origin +master:deploy && git push --tags && echo '' && echo '--' && echo 'OK, done.  It should be live momentarily.' && echo '(if you get impatient, check the Heroku dashboard for status)'"
   },
