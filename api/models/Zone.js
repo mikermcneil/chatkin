@@ -12,8 +12,8 @@ module.exports = {
     y: { type: 'number', required: true },
     lastCachedTweetsAt: { type: 'number' },
     lastCachedWeatherAt: { type: 'number' },
-    cachedTweets: { type: 'json' },
-    cachedWeather: { type: 'json' },
+    cachedTweets: { type: 'json', columnType: 'LONGTEXT CHARACTER SET utf8mb4' },
+    cachedWeather: { type: 'json', columnType: 'LONGTEXT CHARACTER SET utf8mb4' },
     nearbyUsers: { collection: 'User', via: 'currentZone' },
   },
 
