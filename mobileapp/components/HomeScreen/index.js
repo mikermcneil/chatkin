@@ -57,10 +57,10 @@ module.exports = class HomeScreen extends Component {
       authToken: '',
       pendingRemark: '',
       editingRemark: false,
-      weather: {}
+      weather: {},
+      syncing: true,
     };
 
-    // TODO: loading state
     AsyncStorage.multiGet(['username', 'avatarColor', 'authToken'], function(err, stores) {
       if(err) {
         console.error('AsyncStorage error: ' + error.message);
@@ -109,6 +109,9 @@ module.exports = class HomeScreen extends Component {
           }
         }, function (err, resInfo) {
           if (err) {
+            self.setState({
+              syncing: false
+            });
             // If the user is not authenticated, redirect to the login page.
             if (err.code === 'E_NON_200_RESPONSE' && err.headers.get('x-exit') === 'notAuthenticated') {
               self.props.navigator.replace({ id: 'login' });
@@ -131,7 +134,8 @@ module.exports = class HomeScreen extends Component {
             otherUsersHere: _.clone(data.otherUsersHere),
             weather: data.weather,
             pendingRemark: data.myRemark,
-            remark: data.myRemark
+            remark: data.myRemark,
+            syncing: false
           });
         });//</ sendSocketRequest() >
 
@@ -198,7 +202,6 @@ module.exports = class HomeScreen extends Component {
       // If it's about a new user joining the zone, add that user
       // to the UI.
       else if (msg.verb === 'userArrived') {
-        // TODO
 
         // If this notification is about the currently logged-in user,
         // just ignore it.

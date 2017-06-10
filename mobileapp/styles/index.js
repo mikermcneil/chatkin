@@ -164,7 +164,7 @@ module.exports = StyleSheet.create({
 
  panelWrapper: {
   flex: 1,
-  backgroundColor: '#bdcdd5',
+  backgroundColor: '#f0f0f0',
   paddingLeft: 15,
   paddingRight: 15,
   paddingTop: 55,

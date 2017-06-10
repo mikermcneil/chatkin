@@ -31,7 +31,9 @@ module.exports = class LoginScreen extends Component {
     var self = this;
     self.state = {
       username: '',
-      password: ''
+      password: '',
+      syncing: false,
+      loginErrorMsg: '',
     };
   }
 
@@ -45,6 +47,13 @@ module.exports = class LoginScreen extends Component {
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   signInToChatkin() {
     var self = this;
+
+    self.setState({
+      // Set the loading state.
+      syncing: true,
+      // Clear the error message.
+      loginErrorMsg: ''
+    });
 
     var username = self.state.username;
     var password = self.state.password;
@@ -62,13 +71,15 @@ module.exports = class LoginScreen extends Component {
     })
     .then(function (res) {
       if(+res.status >= 300 || +res.status < 200) {
+        self.setState({
+          syncing: false,
+          loginErrorMsg: 'You were not logged in.'// TODO: make more specific
+        });
         console.warn(res.status)
         console.warn(res.headers.get('x-exit'))
         console.warn('You were not logged in.');
         console.warn('username:',username);
         console.warn('password:',password);
-        // TODO
-        // show error message in UI
         return;
       }
       res.json().then(function(data){
@@ -135,11 +146,12 @@ module.exports = class LoginScreen extends Component {
                   }
                 />
               </View>
+              <Text style={{ color: 'red' }}>{ this.loginErrorMsg }</Text>
               <View style={STYLES.submitButtonWrapper}>
                 <Button
                   color="#fff"
                   onPress={ this.signInToChatkin.bind(this) }
-                  title='Sign in'
+                  title={ this.syncing ? 'Preparing to chat...' : 'Sign in'}
                 />
               </View>
               <Text
