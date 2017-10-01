@@ -11,7 +11,7 @@ module.exports = {
 
 
   inputs: {
-    userId: { type: 'number', required: true, description: 'The ID of the user account the current request is authenticated as.' },
+    userId: { type: 'json', required: true, description: 'The ID (string or number, depending on the db in use) of the user account the current request is authenticated as.' },
     req: { type: 'ref', required: true, description: 'The current request (`req`).' },
     res: { type: 'ref', required: true, description: 'The not-yet-sent response (`res`) for the current request.' },
   },
