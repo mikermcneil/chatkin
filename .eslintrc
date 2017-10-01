@@ -2,9 +2,9 @@
   //   ╔═╗╔═╗╦  ╦╔╗╔╔╦╗┬─┐┌─┐
   //   ║╣ ╚═╗║  ║║║║ ║ ├┬┘│
   //  o╚═╝╚═╝╩═╝╩╝╚╝ ╩ ┴└─└─┘
-  // A set of basic code conventions designed to complement the .jshintrc file
-  // and encourage quality and consistency across your code base.  By default,
-  // these rules are checked against automatically any time you run `npm test`.
+  // A set of basic code conventions (similar to a .jshintrc file) designed to
+  // and encourage quality and consistency across your Sails app's code base.
+  // These rules are checked against automatically any time you run `npm test`.
   //
   // > An additional eslintrc override file is included in the `assets/` folder
   // > right out of the box.  This is specifically to allow for variations in acceptable
@@ -25,9 +25,13 @@
     "node": true
   },
 
+  "parserOptions": {
+    "ecmaVersion": 8
+  },
+
   "globals": {
-    // Since "no-undef" is enabled below and this app uses globals (recommended approach),
-    // we list all relevant globals below (including the globalIds of models, if relevant):
+    // If "no-undef" is enabled below and your app uses globals, be sure to list all
+    // relevant globals below (including the globalIds of models, if relevant):
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     "sails": true,
     "_": true,
@@ -48,20 +52,23 @@
     "eqeqeq":                       [2, "always"],
     "eol-last":                     [1],
     "handle-callback-err":          [2],
-    "indent":                       [2, 2, {"SwitchCase": 1}],
+    "indent":                       [1, 2, {"SwitchCase": 1}],
     "linebreak-style":              [2, "unix"],
+    "no-dupe-keys":                 [2],
+    "no-duplicate-case":            [2],
     "no-mixed-spaces-and-tabs":     [2, "smart-tabs"],
     "no-return-assign":             [2, "always"],
     "no-sequences":                 [2],
     "no-trailing-spaces":           [1],
     "no-undef":                     [2],
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // ^^Note: Since this "no-undef" rule is enabled (set to `[2]`), model globals
-    // (e.g. `"Zebra": true`) are also included above under "globals".
+    // ^^Note: If this "no-undef" rule is enabled (set to `[2]`), then model globals
+    // (e.g. `"User": true`) should also be included above under "globals".
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     "no-unexpected-multiline":      [1],
     "no-unused-vars":               [1],
     "one-var":                      [2, "never"],
+    "quotes":                       [1, "single", { "avoidEscape": false, "allowTemplateLiterals": true }],
     "semi":                         [2, "always"]
   }
 
