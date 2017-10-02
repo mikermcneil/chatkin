@@ -23,7 +23,7 @@ module.exports = {
   },
 
 
-  fn: function (inputs, exits) {
+  fn: async function (inputs, exits) {
 
     var req = inputs.req;
 
@@ -38,13 +38,10 @@ module.exports = {
     }//-•
 
     // Otherwise, we'll check on the provided auth token.
-    AuthToken.findOne({ value: authToken })
-    .exec(function(err, matchingToken){
-      if (err) { return exits.error(err); }
-      if (!matchingToken) { return exits.notAuthenticated(); }
+    var matchingToken = await AuthToken.findOne({ value: authToken });
+    if (!matchingToken) { return exits.notAuthenticated(); }
 
-      return exits.success(matchingToken.forUser);
-    });
+    return exits.success(matchingToken.forUser);
 
   }
 

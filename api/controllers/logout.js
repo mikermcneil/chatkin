@@ -12,13 +12,10 @@ module.exports = {
   '(To "log out" when using token auth, just stop sending the X-Auth-Token header!)',
 
 
-  fn: function (inputs, exits, env) {
+  fn: async function (inputs, exits) {
 
-    sails.helpers.setLoggedOut({ req: env.req })
-    .exec({
-      error: function (err) { return exits.error(err); },
-      success: function () { return exits.success(); }
-    });
+    await sails.helpers.setLoggedOut({ req: this.req });
+    return exits.success();
 
   }
 

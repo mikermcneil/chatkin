@@ -17,43 +17,51 @@ module.exports = {
   },
 
 
-  fn: function (inputs, exits, env) {
+  fn: async function (inputs, exits) {
 
-    var req = env.req;
+    var req = this.req;
 
     // Find the user who is currently logged in, and thus arriving in the zone.
     // (This is different between the web app and the mobile app-- hence our helper.)
-    sails.helpers.checkAuth({req:req})
-    .exec({
-      error: function(err) { return exits.error(err); },
-      notAuthenticated: function() { return exits.notAuthenticated(); },
-      success: function(loggedInUserId) {
+    //
+    // > Note that you could also just as easily put this kind of "yes/no" check in
+    // > a policy.  We're just avoiding that here to keep this example as simple as
+    // > "magic-free" as possible.
+    var loggedInUserId;
+    try {
+      loggedInUserId = await sails.helpers.checkAuth({req:req});
+    } catch (err) {
+      switch (err.code) {
+        case 'notAuthenticated':
+          return exits.notAuthenticated();
+        default:
+          throw err;
+      }
+    }
 
-        User.update()
-        .where({ id: loggedInUserId })
-        .set({ remark: inputs.remark })
-        .meta({ fetch: true })
-        .exec(function (err, users) {
-          if (err) { return exits.error(err); }
-          if (users.length > 1) { return exits.error(new Error('Consistency violation: Somehow, more than one user exists with the same username.  This should be impossible!')); }
+    var updatedUsers = await User.update({
+      id: loggedInUserId
+    })
+    .set({ remark: inputs.remark })
+    .fetch();
 
-          var thisUser = users[0];
-          if (!thisUser) { return exits.error(new Error('Consistency violation: The logged-in user has gone missing!  (Corresponding user record no longer exists in the database.)')); }
+    if (updatedUsers.length > 1) { throw new Error('Consistency violation: Somehow, more than one user exists with the same username.  This should be impossible!'); }
 
-          try {
-            // Publish this user's new remark to his or her zone.
-            Zone.publish([thisUser.currentZone], {
-              verb: 'userRemarked',
-              username: thisUser.username,
-              remark: thisUser.remark,
-              avatarColor: thisUser.avatarColor
-            }, req);
-          } catch (e) { return exits.error(new Error('Unexpected error publishing new remark to zone: '+e.stack)); }
+    var thisUser = updatedUsers[0];
+    if (!thisUser) { throw new Error('Consistency violation: The logged-in user has gone missing!  (Corresponding user record no longer exists in the database.)'); }
 
-          return exits.success();
-        }, exits.error);
-      }//</ success :: sails.helpers.checkAuth() >
-    });//</ sails.helpers.checkAuth() >
+    try {
+      // Publish this user's new remark to his or her zone.
+      Zone.publish([thisUser.currentZone], {
+        verb: 'userRemarked',
+        username: thisUser.username,
+        remark: thisUser.remark,
+        avatarColor: thisUser.avatarColor
+      }, req);
+    } catch (err) { throw new Error('Unexpected error publishing new remark to zone: '+err.stack); }
+
+    return exits.success();
+
   }
 
 

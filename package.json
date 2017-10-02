@@ -25,6 +25,9 @@
   "devDependencies": {
     "eslint": "3.5.0"
   },
+  "engines":{
+    "node": ">=7.9"
+  },
   "scripts": {
     "start": "NODE_ENV=production node app.js",
     "ios": "echo 'Note: You should already have the backend online (sails lift) before running this command.' && echo && echo 'Previewing mobile app for iOS...  (using React Native CLI)' && cd mobileapp && react-native run-ios && cd ..",

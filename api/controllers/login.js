@@ -28,54 +28,50 @@ module.exports = {
   },
 
 
-  fn: function (inputs, exits, env) {
+  fn: async function (inputs, exits) {
 
     var passwords = require('machinepack-passwords');
 
     // Find the user record with the provided `username`
-    User.findOne({
+    var userRecord = await User.findOne({
       username: inputs.username
-    })
-    .exec(function(err, userRecord) {
-      if (err) { return exits.error(err); }
+    });
 
-      // If there was no matching user, exit thru "notFound".
-      if(!userRecord) {
-        return exits.notFound();
-      }
+    // If there was no matching user, exit thru "notFound".
+    if(!userRecord) {
+      return exits.notFound();
+    }
 
-      // Otherwise, we have a user record,
-      // so verify the password that was entered.
-      passwords.checkPassword({
+    // Otherwise, we have a user record,
+    // so verify the password that was entered.
+    try {
+      await passwords.checkPassword({
         passwordAttempt: inputs.password,
         encryptedPassword: userRecord.password
-      })
-      .exec({
-        error: function(err) { return exits.error(err); },
-        incorrect: function () {
+      });
+    } catch (err) {
+      switch (err.code) {
+        case 'incorrect':
           // If the password doesn't match, then also
           // exit thru "notFound" to prevent sniffing.
           return exits.notFound();
-        },
-        success: function (){
+        default:
+          throw err;
+      }
+    }
 
-          // Mark the requesting agent as being logged in as this user.
-          sails.helpers.setLoggedIn({
-            req: env.req,
-            res: env.res,
-            userId: userRecord.id
-          }).exec(function (err){
-            if (err){ return exits.error(err); }
-            return exits.success({
-              username: userRecord.username,
-              remark: userRecord.remark,
-              avatarColor: userRecord.avatarColor
-            });
-          });
+    // Mark the requesting agent as being logged in as this user.
+    await sails.helpers.setLoggedIn({
+      req: this.req,
+      res: this.res,
+      userId: userRecord.id
+    });
 
-        }//</on success>
-      });//</checkPassword().exec()>
-    }, exits.error);//</User.findOne().exec()>
+    return exits.success({
+      username: userRecord.username,
+      remark: userRecord.remark,
+      avatarColor: userRecord.avatarColor
+    });
 
   }
 
