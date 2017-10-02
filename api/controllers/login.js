@@ -30,8 +30,6 @@ module.exports = {
 
   fn: async function (inputs, exits) {
 
-    var passwords = require('machinepack-passwords');
-
     // Find the user record with the provided `username`
     var userRecord = await User.findOne({
       username: inputs.username
@@ -45,9 +43,9 @@ module.exports = {
     // Otherwise, we have a user record,
     // so verify the password that was entered.
     try {
-      await passwords.checkPassword({
+      await sails.stdlib('passwords').checkPassword({
         passwordAttempt: inputs.password,
-        encryptedPassword: userRecord.password
+        hashedPassword: userRecord.password
       });
     } catch (err) {
       switch (err.code) {

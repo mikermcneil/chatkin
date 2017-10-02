@@ -127,25 +127,27 @@ module.exports = {
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     if (!sails.config.custom.openWeatherApiKey) {
-      sails.log.verbose('Using fake weather data...\n(To resolve, finish setting up relevant custom config.)');
+      sails.log.info('Using fake weather data...\n(To resolve, finish setting up relevant custom config.)');
       zone.cachedWeather = { weather: [{}], main: {} };
     }
     else {
 
       // Use cached weather, if possible -- as long as it's not too old.
-      var rightNow = Date.now();
-      var fourHoursAgo = rightNow - (1000*60*60*4);
-      var tooStale = fourHoursAgo < zone.lastCachedWeatherAt;
-      if (tooStale)  {
+      let rightNow = Date.now();
+      let fourHoursAgo = rightNow - (1000*60*60*4);
+      let tooStale = fourHoursAgo < zone.lastCachedWeatherAt;
+      let isCorrupted = !tooStale && !zone.cachedWeather;
+      if (tooStale || isCorrupted)  {
 
         // Fetch weather
-        var weather;
+        let weather;
         try {
           weather = await OpenWeather.getCurrentConditions({
             apiKey: sails.config.custom.openWeatherApiKey,
             latitude: inputs.lat,
             longitude: inputs.long,
           });
+
         } catch (err) {
           throw new Error(
             'Unable to get/cache weather data!  (Be sure to check your configuration, and/or the details below.)\n'+
@@ -157,10 +159,11 @@ module.exports = {
         }
 
         // Cache weather
-        await Zone.update({
-          id: zone.id
-        })
-        .set({ cachedWeather: weather, lastCachedWeatherAt: rightNow })
+        await Zone.update({ id: zone.id })
+        .set({
+          cachedWeather: weather,
+          lastCachedWeatherAt: rightNow
+        });
 
         // Stick the newly-fetched weather on our zone record
         // so we have it in the same format as if it was already
@@ -216,20 +219,21 @@ module.exports = {
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     if (!sails.config.custom.twitterConsumerKey || !sails.config.custom.twitterConsumerSecret) {
-      sails.log.verbose('Using fake Twitter data...\n(To resolve, finish setting up relevant custom config.)');
+      sails.log.info('Using fake Twitter data...\n(To resolve, finish setting up relevant custom config.)');
       zone.cachedTweets = [];
     }
     else {
 
       // Use cached tweets, if possible -- as long as they're not too old.
-      var rightNow = Date.now();
-      var twoHoursAgo = rightNow - (1000*60*60*2);
-      var tooStale = twoHoursAgo < zone.lastCachedTweetsAt;
-      if (tooStale)  {
+      let rightNow = Date.now();
+      let twoHoursAgo = rightNow - (1000*60*60*2);
+      let tooStale = twoHoursAgo < zone.lastCachedTweetsAt;
+      let isCorrupted = !tooStale && !zone.cachedTweets;
+      if (tooStale || isCorrupted)  {
 
         // FUTURE: Probably temporarily cache the bearer token, rather than looking it up every time.
         // (But note that it expires)
-        var bearerToken = await Twitter.getBearerToken({
+        let bearerToken = await Twitter.getBearerToken({
           consumerKey: sails.config.custom.twitterConsumerKey,
           consumerSecret: sails.config.custom.twitterConsumerSecret,
         });
@@ -237,7 +241,7 @@ module.exports = {
         sails.log.verbose('Searching for tweets from ('+inputs.lat+'° N,'+inputs.long+'°)');
         sails.log.verbose('(Note that adjusted zone center coordinates will be used instead...)');
 
-        var matchingTweets;
+        let matchingTweets;
         try {
           matchingTweets = await Twitter.searchTweets({
             bearerToken: bearerToken,
@@ -340,6 +344,7 @@ module.exports = {
       }//∞
 
     } catch (err) { throw new Error('Unexpected error parsing tweets: '+err.stack); }
+
 
 
     // Format list of users:

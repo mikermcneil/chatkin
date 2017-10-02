@@ -35,12 +35,11 @@ module.exports = {
   },
 
   fn: async function(inputs, exits) {
-    var passwords = require('machinepack-passwords');
 
     // Encrypt the password
     var hashedPassword;
     try {
-      hashedPassword = await passwords.encryptPassword({
+      hashedPassword = await sails.stdlib('passwords').hashPassword({
         password: inputs.password
       });
     } catch (err) { throw new Error('Cannot encrypt password: '+err.stack); }

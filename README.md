@@ -23,7 +23,7 @@ Tested with:
 > ##### WARNING: THIS IS CURRENTLY STILL A WORK IN PROGRESS!
 >
 > We're in the process of extending this example app to cover more ground.  But we decided to go ahead and open-source it so that any folks who are especially eager and who stumble across it will be able to start getting benefit from it today.
-> 
+>
 > Sincerely,
 > [@mikermcneil](https://github.com/mikermcneil) &amp; [@rachaelshaw](https://github.com/rachaelshaw)
 
