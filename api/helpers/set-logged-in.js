@@ -17,10 +17,9 @@ module.exports = {
   },
 
 
-  fn: function (inputs, exits) {
+  fn: async function (inputs, exits) {
 
     var req = inputs.req;
-    var res = inputs.res;
 
     // If the X-Wants-Auth-Token request header was NOT set, then we'll assume
     // the standard session cookie approach is in use -- so we'll just set the
@@ -33,16 +32,15 @@ module.exports = {
 
     // Otherwise, we'll generate an auth token, save it to the database,
     // and then set it as the X-Set-Auth-Token header in the response.
-    var authToken = 'foo:'+Math.floor(Math.random()*10000);//TODO: make a proper token
-    AuthToken.create({
+    var authToken = 'foo:'+Math.floor(Math.random()*10000);//TODO: make a proper token (e.g. `await require('sails-stdlib')('strings').random();`)
+    await AuthToken.create({
       value: authToken,
       forUser: inputs.userId
-    })
-    .exec(function(err){
-      if (err) { return exits.error(err); }
-      res.set('X-Set-Auth-Token', authToken);
-      return exits.success();
     });
+
+    inputs.res.set('X-Set-Auth-Token', authToken);
+
+    return exits.success();
 
   }
 

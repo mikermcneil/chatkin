@@ -143,24 +143,26 @@ module.exports = class HomeScreen extends Component {
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // FUTURE: Set up cloud sdk implementation for react native:
         // ```
-        // Cloud.arrive({
-        //   lat: position.coords.latitude,
-        //   long: position.coords.longitude
-        // }).exec({
-        //   error: function(err) {
-        //     console.error(err);
-        //   },
-        //   notAuthenticated: function (err){
+        // var data;
+        // try {
+        //   data = await Cloud.arrive({
+        //     lat: position.coords.latitude,
+        //     long: position.coords.longitude
+        //   });
+        // } catch (err) {
+        //   if (err.code === 'notAuthenticated') {
         //     self.props.navigator.replace({ id: 'login' });
-        //   },
-        //   success: function (data){
-        //     self.setState({
-        //       otherUsersHere: ds.cloneWithRows(data.otherUsersHere),
-        //       weather: data.weather,
-        //       pendingRemark: data.myRemark,
-        //       remark: data.myRemark
-        //     });
         //   }
+        //   else {
+        //     console.error(err);
+        //   }
+        // }
+        //
+        // self.setState({
+        //   otherUsersHere: ds.cloneWithRows(data.otherUsersHere),
+        //   weather: data.weather,
+        //   pendingRemark: data.myRemark,
+        //   remark: data.myRemark
         // });
         // ```
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

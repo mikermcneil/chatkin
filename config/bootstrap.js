@@ -9,10 +9,13 @@
  * http://sailsjs.com/config/bootstrap
  */
 
-module.exports.bootstrap = function(cb) {
+module.exports.bootstrap = async function(done) {
 
-  if(process.version.match(/^v0\./)) {
-    return cb(new Error('This example app should be run with node version 4.x or above. (You are using '+process.version+')'));
+  var RX_NODE_MAJOR_VERSION = /^v(.+)\./;
+
+  var isCompatibleVersion = process.version.match(RX_NODE_MAJOR_VERSION) && ( +(process.version.match(RX_NODE_MAJOR_VERSION)[1]) > 7.9);
+  if(!isCompatibleVersion) {
+    return done(new Error('This example app should be run with node version 7.9 or above-- it now takes advantage of `await`.  For an example of how to use older Node versions + callbacks/promise chaining, see the commit history on GitHub.  (You are using Node '+process.version+')'));
   }
 
   sails.config.custom = sails.config.custom || {};
@@ -115,47 +118,44 @@ module.exports.bootstrap = function(cb) {
   // - - - - - - - - - - - - - - - - - - - -
 
 
-  Zone.count().exec(function(err, numZones) {
-    if (err) { return cb(err); }
+  var numZones = await Zone.count();
 
-    if (numZones > xMax*yMax) {
-      return cb(new Error('Consistency violation: More zones ('+numZones+') than expected!'));
-    }
+  if (numZones > xMax*yMax) {
+    return done(new Error('Consistency violation: More zones ('+numZones+') than expected!'));
+  }
 
-    if (numZones === xMax*yMax) {
-      sails.log('Using existing zones and users.');
+  if (numZones === xMax*yMax) {
+    sails.log('Using existing zones and users.');
 
-      // Since the users must already exist, clear their zones just in case the server crashed.
-      User.update({ currentZone: {'!=':null} })
-      .set({ currentZone: null })
-      .exec(function(err) {
-        if(err) { return cb(err); }
-        return cb();
-      });//_∏_
-      return;
-    }//-•
+    // Since the users must already exist, clear their zones just in case the server crashed.
+    await User.update({
+      currentZone: { '!=': null }
+    })
+    .set({ currentZone: null });
 
-    // Build a representation of all 60,000 or so zones.
-    sails.log('Building %d zones...', xMax*yMax);
-    var zones = [];
-    for (var x=0; x<xMax; x++) {
-      for (var y=0; y<yMax; y++) {
-        zones.push({ x: x, y: y });
-      }
-    }
+    return done();
 
-    // Save new zones to the database.
-    sails.log('Persisting %d zones...', xMax*yMax);
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // Note: PostgreSQL only allows up to ~15,000 records to be created in a single createEach.
-    // > If you need to work around that, file an issue in `pg`, import the initial data manually,
-    // > or write up a workaround that splits this up into separate queries instead of one.
-    // > (For help, visit https://sailsjs.com/support)
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    Zone.createEach(zones).exec(function(err) {
-      if (err) { return cb(err); }
-      return cb();
-    });
-  });
+  }//•
+
+  // Build a representation of all 60,000 or so zones.
+  sails.log('Building %d zones...', xMax*yMax);
+  var zones = [];
+  for (var x=0; x<xMax; x++) {
+    for (var y=0; y<yMax; y++) {
+      zones.push({ x: x, y: y });
+    }//∞
+  }//∞
+
+  // Save new zones to the database.
+  sails.log('Persisting %d zones...', xMax*yMax);
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // Note: PostgreSQL only allows up to ~15,000 records to be created in a single createEach.
+  // > If you need to work around that, file an issue in `pg`, import the initial data manually,
+  // > or write up a workaround that splits this up into separate queries instead of one.
+  // > (For help, visit https://sailsjs.com/support)
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  await Zone.createEach(zones);
+
+  return done();
 
 };

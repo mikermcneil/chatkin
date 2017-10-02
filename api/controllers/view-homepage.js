@@ -23,9 +23,9 @@ module.exports = {
   },
 
 
-  fn: function (inputs, exits, env) {
+  fn: async function (inputs, exits) {
 
-    var req = env.req;
+    var req = this.req;
 
     // Check if the requesting user is logged in.
     // If not, then bail.
@@ -36,23 +36,20 @@ module.exports = {
 
     // Otherwise IWMIH, we know the current user is logged in.
     // So look up the record in the database that represents this logged in user.
-    User.findOne({
+    var loggedInUserRecord = await User.findOne({
       id: req.session.userId
-    }).exec(function (err, loggedInUserRecord) {
-      if (err) { return exits.error(err); }
+    });
 
-      if (!loggedInUserRecord) {
-        return exits.error(new Error('Consistency violation: The requesting user is logged in as user `'+req.session.userId+'`, but no such user exists in the database.  This should never happen!'));
-      }
+    if (!loggedInUserRecord) {
+      return exits.error(new Error('Consistency violation: The requesting user is logged in as user `'+req.session.userId+'`, but no such user exists in the database.  This should never happen!'));
+    }
 
-      // Then respond with HTML.
-      return exits.success({
-        username: loggedInUserRecord.username,
-        remark: loggedInUserRecord.remark,
-        avatarColor: loggedInUserRecord.avatarColor
-      });
-
-    }, exits.error);//</User.findOne()>
+    // Then respond with HTML.
+    return exits.success({
+      username: loggedInUserRecord.username,
+      remark: loggedInUserRecord.remark,
+      avatarColor: loggedInUserRecord.avatarColor
+    });
 
   }
 

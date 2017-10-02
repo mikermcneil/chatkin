@@ -34,47 +34,45 @@ module.exports = {
     }
   },
 
-  fn: function(inputs, exits, env) {
-    var passwords = require('machinepack-passwords');
+  fn: async function(inputs, exits) {
 
     // Encrypt the password
-    passwords.encryptPassword({
-      password: inputs.password
-    })
-    .exec(function(err, hashedPassword) {
-      if(err) { return exits.error(new Error('Cannot encrypt password: '+err.stack)); }
+    var hashedPassword;
+    try {
+      hashedPassword = await sails.stdlib('passwords').hashPassword({
+        password: inputs.password
+      });
+    } catch (err) { throw new Error('Cannot encrypt password: '+err.stack); }
 
-      // Try to create a user record.
-      User.create({
+
+    // Try to create a user record.
+    var newUserRecord;
+    try {
+      newUserRecord = await User.create({
         username: inputs.username,
         password: hashedPassword,
         avatarColor: inputs.avatarColor
       })
-      .meta({ fetch: true })
-      .exec(function(err, newUserRecord) {
-        if(err) {
-          if(err.code === 'E_UNIQUE') {
-            return exits.usernameAlreadyInUse(err);
-          }
-          return exits.error(err);
-        }
+      .fetch();
+    } catch (err) {
+      if(err.code === 'E_UNIQUE') {
+        return exits.usernameAlreadyInUse(err);
+      }
+      throw err;
+    }
 
-        // --•
-        // If we made it here, the user record was successfully created.
-        // console.log('NEW USER RECORD:'+newUserRecord);
+    // --•
+    // If we made it here, the user record was successfully created.
+    // console.log('NEW USER RECORD:'+newUserRecord);
 
-        // Mark the requesting agent as being logged in as this user.
-        sails.helpers.setLoggedIn({
-          req: env.req,
-          res: env.res,
-          userId: newUserRecord.id
-        }).exec(function (err){
-          if (err){ return exits.error(err); }
-          return exits.success();
-        });
+    // Mark the requesting agent as being logged in as this user.
+    await sails.helpers.setLoggedIn({
+      req: this.req,
+      res: this.res,
+      userId: newUserRecord.id
+    });
 
-      }, exits.error);// </ User.create().exec() >
-    });// </ passwords.encryptPassword().exec() >
+    return exits.success();
 
   }
 

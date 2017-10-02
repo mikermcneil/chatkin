@@ -9,9 +9,8 @@
     "connect-redis": "^3.2.0",
     "grunt": "1.0.1",
     "lodash": "3.10.1",
-    "machinepack-openweather": "^2.0.1",
-    "machinepack-passwords": "^2.3.0",
-    "machinepack-twitter": "^1.2.1",
+    "machinepack-openweather": "^3.0.0",
+    "machinepack-twitter": "^2.0.0",
     "sails": "^1.0.0-33",
     "sails-hook-grunt": "^1.0.4",
     "sails-hook-lifejacket": "^1.0.3",
@@ -20,10 +19,14 @@
     "sails-mongo": "^1.0.0-5",
     "sails-mysql": "^1.0.0-10",
     "sails-postgresql": "^1.0.0-10",
+    "sails-stdlib": "^0.8.0-3",
     "socket.io-redis": "^4.0.0"
   },
   "devDependencies": {
     "eslint": "3.5.0"
+  },
+  "engines": {
+    "node": ">=7.9"
   },
   "scripts": {
     "start": "NODE_ENV=production node app.js",
