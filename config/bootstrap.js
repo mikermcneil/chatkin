@@ -12,7 +12,7 @@
 module.exports.bootstrap = async function(done) {
 
   var RX_NODE_MAJOR_VERSION = /^v(.+)\./;
-  console.log(+process.version.match(RX_NODE_MAJOR_VERSION)[1]);
+
   var isCompatibleVersion = process.version.match(RX_NODE_MAJOR_VERSION) && ( +(process.version.match(RX_NODE_MAJOR_VERSION)[1]) > 7.9);
   if(!isCompatibleVersion) {
     return done(new Error('This example app should be run with node version 7.9 or above-- it now takes advantage of `await`.  For an example of how to use older Node versions + callbacks/promise chaining, see the commit history on GitHub.  (You are using Node '+process.version+')'));
