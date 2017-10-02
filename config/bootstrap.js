@@ -156,4 +156,6 @@ module.exports.bootstrap = async function(done) {
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   await Zone.createEach(zones);
 
+  return done();
+
 };
