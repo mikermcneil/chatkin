@@ -99,7 +99,12 @@ module.exports = {
 
     // Unsubscribe this user from the old zone, and publish her departure
     // to update other clients' UIs.
+    var alreadyInThisZone;
     if (thisUser.currentZone) {
+      let oldZone = await Zone.findOne({id: thisUser.currentZone});
+      if (oldZone && oldZone.x === x && oldZone.y === y) {
+        alreadyInThisZone = true;
+      }
       Zone.unsubscribe(req, [thisUser.currentZone]);
       Zone.publish([thisUser.currentZone], {
         verb: 'userLeft',
@@ -285,7 +290,12 @@ module.exports = {
       lastActiveAt: Date.now()
     });
 
-    sails.log('@'+thisUser.username+' arrived in zone with coordinates: ( %d, %d )', x, y);
+    if (alreadyInThisZone) {
+      sails.log('@'+thisUser.username+' is loafing around in the same zone as last time: ( %d, %d )', x, y);
+    }
+    else {
+      sails.log('@'+thisUser.username+' arrived in zone with coordinates: ( %d, %d )', x, y);
+    }
 
     // Subscribe to socket (RPS) notifications about this zone.
     Zone.subscribe(req, [zone.id]);
