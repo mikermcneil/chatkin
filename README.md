@@ -20,14 +20,6 @@ Tested with:
 + sails-mongo
 
 
-> ##### WARNING: THIS IS CURRENTLY STILL A WORK IN PROGRESS!
->
-> We're in the process of extending this example app to cover more ground.  But we decided to go ahead and open-source it so that any folks who are especially eager and who stumble across it will be able to start getting benefit from it today.
-> 
-> Sincerely,
-> [@mikermcneil](https://github.com/mikermcneil) &amp; [@rachaelshaw](https://github.com/rachaelshaw)
-
-
 ### Scheduled jobs
 
 The scheduled jobs for this app live in the `scripts/` directory.  In our example deployment, we're using [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler) as our cron service.
