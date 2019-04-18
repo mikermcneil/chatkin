@@ -106,6 +106,7 @@ io = window.io = SailsIOClient(SocketIOClient);
 // (you have to specify the host and port of the Sails backend when using this library from Node.js)
 io.sails.url = DEFAULT_API_SERVER_BASE_URL;
 io.sails.query = 'nosession=true';
+io.sails.useCORSRouteToGetCookie = false;
 // ============================================================================================
 
 
