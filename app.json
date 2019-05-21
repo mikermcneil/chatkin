@@ -1,0 +1,66 @@
+{
+  "addons": [
+    "cleardb",
+    "papertrail",
+    "redistogo",
+    "scheduler"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "env": {
+    "CLEARDB_DATABASE_URL": {
+      "required": true
+    },
+    "DEBUG": {
+      "required": true
+    },
+    "NODE_ENV": {
+      "required": true
+    },
+    "PAPERTRAIL_API_TOKEN": {
+      "required": true
+    },
+    "REDISTOGO_URL": {
+      "required": true
+    },
+    "sails_custom__openWeatherApiKey": {
+      "required": true
+    },
+    "sails_custom__twitterConsumerKey": {
+      "required": true
+    },
+    "sails_custom__twitterConsumerSecret": {
+      "required": true
+    },
+    "sails_datastores__default__charset": {
+      "required": true
+    },
+    "sails_datastores__default__url": {
+      "required": true
+    },
+    "sails_log__level": {
+      "required": true
+    },
+    "sails_session__url": {
+      "required": true
+    },
+    "sails_sockets__url": {
+      "required": true
+    }
+  },
+  "formation": {
+    "evict-inactive-users": {
+      "quantity": 1
+    },
+    "web": {
+      "quantity": 1
+    }
+  },
+  "name": "inabottle",
+  "scripts": {
+  },
+  "stack": "cedar-14"
+}
